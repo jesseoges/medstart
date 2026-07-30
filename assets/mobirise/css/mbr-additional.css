@@ -1824,6 +1824,57 @@ a {
   width: 100%;
   height: 100%;
 }
+.cid-vqQoEPltpX {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  background-color: #ffffff;
+}
+.cid-vqQoEPltpX .mbr-fallback-image.disabled {
+  display: none;
+}
+.cid-vqQoEPltpX .mbr-fallback-image {
+  display: block;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+.cid-vqQoEPltpX .row-reverse {
+  flex-direction: row-reverse;
+}
+@media (max-width: 991px) {
+  .cid-vqQoEPltpX .image-wrapper {
+    margin-bottom: 1rem;
+  }
+}
+.cid-vqQoEPltpX .row {
+  align-items: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+@media (max-width: 991px) {
+  .cid-vqQoEPltpX .image-wrapper {
+    padding: 1rem;
+  }
+}
+@media (min-width: 992px) {
+  .cid-vqQoEPltpX .text-wrapper {
+    padding: 0 2rem;
+  }
+}
+.cid-vqQoEPltpX .mbr-section-title {
+  color: #000000;
+}
+.cid-vqQoEPltpX .mbr-text,
+.cid-vqQoEPltpX .mbr-section-btn {
+  color: #000000;
+}
+.cid-vqQoEPltpX img {
+  width: 100%;
+  height: 100%;
+}
 .cid-vqC6oasIrN {
   padding-top: 5rem;
   padding-bottom: 5rem;
@@ -1945,4 +1996,50 @@ a {
 .cid-vqBUbZIaQT .mbr-text,
 .cid-vqBUbZIaQT .mbr-section-btn {
   color: #000000;
+}
+.cid-vqQqTJa1lI {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-color: #ffffff;
+}
+.cid-vqQqTJa1lI .mbr-fallback-image.disabled {
+  display: none;
+}
+.cid-vqQqTJa1lI .mbr-fallback-image {
+  display: block;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+.cid-vqQqTJa1lI .row {
+  flex-direction: row-reverse;
+}
+.cid-vqQqTJa1lI .mbr-description {
+  text-align: justify;
+}
+.cid-vqQviMho2x {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-color: #ffffff;
+}
+.cid-vqQviMho2x .mbr-fallback-image.disabled {
+  display: none;
+}
+.cid-vqQviMho2x .mbr-fallback-image {
+  display: block;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+.cid-vqQviMho2x .row {
+  flex-direction: row-reverse;
+}
+.cid-vqQviMho2x .mbr-description {
+  text-align: justify;
 }
