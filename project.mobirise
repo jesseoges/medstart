@@ -1,7 +1,7 @@
 {
   "settings": {
     "name": "Medstart",
-    "currentPage": "index.html",
+    "currentPage": "medical-specialization.html",
     "theme": {
       "name": "startm5",
       "title": "StartM5",
@@ -274,7 +274,7 @@
         "url": "https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i"
       }
     ],
-    "uniqCompNum": 104,
+    "uniqCompNum": 106,
     "versionPublish": "6.1.5",
     "imageResize": true,
     "screenshot": "screenshot.png",
@@ -592,7 +592,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "3"
+        "order": "4"
       },
       "components": [
         {
@@ -792,7 +792,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "11"
+        "order": "12"
       },
       "components": [
         {
@@ -1753,7 +1753,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "4"
+        "order": "5"
       },
       "components": [
         {
@@ -2089,7 +2089,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "5"
+        "order": "6"
       },
       "components": [
         {
@@ -2169,7 +2169,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "6"
+        "order": "7"
       },
       "components": [
         {
@@ -2249,7 +2249,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "7"
+        "order": "8"
       },
       "components": [
         {
@@ -2306,7 +2306,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "8"
+        "order": "9"
       },
       "components": [
         {
@@ -2363,7 +2363,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "9"
+        "order": "10"
       },
       "components": [
         {
@@ -2420,7 +2420,7 @@
         "header_custom": "",
         "footer_custom": "",
         "html_before": "",
-        "order": "10"
+        "order": "11"
       },
       "components": [
         {
