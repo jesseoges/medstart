@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Top 5 Medical Specialties | MedStart</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f8fb;
+    color: #17212b;
+}
+
+header {
+    background: #0b6e8e;
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+}
+
+header p {
+    margin: 0;
+    opacity: 0.95;
+}
+
+.container {
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 0 18px;
+}
+
+.quiz-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+.progress-container {
+    margin-bottom: 25px;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #e5e5e5;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 5%;
+    background: #0b6e8e;
+    transition: width 0.3s;
+}
+
+.question {
+    font-size: 23px;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-bottom: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 12px;
+}
+
+.option {
+    border: 2px solid #dce5ea;
+    border-radius: 12px;
+    padding: 17px;
+    cursor: pointer;
+    background: white;
+    transition: 0.2s;
+    font-size: 16px;
+}
+
+.option:hover {
+    border-color: #0b6e8e;
+    background: #f0f9fc;
+}
+
+.option.selected {
+    border-color: #0b6e8e;
+    background: #e8f7fb;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 15px;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 14px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#previous {
+    background: #e5e5e5;
+    color: #333;
+}
+
+#next {
+    background: #0b6e8e;
+    color: white;
+    margin-left: auto;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+#results {
+    display: none;
+}
+
+.results-title {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.results-title h2 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.results-title p {
+    color: #666;
+}
+
+.specialty {
+    border: 1px solid #e0e6e9;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: white;
+}
+
+.rank {
+    font-size: 22px;
+    font-weight: bold;
+    color: #0b6e8e;
+}
+
+.specialty h3 {
+    margin: 8px 0;
+    font-size: 21px;
+}
+
+.score {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.description {
+    color: #555;
+    line-height: 1.5;
+}
+
+.restart {
+    display: block;
+    margin: 25px auto 0;
+    background: #0b6e8e;
+    color: white;
+}
+
+.disclaimer {
+    margin-top: 25px;
+    padding: 15px;
+    background: #fff8df;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #665b32;
+    line-height: 1.5;
+}
+
+@media(max-width:600px) {
+    .quiz-card {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    .question {
+        font-size: 20px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    #next {
+        margin-left: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>MedStart</h1>
+    <p>Find Your Top 5 Medical Specialties</p>
+</header>
+
+<div class="container">
+
+    <div class="quiz-card" id="quiz">
+
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="questionNumber">Question 1 of 20</span>
+                <span id="percent">5%</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+
+        <div class="question" id="question"></div>
+
+        <div class="options" id="options"></div>
+
+        <div class="buttons">
+            <button id="previous" onclick="previousQuestion()">
+                Previous
+            </button>
+
+            <button id="next" onclick="nextQuestion()">
+                Next
+            </button>
+        </div>
+
+    </div>
+
+    <div class="quiz-card" id="results">
+
+        <div class="results-title">
+            <h2>Your Top 5 Specialties</h2>
+            <p>Based on the preferences you selected.</p>
+        </div>
+
+        <div id="resultList"></div>
+
+        <div class="disclaimer">
+            <strong>Important:</strong> This quiz is for educational and
+            self-exploration purposes only. Your result does not determine
+            which specialty you should choose. Medical career decisions
+            should also consider your interests, abilities, training
+            requirements, lifestyle preferences and real-world experience.
+        </div>
+
+        <button class="restart" onclick="restartQuiz()">
+            Take Quiz Again
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const specialties = {
+
+    surgery: {
+        name: "General Surgery",
+        description:
+        "A broad surgical field involving operations for many conditions and exposure to emergency and elective surgery."
+    },
+
+    neurosurgery: {
+        name: "Neurosurgery",
+        description:
+        "Focuses on surgical conditions involving the brain, spinal cord, nerves and related structures."
+    },
+
+    orthopaedics: {
+        name: "Orthopaedic Surgery",
+        description:
+        "Focuses on bones, joints, muscles, ligaments, fractures and musculoskeletal disorders."
+    },
+
+    cardiology: {
+        name: "Cardiology",
+        description:
+        "Focuses on diseases and disorders of the heart and cardiovascular system."
+    },
+
+    neurology: {
+        name: "Neurology",
+        description:
+        "Focuses on diagnosing and managing disorders of the nervous system without primarily performing surgery."
+    },
+
+    paediatrics: {
+        name: "Paediatrics",
+        description:
+        "Focuses on the health and medical care of infants, children and adolescents."
+    },
+
+    obgyn: {
+        name: "Obstetrics & Gynaecology",
+        description:
+        "Covers pregnancy, childbirth and conditions affecting the female reproductive system."
+    },
+
+    oncology: {
+        name: "Medical Oncology",
+        description:
+        "Focuses on the medical treatment and management of cancer."
+    },
+
+    radiology: {
+        name: "Radiology",
+        description:
+        "Uses medical imaging such as X-ray, CT, MRI and ultrasound to help diagnose and manage disease."
+    },
+
+    emergency: {
+        name: "Emergency Medicine",
+        description:
+        "Focuses on the immediate assessment and treatment of acute illnesses and injuries."
+    },
+
+    anaesthesia: {
+        name: "Anaesthesiology",
+        description:
+        "Focuses on anaesthesia, pain management, perioperative medicine and care of critically ill patients."
+    },
+
+    dermatology: {
+        name: "Dermatology",
+        description:
+        "Focuses on diseases affecting the skin, hair and nails."
+    },
+
+    ophthalmology: {
+        name: "Ophthalmology",
+        description:
+        "Focuses on diseases and surgery of the eyes and visual system."
+    },
+
+    ent: {
+        name: "ENT",
+        description:
+        "Focuses on disorders of the ear, nose and throat, including related head and neck conditions."
+    },
+
+    psychiatry: {
+        name: "Psychiatry",
+        description:
+        "Focuses on the diagnosis and treatment of mental and behavioural disorders."
+    },
+
+    pathology: {
+        name: "Pathology",
+        description:
+        "Focuses on studying disease processes using laboratory and tissue-based investigation."
+    },
+
+    urology: {
+        name: "Urology",
+        description:
+        "Focuses on surgical and medical conditions involving the urinary tract and male reproductive system."
+    },
+
+    cardiothoracic: {
+        name: "Cardiothoracic Surgery",
+        description:
+        "Focuses on surgical treatment of diseases involving the heart, lungs and other structures of the chest."
+    },
+
+    plastic: {
+        name: "Plastic & Reconstructive Surgery",
+        description:
+        "Focuses on reconstruction and repair of tissues as well as selected aesthetic procedures."
+    },
+
+    trauma: {
+        name: "Trauma Surgery",
+        description:
+        "Focuses on the surgical management of serious injuries and traumatic conditions."
+    }
+
+};
+
+const questions = [
+
+{
+question:
+"What type of work sounds most exciting to you?",
+options: [
+
+{
+text: "Performing complex operations",
+points: {surgery:3, neurosurgery:3, cardiothoracic:3, orthopaedics:2}
+},
+
+{
+text: "Diagnosing difficult medical conditions",
+points: {neurology:3, cardiology:3, pathology:2, radiology:2}
+},
+
+{
+text: "Treating patients during emergencies",
+points: {emergency:3, trauma:3, surgery:2, anaesthesia:2}
+},
+
+{
+text: "Building long-term relationships with patients",
+points: {psychiatry:3, paediatrics:3, cardiology:2, dermatology:2}
+}
+
+]
+},
+
+{
+question:
+"Which environment would you prefer?",
+options: [
+
+{
+text: "Operating theatre",
+points: {surgery:3, neurosurgery:3, orthopaedics:3, urology:2}
+},
+
+{
+text: "Emergency department",
+points: {emergency:3, trauma:3, anaesthesia:2, surgery:2}
+},
+
+{
+text: "Clinic or consultation room",
+points: {dermatology:3, psychiatry:3, cardiology:2, neurology:2}
+},
+
+{
+text: "Laboratory or imaging environment",
+points: {pathology:3, radiology:3, oncology:2}
+}
+
+]
+},
+
+{
+question:
+"How do you feel about high-pressure situations?",
+options: [
+
+{
+text: "I enjoy them",
+points: {emergency:3, trauma:3, surgery:2}
+},
+
+{
+text: "I can handle them but prefer planning",
+points: {cardiology:3, anaesthesia:3, neurosurgery:2}
+},
+
+{
+text: "I prefer a calmer environment",
+points: {dermatology:3, pathology:3, psychiatry:2}
+},
+
+{
+text: "It depends on the situation",
+points: {paediatrics:2, obgyn:2, radiology:2}
+}
+
+]
+},
+
+{
+question:
+"Which body system interests you most?",
+options: [
+
+{
+text: "Brain and nervous system",
+points: {neurosurgery:3, neurology:3, psychiatry:2}
+},
+
+{
+text: "Heart and circulation",
+points: {cardiology:3, cardiothoracic:3, emergency:2}
+},
+
+{
+text: "Bones and joints",
+points: {orthopaedics:3, trauma:2, surgery:2}
+},
+
+{
+text: "Skin and visible conditions",
+points: {dermatology:3, plastic:2}
+}
+
+]
+},
+
+{
+question:
+"Which patients would you most enjoy caring for?",
+options: [
+
+{
+text: "Children",
+points: {paediatrics:3, surgery:2, obgyn:1}
+},
+
+{
+text: "Adults with complex diseases",
+points: {oncology:3, cardiology:3, neurology:2}
+},
+
+{
+text: "Patients with serious injuries",
+points: {trauma:3, emergency:3, orthopaedics:2}
+},
+
+{
+text: "Patients requiring specialised procedures",
+points: {surgery:3, urology:2, ophthalmology:2}
+}
+
+]
+},
+
+{
+question:
+"Which activity sounds most interesting?",
+options: [
+
+{
+text: "Operating for several hours",
+points: {neurosurgery:3, cardiothoracic:3, surgery:2}
+},
+
+{
+text: "Interpreting scans",
+points: {radiology:3, neurology:2, oncology:2}
+},
+
+{
+text: "Examining tissue under a microscope",
+points: {pathology:3, oncology:2}
+},
+
+{
+text: "Talking with patients about their concerns",
+points: {psychiatry:3, dermatology:2, paediatrics:2}
+}
+
+]
+},
+
+{
+question:
+"How interested are you in anatomy?",
+options: [
+
+{
+text: "Extremely interested",
+points: {neurosurgery:3, surgery:3, orthopaedics:3}
+},
+
+{
+text: "Very interested",
+points: {urology:2, ent:2, ophthalmology:2}
+},
+
+{
+text: "Moderately interested",
+points: {cardiology:2, radiology:2, obgyn:2}
+},
+
+{
+text: "More interested in behaviour and communication",
+points: {psychiatry:3, paediatrics:2}
+}
+
+]
+},
+
+{
+question:
+"Which type of problem would you enjoy solving?",
+options: [
+
+{
+text: "A difficult surgical problem",
+points: {surgery:3, neurosurgery:3, urology:2}
+},
+
+{
+text: "A mysterious diagnosis",
+points: {neurology:3, pathology:3, radiology:2}
+},
+
+{
+text: "A life-threatening emergency",
+points: {emergency:3, trauma:3, anaesthesia:2}
+},
+
+{
+text: "A long-term medical problem",
+points: {cardiology:3, oncology:3, psychiatry:2}
+}
+
+]
+},
+
+{
+question:
+"How interested are you in procedures?",
+options: [
+
+{
+text: "I love procedures",
+points: {surgery:3, neurosurgery:3, orthopaedics:2}
+},
+
+{
+text: "I like some procedures",
+points: {cardiology:2, ophthalmology:2, ent:2}
+},
+
+{
+text: "I prefer diagnosis and medical treatment",
+points: {neurology:3, oncology:3, dermatology:2}
+},
+
+{
+text: "I prefer communication and counselling",
+points: {psychiatry:3, paediatrics:2}
+}
+
+]
+},
+
+{
+question:
+"Which type of decision-making appeals to you?",
+options: [
+
+{
+text: "Fast decisions",
+points: {emergency:3, trauma:3, anaesthesia:2}
+},
+
+{
+text: "Detailed decisions after investigation",
+points: {neurology:3, cardiology:3, oncology:2}
+},
+
+{
+text: "Technical decisions during procedures",
+points: {surgery:3, neurosurgery:3, orthopaedics:3}
+},
+
+{
+text: "Decisions involving communication and support",
+points: {psychiatry:3, paediatrics:2, obgyn:2}
+}
+
+]
+},
+
+{
+question:
+"How interested are you in cancer?",
+options: [
+
+{
+text: "Very interested",
+points: {oncology:3, surgery:2, pathology:2}
+},
+
+{
+text: "Somewhat interested",
+points: {radiology:2, cardiology:1}
+},
+
+{
+text: "Not particularly interested",
+points: {paediatrics:2, dermatology:2}
+},
+
+{
+text: "Interested mainly in cancer surgery",
+points: {surgery:3, plastic:2, urology:2}
+}
+
+]
+},
+
+{
+question:
+"How interested are you in pregnancy and childbirth?",
+options: [
+
+{
+text: "Very interested",
+points: {obgyn:3}
+},
+
+{
+text: "Interested in surgery related to it",
+points: {obgyn:3, surgery:2}
+},
+
+{
+text: "Somewhat interested",
+points: {obgyn:2, paediatrics:1}
+},
+
+{
+text: "Not particularly interested",
+points: {cardiology:1, neurology:1}
+}
+
+]
+},
+
+{
+question:
+"Which special skill sounds most appealing?",
+options: [
+
+{
+text: "Microsurgery and precision",
+points: {neurosurgery:3, ophthalmology:3, plastic:3}
+},
+
+{
+text: "Emergency stabilisation",
+points: {emergency:3, anaesthesia:3, trauma:3}
+},
+
+{
+text: "Image interpretation",
+points: {radiology:3, pathology:2}
+},
+
+{
+text: "Communication and psychotherapy",
+points: {psychiatry:3}
+}
+
+]
+},
+
+{
+question:
+"How much do you enjoy working with your hands?",
+options: [
+
+{
+text: "A lot",
+points: {surgery:3, orthopaedics:3, neurosurgery:2}
+},
+
+{
+text: "Moderately",
+points: {ophthalmology:3, ent:3, urology:2}
+},
+
+{
+text: "Not much",
+points: {psychiatry:3, neurology:2, oncology:2}
+},
+
+{
+text: "Mostly for diagnostic procedures",
+points: {radiology:3, cardiology:2}
+}
+
+]
+},
+
+{
+question:
+"Which area of medicine interests you most?",
+options: [
+
+{
+text: "The nervous system",
+points: {neurosurgery:3, neurology:3}
+},
+
+{
+text: "The heart and chest",
+points: {cardiology:3, cardiothoracic:3}
+},
+
+{
+text: "The urinary system",
+points: {urology:3}
+},
+
+{
+text: "The eyes, ears, nose and throat",
+points: {ophthalmology:2, ent:3}
+}
+
+]
+},
+
+{
+question:
+"How interested are you in laboratory science?",
+options: [
+
+{
+text: "Extremely interested",
+points: {pathology:3, oncology:2}
+},
+
+{
+text: "Very interested",
+points: {oncology:2, radiology:2}
+},
+
+{
+text: "Somewhat interested",
+points: {cardiology:1, neurology:1}
+},
+
+{
+text: "I prefer direct patient care",
+points: {emergency:2, surgery:2, paediatrics:2}
+}
+
+]
+},
+
+{
+question:
+"Which outcome would feel most rewarding?",
+options: [
+
+{
+text: "Successfully completing a difficult operation",
+points: {surgery:3, neurosurgery:3, orthopaedics:2}
+},
+
+{
+text: "Finding the correct diagnosis",
+points: {neurology:3, radiology:3, pathology:2}
+},
+
+{
+text: "Saving someone in an emergency",
+points: {emergency:3, trauma:3, anaesthesia:2}
+},
+
+{
+text: "Helping someone through a long-term illness",
+points: {cardiology:3, oncology:3, psychiatry:2}
+}
+
+]
+},
+
+{
+question:
+"Which patient relationship sounds best?",
+options: [
+
+{
+text: "Short, intense encounters",
+points: {emergency:3, trauma:3, anaesthesia:2}
+},
+
+{
+text: "Repeated visits over many years",
+points: {psychiatry:3, cardiology:3, dermatology:2}
+},
+
+{
+text: "A mixture of consultations and procedures",
+points: {urology:3, ent:3, ophthalmology:2}
+},
+
+{
+text: "Mostly hospital-based care",
+points: {surgery:3, oncology:3, neurosurgery:2}
+}
+
+]
+},
+
+{
+question:
+"Which challenge would you most willingly accept?",
+options: [
+
+{
+text: "Very long and complex operations",
+points: {neurosurgery:3, cardiothoracic:3, surgery:2}
+},
+
+{
+text: "Unpredictable emergencies",
+points: {emergency:3, trauma:3}
+},
+
+{
+text: "Complex diagnostic uncertainty",
+points: {neurology:3, pathology:3, radiology:2}
+},
+
+{
+text: "Emotionally difficult conversations",
+points: {oncology:3, psychiatry:3, obgyn:2}
+}
+
+]
+},
+
+{
+question:
+"Which statement describes you best?",
+options: [
+
+{
+text: "I am analytical and fascinated by complex systems",
+points: {neurology:3, neurosurgery:3, cardiology:2}
+},
+
+{
+text: "I am practical and like fixing things",
+points: {surgery:3, orthopaedics:3, urology:2}
+},
+
+{
+text: "I stay calm when things become urgent",
+points: {emergency:3, trauma:3, anaesthesia:3}
+},
+
+{
+text: "I communicate well and enjoy helping people",
+points: {psychiatry:3, paediatrics:3, dermatology:2}
+}
+
+]
+];
+
+let currentQuestion = 0;
+let answers = new Array(questions.length).fill(null);
+let scores = {};
+
+function resetScores() {
+
+    scores = {};
+
+    Object.keys(specialties).forEach(key => {
+        scores[key] = 0;
+    });
+}
+
+resetScores();
+
+function showQuestion() {
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("question").textContent =
+        q.question;
+
+    document.getElementById("questionNumber").textContent =
+        `Question ${currentQuestion + 1} of ${questions.length}`;
+
+    const percent =
+        Math.round(((currentQuestion + 1) / questions.length) * 100);
+
+    document.getElementById("percent").textContent =
+        percent + "%";
+
+    document.getElementById("progress").style.width =
+        percent + "%";
+
+    const optionsContainer =
+        document.getElementById("options");
+
+    optionsContainer.innerHTML = "";
+
+    q.options.forEach((option, index) => {
+
+        const div = document.createElement("div");
+
+        div.className = "option";
+
+        if (answers[currentQuestion] === index) {
+            div.classList.add("selected");
+        }
+
+        div.textContent = option.text;
+
+        div.onclick = function() {
+
+            answers[currentQuestion] = index;
+
+            document
+                .querySelectorAll(".option")
+                .forEach(el => el.classList.remove("selected"));
+
+            div.classList.add("selected");
+
+        };
+
+        optionsContainer.appendChild(div);
+
+    });
+
+    document.getElementById("previous").disabled =
+        currentQuestion === 0;
+
+    document.getElementById("next").textContent =
+        currentQuestion === questions.length - 1
+        ? "See My Results"
+        : "Next";
+}
+
+function nextQuestion() {
+
+    if (answers[currentQuestion] === null) {
+
+        alert("Please select an answer before continuing.");
+
+        return;
+    }
+
+    if (currentQuestion < questions.length - 1) {
+
+        currentQuestion++;
+
+        showQuestion();
+
+    } else {
+
+        calculateResults();
+
+    }
+}
+
+function previousQuestion() {
+
+    if (currentQuestion > 0) {
+
+        currentQuestion--;
+
+        showQuestion();
+
+    }
+}
+
+function calculateResults() {
+
+    resetScores();
+
+    answers.forEach((answerIndex, questionIndex) => {
+
+        if (answerIndex === null) return;
+
+        const selectedOption =
+            questions[questionIndex].options[answerIndex];
+
+        Object.entries(selectedOption.points)
+        .forEach(([specialty, points]) => {
+
+            scores[specialty] += points;
+
+        });
+
+    });
+
+    const ranked =
+        Object.entries(scores)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+    displayResults(ranked);
+}
+
+function displayResults(ranked) {
+
+    document.getElementById("quiz").style.display =
+        "none";
+
+    document.getElementById("results").style.display =          
+        "block";
+
+    const resultList =
+    document.getElementById("results").style.display =
+         "block";
+        show question();
+        window.scrollto({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+    showQuestion();
+    </script>
+
+    </body>
+    </html>
