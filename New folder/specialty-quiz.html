@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedStart Specialty Quiz</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f3f8fa;color:#172b35}
+.box{max-width:800px;margin:25px auto;padding:25px;background:white;border-radius:18px;box-shadow:0 5px 25px #0001}
+h1,h2{color:#078794}p{line-height:1.5;color:#667}
+.bar{height:9px;background:#e5eeee;border-radius:10px;margin:15px 0 25px}.fill{height:100%;background:#078794;border-radius:10px}
+.q{font-size:21px;font-weight:bold;margin:20px 0}.opt{display:block;padding:15px;margin:10px 0;border:2px solid #dce5e8;border-radius:12px;cursor:pointer}
+.opt:hover,.sel{border-color:#078794;background:#eefbfc}button{padding:13px 22px;border:0;border-radius:10px;background:#078794;color:white;font-weight:bold;cursor:pointer}
+.nav{display:flex;justify-content:space-between;margin-top:25px}#back{background:#e7edef;color:#345}.result{display:none}
+.card{padding:18px;margin:12px 0;border:1px solid #dce5e8;border-radius:12px}.card h3{margin:0;color:#078794}
+.score{float:right;font-weight:bold;color:#078794}.note{background:#eef8fa;padding:15px;border-radius:12px;margin-top:20px}
+</style>
+</head>
+
+<body>
+<div class="box">
+
+<div id="quiz">
+<h1>🩺 MedStart Specialty Finder</h1>
+<p>Answer 30 questions to discover your top 5 medical specialty matches.</p>
+<div id="count"></div>
+<div class="bar"><div class="fill" id="fill"></div></div>
+<div class="q" id="question"></div>
+<div id="options"></div>
+<div class="nav">
+<button id="back" onclick="prev()">Previous</button>
+<button onclick="next()" id="next">Next</button>
+</div>
+</div>
+
+<div class="result" id="result">
+<h1>Your Top 5 Matches</h1>
+<p>These results are based on your answers and are for exploration only.</p>
+<div id="results"></div>
+<div class="note"><b>Remember:</b> Your final specialty choice can depend on many factors, including experience, training opportunities, lifestyle and personal goals.</div>
+<br>
+<button onclick="restart()">Take Quiz Again</button>
+</div>
+
+</div>
+
+<script>
+const S={
+neuro:["Neurosurgery","Brain and nervous-system surgery."],
+neurology:["Neurology","Diagnosis and treatment of nervous-system disorders."],
+cardio:["Cardiology","Heart and cardiovascular medicine."],
+cts:["Cardiothoracic Surgery","Surgery of the heart, lungs and chest."],
+surgery:["General Surgery","Surgery involving many areas of the body."],
+ortho:["Orthopedic Surgery","Bones, joints and musculoskeletal conditions."],
+medicine:["Internal Medicine","Complex medical conditions in adults."],
+peds:["Pediatrics","Medical care for children."],
+psych:["Psychiatry","Mental health and behavioral medicine."],
+radio:["Radiology","Medical imaging and diagnosis."],
+path:["Pathology","Disease investigation using laboratory methods."],
+derm:["Dermatology","Skin, hair and nail conditions."],
+obgyn:["Obstetrics & Gynecology","Pregnancy and women's reproductive health."],
+emergency:["Emergency Medicine","Urgent and emergency patient care."],
+gastro:["Gastroenterology","Digestive-system diseases."],
+nephro:["Nephrology","Kidney diseases."],
+resp:["Respiratory Medicine","Lung and respiratory diseases."],
+onc:["Oncology","Cancer diagnosis and treatment."],
+infect:["Infectious Diseases","Diagnosis and treatment of infections."],
+immuno:["Immunology","Immune-system disorders."],
+rheum:["Rheumatology","Autoimmune and inflammatory diseases."],
+endo:["Endocrinology","Hormones and metabolism."],
+prevent:["Preventive Medicine","Disease prevention and population health."],
+eye:["Ophthalmology","Medical and surgical eye care."],
+ent:["ENT","Ear, nose and throat medicine."],
+family:["Family Medicine","Long-term comprehensive patient care."]
+};
+
+const Q=[
+["Which area interests you most?",["Brain and nerves","Heart","Bones and joints","Children","Mental health"]],
+["Which patients interest you most?",["Children","Adults","Older adults","Emergency patients","Pregnant women"]],
+["What sounds most interesting?",["Operating","Diagnosing difficult cases","Medical imaging","Laboratory work","Talking with patients"]],
+["Which organ system interests you?",["Brain","Heart","Lungs","Kidneys","Digestive system"]],
+["How do you feel about surgery?",["Love it","Like it","Neutral","Not sure","Prefer non-surgical medicine"]],
+["Which situation sounds exciting?",["Emergency operation","Complex diagnosis","Treating a child","Managing mental health","Treating infection"]],
+["Which skill would you enjoy most?",["Operating","Clinical reasoning","Imaging","Laboratory analysis","Communication"]],
+["Which environment appeals to you?",["Operating theatre","Hospital ward","Clinic","Emergency department","Laboratory"]],
+["Which problem interests you?",["Brain disease","Heart disease","Cancer","Infection","Kidney disease"]],
+["How important is technology?",["Extremely important","Very important","Moderately important","Slightly important","Not important"]],
+["Which pace do you prefer?",["Very fast","Fast","Mixed","Steady","Long-term"]],
+["What sounds most rewarding?",["Saving a life","Solving a mystery","Helping children","Helping mental health","Preventing disease"]],
+["Which investigation interests you?",["MRI/CT","ECG","Blood tests","Biopsy","Ultrasound"]],
+["Which challenge do you prefer?",["Technical","Analytical","Emotional","Scientific","Communication"]],
+["Would you enjoy procedures?",["Definitely","Probably","Maybe","Not sure","Not really"]],
+["Which field sounds interesting?",["Neuroscience","Cardiovascular medicine","Immunology","Oncology","Hormones"]],
+["What type of impact appeals to you?",["Immediate","Long-term","Preventive","Diagnostic","Research"]],
+["What patient relationship do you prefer?",["Brief","Long-term","Mostly technical","A mixture","No preference"]],
+["How do you feel about difficult diagnoses?",["Love solving them","Enjoy them","Sometimes","Not sure","Prefer simpler cases"]],
+["Which topic would you study for fun?",["Brain","Heart","Cancer","Infections","Genetics"]],
+["Would you enjoy medical images?",["Very much","Yes","Maybe","Not sure","No"]],
+["Would laboratory medicine interest you?",["Very much","Yes","Maybe","Not sure","No"]],
+["How much do you enjoy talking to patients?",["A lot","Quite a lot","Sometimes","A little","Not much"]],
+["Which goal sounds best?",["Cure disease","Control disease","Diagnose disease","Prevent disease","Research treatments"]],
+["Which age group interests you?",["Children","Adults","Older adults","All ages","No preference"]],
+["Which specialty sounds exciting?",["Emergency Medicine","Neurosurgery","Cardiology","Dermatology","Pediatrics"]],
+["Which area would you research?",["Cancer","Infections","Brain disorders","Heart disease","Public health"]],
+["Do you enjoy working under pressure?",["Very much","Yes","Sometimes","A little","Not really"]],
+["Which approach sounds best?",["Hands-on","Analytical","Patient-focused","Technology-focused","Research-focused"]],
+["Which best describes you?",["Problem solver","Surgeon","Scientist","Communicator","Caregiver"]]
+];
+
+let n=0,A=[];
+
+function show(){
+count.textContent=`Question ${n+1} of 30`;
+fill.style.width=((n+1)/30*100)+"%";
+question.textContent=Q[n][0];
+options.innerHTML=Q[n][1].map((x,i)=>
+`<label class="opt ${A[n]==i?"sel":""}">
+<input type="radio" name="a" ${A[n]==i?"checked":""} onclick="A[${n}]=${i};show()"> ${x}</label>`
+).join("");
+back.style.visibility=n?"visible":"hidden";
+next.textContent=n==29?"See Results":"Next";
+}
+
+function next(){
+if(A[n]===undefined)return alert("Please select an answer.");
+n<29?(n++,show()):results();
+}
+
+function prev(){if(n){n--;show()}}
+
+function results(){
+let s={};Object.keys(S).forEach(x=>s[x]=0);
+
+A.forEach((a,i)=>{
+let t=Q[i][1][a].toLowerCase();
+
+if(t.includes("brain")||t.includes("neuro")){s.neuro+=5;s.neurology+=4}
+if(t.includes("heart")||t.includes("cardio")){s.cardio+=5;s.cts+=4}
+if(t.includes("bone")||t.includes("joint")){s.ortho+=5;s.surgery+=2}
+if(t.includes("child"))s.peds+=5;
+if(t.includes("mental"))s.psych+=5;
+if(t.includes("cancer"))s.onc+=5;
+if(t.includes("infection"))s.infect+=5;
+if(t.includes("kidney"))s.nephro+=5;
+if(t.includes("lung"))s.resp+=5;
+if(t.includes("digestive"))s.gastro+=5;
+if(t.includes("hormone"))s.endo+=5;
+if(t.includes("immune")){s.immuno+=5;s.rheum+=3}
+if(t.includes("skin"))s.derm+=5;
+if(t.includes("emergency"))s.emergency+=5;
+if(t.includes("image")||t.includes("mri")||t.includes("ct")||t.includes("ecg")||t.includes("ultrasound"))s.radio+=5;
+if(t.includes("laboratory")||t.includes("blood")||t.includes("biopsy"))s.path+=5;
+if(t.includes("prevent"))s.prevent+=5;
+if(t.includes("surg")||t.includes("operat"))s.surgery+=5;
+if(t.includes("adult"))s.medicine+=3;
+if(t.includes("patient"))s.family+=3;
+if(t.includes("pregnant"))s.obgyn+=5;
+if(t.includes("ear"))s.ent+=5;
+});
+
+let top=Object.keys(s).sort((a,b)=>s[b]-s[a]).slice(0,5);
+let max=s[top[0]]||1;
+
+results.innerHTML=top.map((x,i)=>`
+<div class="card">
+<span class="score">${Math.round(s[x]/max*100)}% match</span>
+<h3>#${i+1} ${S[x][0]}</h3>
+<p>${S[x][1]}</p>
+</div>`).join("");
+
+quiz.style.display="none";
+result.style.display="block";
+scrollTo(0,0);
+}
+
+function restart(){
+n=0;A=[];quiz.style.display="block";result.style.display="none";show();
+}
+show();
+</script>
+</body>
+</html>
