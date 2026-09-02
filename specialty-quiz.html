@@ -1,847 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Medical Specialty Quiz</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedStart Specialty Quiz</title>
 <style>
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f8fb;
-    color: #1d2939;
-  }
-
-  .quiz-wrapper {
-    width: 100%;
-    max-width: 850px;
-    margin: 30px auto;
-    padding: 20px;
-  }
-
-  .quiz-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 30px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-  }
-
-  .quiz-header {
-    text-align: center;
-    margin-bottom: 25px;
-  }
-
-  .quiz-header h1 {
-    margin: 0 0 10px;
-    font-size: 32px;
-    color: #0b6b8a;
-  }
-
-  .quiz-header p {
-    margin: 0;
-    color: #667085;
-    font-size: 16px;
-  }
-
-  .progress-container {
-    margin: 25px 0;
-  }
-
-  .progress-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #667085;
-    margin-bottom: 8px;
-  }
-
-  .progress-bar {
-    width: 100%;
-    height: 9px;
-    background: #e6eef2;
-    border-radius: 20px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    width: 0%;
-    background: #0b8fac;
-    border-radius: 20px;
-    transition: width 0.3s ease;
-  }
-
-  .question {
-    display: none;
-  }
-
-  .question.active {
-    display: block;
-  }
-
-  .question h2 {
-    font-size: 23px;
-    line-height: 1.4;
-    margin-bottom: 22px;
-  }
-
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .option {
-    border: 2px solid #d9e4e9;
-    border-radius: 12px;
-    padding: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-    background: #fff;
-    font-size: 16px;
-  }
-
-  .option:hover {
-    border-color: #0b8fac;
-    background: #f1fbfd;
-  }
-
-  .option.selected {
-    border-color: #0b8fac;
-    background: #e9f8fb;
-  }
-
-  .option input {
-    display: none;
-  }
-
-  .navigation {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 28px;
-    gap: 12px;
-  }
-
-  .btn {
-    border: none;
-    border-radius: 10px;
-    padding: 13px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .prev-btn {
-    background: #e8eef1;
-    color: #344054;
-  }
-
-  .next-btn {
-    background: #0b8fac;
-    color: white;
-  }
-
-  .prev-btn:hover {
-    background: #dce5e9;
-  }
-
-  .next-btn:hover {
-    background: #087991;
-  }
-
-  .result {
-    display: none;
-    text-align: center;
-  }
-
-  .result h2 {
-    color: #0b6b8a;
-    font-size: 30px;
-    margin-bottom: 10px;
-  }
-
-  .result p {
-    font-size: 17px;
-    line-height: 1.6;
-  }
-
-  .specialty-name {
-    font-size: 27px;
-    font-weight: bold;
-    color: #0b8fac;
-    margin: 20px 0;
-  }
-
-  .specialty-description {
-    background: #f2f8fa;
-    border-radius: 12px;
-    padding: 18px;
-    margin-top: 20px;
-    line-height: 1.6;
-  }
-
-  .restart-btn {
-    margin-top: 25px;
-    background: #0b8fac;
-    color: white;
-  }
-
-  @media (max-width: 600px) {
-    .quiz-wrapper {
-      padding: 10px;
-      margin: 15px auto;
-    }
-
-    .quiz-card {
-      padding: 20px;
-    }
-
-    .quiz-header h1 {
-      font-size: 26px;
-    }
-
-    .question h2 {
-      font-size: 20px;
-    }
-
-    .option {
-      font-size: 15px;
-      padding: 14px;
-    }
-
-    .navigation {
-      flex-direction: column-reverse;
-    }
-
-    .btn {
-      width: 100%;
-    }
-  }
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#f3f8fa;color:#172b35}
+.box{max-width:800px;margin:25px auto;padding:25px;background:#fff;border-radius:18px;box-shadow:0 5px 25px #0001}
+h1,h2{color:#078794}
+p{line-height:1.5;color:#667}
+.bar{height:9px;background:#e5eeee;border-radius:10px;margin:15px 0 25px}
+.fill{height:100%;width:0;background:#078794;border-radius:10px}
+.q{font-size:21px;font-weight:bold;margin:20px 0}
+.opt{display:block;padding:15px;margin:10px 0;border:2px solid #dce5e8;border-radius:12px;cursor:pointer}
+.opt:hover,.sel{border-color:#078794;background:#eefbfc}
+button{padding:13px 22px;border:0;border-radius:10px;background:#078794;color:white;font-weight:bold;cursor:pointer}
+.nav{display:flex;justify-content:space-between;margin-top:25px}
+#back{background:#e7edef;color:#345}
+.result{display:none}
+.card{padding:18px;margin:12px 0;border:1px solid #dce5e8;border-radius:12px}
+.card h3{margin:0;color:#078794}
+.score{float:right;font-weight:bold;color:#078794}
+.note{background:#eef8fa;padding:15px;border-radius:12px;margin-top:20px}
 </style>
 </head>
 
 <body>
-
-<div class="quiz-wrapper">
-
-  <div class="quiz-card">
-
-    <div class="quiz-header">
-      <h1>Medical Specialty Quiz</h1>
-      <p>Discover which medical specialty may match your interests.</p>
-    </div>
-
-    <div id="quiz">
-
-      <div class="progress-container">
-        <div class="progress-info">
-          <span id="questionNumber">Question 1 of 10</span>
-          <span id="progressPercent">10%</span>
-        </div>
-
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-      </div>
-
-
-      <!-- QUESTION 1 -->
-      <div class="question active" data-question="1">
-        <h2>1. Which type of medical problem interests you most?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q1" value="surgery">
-            Performing operations and treating conditions that may require surgery
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q1" value="brain">
-            The brain, spinal cord and nervous system
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q1" value="heart">
-            The heart and circulatory system
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q1" value="children">
-            The health and development of children
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 2 -->
-      <div class="question" data-question="2">
-        <h2>2. Which type of work sounds most exciting?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q2" value="surgery">
-            Working with my hands during surgical procedures
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q2" value="brain">
-            Solving complex neurological problems
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q2" value="heart">
-            Managing serious heart conditions
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q2" value="children">
-            Caring for children and monitoring their development
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 3 -->
-      <div class="question" data-question="3">
-        <h2>3. Which patient group would you most enjoy working with?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q3" value="surgery">
-            Patients who need surgical treatment
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q3" value="brain">
-            Patients with neurological disorders
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q3" value="heart">
-            Patients with cardiovascular problems
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q3" value="children">
-            Infants, children and teenagers
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 4 -->
-      <div class="question" data-question="4">
-        <h2>4. How do you feel about high-pressure situations?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q4" value="surgery">
-            I like staying focused when things become intense
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q4" value="brain">
-            I prefer careful analysis before making decisions
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q4" value="heart">
-            I enjoy making fast decisions when necessary
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q4" value="children">
-            I prefer a calm and reassuring environment
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 5 -->
-      <div class="question" data-question="5">
-        <h2>5. Which body system would you most like to understand deeply?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q5" value="surgery">
-            The musculoskeletal and abdominal systems
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q5" value="brain">
-            The brain and nervous system
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q5" value="heart">
-            The cardiovascular system
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q5" value="children">
-            The developing body of children
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 6 -->
-      <div class="question" data-question="6">
-        <h2>6. Which activity sounds most interesting?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q6" value="surgery">
-            Operating on a patient
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q6" value="brain">
-            Interpreting neurological tests and solving difficult cases
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q6" value="heart">
-            Treating cardiovascular disease
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q6" value="children">
-            Helping a child recover and grow healthier
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 7 -->
-      <div class="question" data-question="7">
-        <h2>7. What kind of challenge appeals to you most?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q7" value="surgery">
-            A technically demanding operation
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q7" value="brain">
-            A difficult case requiring detailed reasoning
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q7" value="heart">
-            A life-threatening cardiovascular emergency
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q7" value="children">
-            A complex condition affecting a young patient
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 8 -->
-      <div class="question" data-question="8">
-        <h2>8. Which environment sounds most appealing?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q8" value="surgery">
-            Operating theatre
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q8" value="brain">
-            Neurology or neurosurgery unit
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q8" value="heart">
-            Cardiology or cardiac surgery unit
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q8" value="children">
-            Children's hospital or pediatric ward
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 9 -->
-      <div class="question" data-question="9">
-        <h2>9. What motivates you most as a future doctor?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q9" value="surgery">
-            Using surgical skills to directly solve medical problems
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q9" value="brain">
-            Understanding one of the most complex organs in the body
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q9" value="heart">
-            Saving lives through cardiovascular care
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q9" value="children">
-            Helping young patients live healthy lives
-          </label>
-
-        </div>
-      </div>
-
-
-      <!-- QUESTION 10 -->
-      <div class="question" data-question="10">
-        <h2>10. Which statement sounds most like you?</h2>
-
-        <div class="options">
-
-          <label class="option">
-            <input type="radio" name="q10" value="surgery">
-            I enjoy practical work and solving problems with my hands.
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q10" value="brain">
-            I enjoy complex problems that require deep concentration.
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q10" value="heart">
-            I enjoy fast-paced situations and critical decision-making.
-          </label>
-
-          <label class="option">
-            <input type="radio" name="q10" value="children">
-            I enjoy helping and communicating with younger patients.
-          </label>
-
-        </div>
-      </div>
-
-
-      <div class="navigation">
-        <button class="btn prev-btn" id="prevBtn" onclick="previousQuestion()">
-          Previous
-        </button>
-
-        <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()">
-          Next
-        </button>
-      </div>
-
-    </div>
-
-
-    <!-- RESULT -->
-    <div class="result" id="result">
-
-      <h2>Your Quiz Result</h2>
-
-      <p>Based on your answers, the specialty area that received the strongest match was:</p>
-
-      <div class="specialty-name" id="specialtyName"></div>
-
-      <div class="specialty-description" id="specialtyDescription"></div>
-
-      <button class="btn restart-btn" onclick="restartQuiz()">
-        Take Quiz Again
-      </button>
-
-    </div>
-
-  </div>
+<div class="box">
+
+<div id="quiz">
+<h1>🩺 MedStart Specialty Finder</h1>
+<p>Answer 30 questions to discover your top 5 medical specialty matches.</p>
+
+<div id="count"></div>
+<div class="bar"><div class="fill" id="fill"></div></div>
+
+<div class="q" id="question"></div>
+<div id="options"></div>
+
+<div class="nav">
+<button id="back" onclick="prev()">Previous</button>
+<button onclick="next()" id="next">Next</button>
+</div>
+</div>
+
+<div class="result" id="result">
+<h1>Your Top 5 Matches</h1>
+<p>These results are based on your answers and are meant for exploration, not professional career assessment.</p>
+<div id="results"></div>
+<div class="note">
+<strong>Remember:</strong> Your specialty choice can also depend on clinical experience, training opportunities, lifestyle, research interests and your personal goals.
+</div>
+<br>
+<button onclick="restart()">Take Quiz Again</button>
+</div>
 
 </div>
 
-
 <script>
+const specialties={
+neuro:["Neurosurgery","Brain, spinal cord and nervous system surgery."],
+neurology:["Neurology","Diagnosis and treatment of nervous-system disorders."],
+cardio:["Cardiology","Heart and cardiovascular medicine."],
+cts:["Cardiothoracic Surgery","Surgery of the heart, lungs and chest."],
+surgery:["General Surgery","Surgery covering many areas of the body."],
+ortho:["Orthopedic Surgery","Bones, joints, muscles and movement."],
+medicine:["Internal Medicine","Complex medical conditions in adults."],
+peds:["Pediatrics","Medical care for children and adolescents."],
+psych:["Psychiatry","Mental health and behavioral medicine."],
+radio:["Radiology","Medical imaging and diagnosis."],
+path:["Pathology","Understanding disease through laboratory investigation."],
+derm:["Dermatology","Skin, hair and nail conditions."],
+obgyn:["Obstetrics & Gynecology","Pregnancy and women's reproductive health."],
+emergency:["Emergency Medicine","Urgent and potentially life-threatening conditions."],
+gastro:["Gastroenterology","Digestive system diseases."],
+nephro:["Nephrology","Kidneys and related diseases."],
+resp:["Respiratory Medicine","Lungs and respiratory diseases."],
+onc:["Oncology","Cancer diagnosis and treatment."],
+infect:["Infectious Diseases","Diagnosis and treatment of infections."],
+immuno:["Immunology","Immune-system disorders."],
+rheum:["Rheumatology","Autoimmune and inflammatory diseases."],
+endo:["Endocrinology","Hormones and metabolism."],
+prevent:["Preventive Medicine","Disease prevention and population health."],
+eye:["Ophthalmology","Medical and surgical eye care."],
+ent:["ENT","Ear, nose and throat medicine and surgery."],
+family:["Family Medicine","Long-term, comprehensive patient care."]
+};
 
-let currentQuestion = 1;
+const q=[
+["Which area interests you most?",["Brain and nerves","Heart and blood vessels","Bones and joints","Children","Mental health","Skin","Emergency care","Diseases and diagnosis"]],
+["Which patients would you enjoy working with?",["Children","Adults","Older adults","All ages","Emergency patients","Pregnant women","Patients with cancer","Any patient"]],
+["What sounds most interesting?",["Operating","Diagnosing difficult cases","Using scans","Laboratory investigation","Talking with patients","Preventing disease","Treating emergencies","Research"]],
+["Which organ system interests you?",["Brain","Heart","Lungs","Kidneys","Digestive system","Hormones","Immune system","Eyes"]],
+["How do you feel about surgery?",["Love it","Like it","Neutral","Prefer non-surgical medicine"]],
+["Which situation sounds exciting?",["Emergency operation","Complex diagnosis","Interpreting scans","Treating a child","Managing mental health","Treating infection","Managing chronic disease","Preventing illness"]],
+["What skill would you most enjoy?",["Operating","Clinical reasoning","Imaging","Laboratory analysis","Communication","Procedures","Research","Public health"]],
+["Which environment appeals to you?",["Operating theatre","Ward","Clinic","Emergency department","Imaging department","Laboratory","Community","Research setting"]],
+["Which problem interests you?",["Brain disease","Heart disease","Cancer","Infection","Kidney disease","Skin disease","Hormonal disease","Joint disease"]],
+["How important is technology?",["Very important","Important","Somewhat","Not very important"]],
+["Do you prefer fast or long-term care?",["Fast-paced","Long-term","A mixture","Either"]],
+["Which sounds most rewarding?",["Saving a life","Solving a mystery","Helping children","Improving mental health","Performing surgery","Preventing disease","Managing chronic illness","Finding disease early"]],
+["Which investigation interests you?",["MRI/CT","ECG","Blood tests","Biopsy","Genetic tests","Ultrasound","X-ray","Any of these"]],
+["Which type of challenge do you prefer?",["Technical","Analytical","Emotional","Physical","Scientific","Communication","A mixture","Not sure"]],
+["Would you enjoy procedures?",["Definitely","Probably","Maybe","Not really"]],
+["Which field sounds interesting?",["Neuroscience","Cardiovascular medicine","Immunology","Oncology","Endocrinology","Gastroenterology","Respiratory medicine","Rheumatology"]],
+["What type of impact appeals to you?",["Immediate","Long-term","Preventive","Diagnostic","Surgical","Research-based","Patient education","Any"]],
+["Which patient relationship do you prefer?",["Brief and focused","Long-term","Mostly technical","A mixture"]],
+["How do you feel about difficult diagnoses?",["Love solving them","Enjoy them","Sometimes","Prefer straightforward cases"]],
+["Which topic would you study for fun?",["Brain","Heart","Cancer","Infections","Genetics","Hormones","Skin","Bones"]],
+["Would you enjoy working with medical images?",["Yes","Maybe","No","Very much"]],
+["Would laboratory medicine interest you?",["Yes","Maybe","No","Very much"]],
+["How much do you enjoy talking to patients?",["A lot","Somewhat","Not much","I prefer technical work"]],
+["Which goal sounds best?",["Cure disease","Control disease","Diagnose disease","Prevent disease","Perform procedures","Research new treatments","Support patients"]],
+["Which age group interests you most?",["Children","Adults","Older adults","All ages"]],
+["Which specialty sounds exciting?",["Emergency Medicine","Neurosurgery","Cardiology","Dermatology","Pediatrics","Psychiatry","Radiology","General Surgery"]],
+["Which area would you research?",["Cancer","Infections","Brain disorders","Heart disease","Immune disorders","Genetics","Chronic disease","Public health"]],
+["Do you enjoy working under pressure?",["Very much","Yes","Sometimes","Not really"]],
+["Which approach sounds best?",["Hands-on","Analytical","Patient-focused","Technology-focused","Research-focused","A mixture"]],
+["Finally, what best describes you?",["Problem solver","Surgeon","Scientist","Communicator","Caregiver","Innovator","Leader","Investigator"]]
+];
 
-const totalQuestions = 10;
+let n=0,answers=[];
 
-const answers = {};
+function show(){
+document.getElementById("count").textContent="Question "+(n+1)+" of 30";
+document.getElementById("fill").style.width=((n+1)/30*100)+"%";
+document.getElementById("question").textContent=q[n][0];
 
-const questions = document.querySelectorAll(".question");
+let html="";
+q[n][1].forEach((x,i)=>{
+html+=`<label class="opt ${answers[n]==i?"sel":""}">
+<input type="radio" name="a" value="${i}" ${answers[n]==i?"checked":""}
+onclick="answers[${n}]=${i};show()">
+${x}</label>`;
+});
+document.getElementById("options").innerHTML=html;
+document.getElementById("back").style.visibility=n?"visible":"hidden";
+document.getElementById("next").textContent=n==29?"See Results":"Next";
+}
 
-const nextBtn = document.getElementById("nextBtn");
+function next(){
+if(answers[n]===undefined){alert("Please select an answer.");return}
+if(n<29){n++;show()}else{results()}
+}
 
-const prevBtn = document.getElementById("prevBtn");
+function prev(){
+if(n>0){n--;show()}
+}
 
+function results(){
+let s={};
+Object.keys(specialties).forEach(x=>s[x]=0);
 
-// Select option
-document.querySelectorAll(".option").forEach(option => {
+answers.forEach((a,i)=>{
+let text=q[i][1][a].toLowerCase();
 
-  option.addEventListener("click", function() {
-
-    const radio = this.querySelector("input");
-
-    radio.checked = true;
-
-    const question = this.closest(".question");
-
-    question.querySelectorAll(".option").forEach(item => {
-      item.classList.remove("selected");
-    });
-
-    this.classList.add("selected");
-
-  });
-
+if(text.includes("brain")||text.includes("neuro")){s.neuro+=3;s.neurology+=3}
+if(text.includes("heart")||text.includes("cardio")){s.cardio+=3;s.cts+=2}
+if(text.includes("bone")||text.includes("joint")){s.ortho+=3;s.surgery+=1}
+if(text.includes("children"))s.peds+=4;
+if(text.includes("mental"))s.psych+=4;
+if(text.includes("skin"))s.derm+=4;
+if(text.includes("emergency"))s.emergency+=4;
+if(text.includes("scan")||text.includes("image")||text.includes("mri")||text.includes("x-ray"))s.radio+=4;
+if(text.includes("laboratory")||text.includes("lab"))s.path+=4;
+if(text.includes("cancer"))s.onc+=4;
+if(text.includes("infection"))s.infect+=4;
+if(text.includes("kidney"))s.nephro+=4;
+if(text.includes("digestive"))s.gastro+=4;
+if(text.includes("lung"))s.resp+=4;
+if(text.includes("hormone"))s.endo+=4;
+if(text.includes("immune")){s.immuno+=4;s.rheum+=1}
+if(text.includes("prevent"))s.prevent+=4;
+if(text.includes("eye"))s.eye+=4;
+if(text.includes("ear"))s.ent+=4;
+if(text.includes("surg"))s.surgery+=3;
+if(text.includes("patient")){s.family+=2;s.medicine+=2}
+if(text.includes("adult"))s.medicine+=2;
 });
 
+let top=Object.keys(s).sort((a,b)=>s[b]-s[a]).slice(0,5);
+let max=Math.max(...Object.values(s),1);
 
-// Show current question
-function showQuestion() {
+document.getElementById("results").innerHTML=top.map((x,i)=>`
+<div class="card">
+<span class="score">${Math.round(s[x]/max*100)}% match</span>
+<h3>#${i+1} ${specialties[x][0]}</h3>
+<p>${specialties[x][1]}</p>
+</div>`).join("");
 
-  questions.forEach(question => {
-    question.classList.remove("active");
-  });
-
-  const current = document.querySelector(
-    '.question[data-question="' + currentQuestion + '"]'
-  );
-
-  current.classList.add("active");
-
-  const percent = Math.round(
-    (currentQuestion / totalQuestions) * 100
-  );
-
-  document.getElementById("questionNumber").textContent =
-    "Question " + currentQuestion + " of " + totalQuestions;
-
-  document.getElementById("progressPercent").textContent =
-    percent + "%";
-
-  document.getElementById("progressFill").style.width =
-    percent + "%";
-
-  if (currentQuestion === 1) {
-    prevBtn.style.visibility = "hidden";
-  } else {
-    prevBtn.style.visibility = "visible";
-  }
-
-  if (currentQuestion === totalQuestions) {
-    nextBtn.textContent = "See My Result";
-  } else {
-    nextBtn.textContent = "Next";
-  }
-
+document.getElementById("quiz").style.display="none";
+document.getElementById("result").style.display="block";
+window.scrollTo(0,0);
 }
 
-
-// Save answer
-function saveCurrentAnswer() {
-
-  const selected = document.querySelector(
-    '.question[data-question="' + currentQuestion + '"] input:checked'
-  );
-
-  if (!selected) {
-    return false;
-  }
-
-  answers[currentQuestion] = selected.value;
-
-  return true;
+function restart(){
+n=0;answers=[];
+document.getElementById("quiz").style.display="block";
+document.getElementById("result").style.display="none";
+show();
 }
 
-
-// Next question
-function nextQuestion() {
-
-  if (!saveCurrentAnswer()) {
-
-    alert("Please select an answer before continuing.");
-
-    return;
-
-  }
-
-  if (currentQuestion < totalQuestions) {
-
-    currentQuestion++;
-
-    showQuestion();
-
-  } else {
-
-    calculateResult();
-
-  }
-
-}
-
-
-// Previous question
-function previousQuestion() {
-
-  if (currentQuestion > 1) {
-
-    saveCurrentAnswer();
-
-    currentQuestion--;
-
-    showQuestion();
-
-  }
-
-}
-
-
-// Calculate result
-function calculateResult() {
-
-  const scores = {
-
-    surgery: 0,
-
-    brain: 0,
-
-    heart: 0,
-
-    children: 0
-
-  };
-
-
-  Object.values(answers).forEach(answer => {
-
-    if (scores.hasOwnProperty(answer)) {
-      scores[answer]++;
-    }
-
-  });
-
-
-  let winner = "surgery";
-
-  Object.keys(scores).forEach(category => {
-
-    if (scores[category] > scores[winner]) {
-      winner = category;
-    }
-
-  });
-
-
-  const results = {
-
-    surgery: {
-
-      name: "General Surgery",
-
-      description:
-        "You showed a strong interest in practical problem-solving, procedures and treating conditions that may require surgical intervention. General surgery could be an area worth exploring as you learn more about medicine."
-    },
-
-    brain: {
-
-      name: "Neurosurgery",
-
-      description:
-        "Your answers showed a strong interest in the brain, nervous system, complex problems and detailed decision-making. Neurosurgery could be an area worth exploring further."
-    },
-
-    heart: {
-
-      name: "Cardiology / Cardiothoracic Surgery",
-
-      description:
-        "Your answers showed a strong interest in the cardiovascular system, critical decisions and treating serious heart-related conditions. Cardiology and cardiothoracic surgery may be interesting areas for you to explore."
-    },
-
-    children: {
-
-      name: "Pediatrics",
-
-      description:
-        "Your answers showed a strong interest in children, development and caring for younger patients. Pediatrics could be an area worth exploring as you learn more about medicine."
-    }
-
-  };
-
-
-  document.getElementById("quiz").style.display = "none";
-
-  document.getElementById("result").style.display = "block";
-
-  document.getElementById("specialtyName").textContent =
-    results[winner].name;
-
-  document.getElementById("specialtyDescription").textContent =
-    results[winner].description;
-
-}
-
-
-// Restart quiz
-function restartQuiz() {
-
-  currentQuestion = 1;
-
-  Object.keys(answers).forEach(key => {
-    delete answers[key];
-  });
-
-
-  document.querySelectorAll("input[type='radio']").forEach(input => {
-    input.checked = false;
-  });
-
-
-  document.querySelectorAll(".option").forEach(option => {
-    option.classList.remove("selected");
-  });
-
-
-  document.getElementById("quiz").style.display = "block";
-
-  document.getElementById("result").style.display = "none";
-
-  showQuestion();
-
-}
-
-
-// Start
-showQuestion();
-
+show();
 </script>
-
 </body>
 </html>
