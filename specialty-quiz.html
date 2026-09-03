@@ -4,76 +4,125 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MedStart Specialty Quiz</title>
 <style>
-body{font-family:Arial;background:#f2f8fa;margin:0;padding:20px}
-.box{max-width:700px;margin:auto;background:white;padding:25px;border-radius:15px}
+body{font-family:Arial;background:#f2f8fa;padding:15px}
+.box{max-width:700px;margin:auto;background:white;padding:22px;border-radius:15px}
 h1{text-align:center;color:#087f8c}
-.option{padding:15px;margin:10px 0;border:2px solid #ddd;border-radius:10px;cursor:pointer}
-.option:hover,.selected{border-color:#087f8c;background:#eaf8f9}
-button{padding:13px 25px;border:0;border-radius:8px;background:#087f8c;color:white;font-weight:bold;cursor:pointer}
-#result{display:none}
+#num{color:#087f8c;font-weight:bold}
+.opt{padding:14px;margin:9px 0;border:2px solid #ddd;border-radius:10px;cursor:pointer}
+.opt.sel{border-color:#087f8c;background:#eaf8f9}
+button{padding:13px 22px;background:#087f8c;color:white;border:0;border-radius:8px;font-weight:bold}
+.res{border:1px solid #ddd;padding:13px;margin:10px 0;border-radius:10px}
 </style>
 </head>
 
 <body>
 <div class="box">
-
 <h1>MedStart Specialty Quiz</h1>
 
 <div id="quiz">
-<p id="q"></p>
-<div id="options"></div>
+<p id="num"></p>
+<h2 id="q"></h2>
+<div id="opts"></div>
 <button onclick="next()">Next</button>
 </div>
 
-<div id="result">
-<h2>Your Top Matches</h2>
-<div id="scores"></div>
+<div id="result" style="display:none">
+<h2>Your Top 5 Matches</h2>
+<div id="out"></div>
 <button onclick="location.reload()">Take Again</button>
 </div>
-
 </div>
 
 <script>
-const data=[
-["Which work sounds most interesting?",["Emergency situations","Operations","Solving difficult diagnoses","Long-term patient care"],["Emergency Medicine","Surgery","Internal Medicine","Family Medicine"]],
-["Which environment do you prefer?",["Fast-paced hospital","Operating room","Clinic","Technology and imaging"],["Emergency Medicine","Surgery","Family Medicine","Radiology"]],
-["What do you enjoy most?",["Working with your hands","Analysing problems","Talking with people","Making quick decisions"],["Surgery","Internal Medicine","Psychiatry","Emergency Medicine"]],
-["Which area interests you most?",["Brain and nerves","Heart","Bones and joints","Pregnancy and childbirth"],["Neurology","Cardiology","Orthopaedics","Obstetrics & Gynaecology"]],
-["Which patients would you prefer?",["Children","Adults","Older people","All ages"],["Paediatrics","Internal Medicine","Geriatrics","Family Medicine"]],
-["Which sounds most satisfying?",["Fixing a physical problem","Finding a diagnosis","Helping emotionally","Helping recovery"],["Surgery","Internal Medicine","Psychiatry","Rehabilitation"]],
-["What pace suits you?",["Very fast","Busy but organised","Calm","A mixture"],["Emergency Medicine","Surgery","Psychiatry","Family Medicine"]],
-["How interested are you in technology?",["Very interested","Somewhat","Not much","Mainly for diagnosis"],["Radiology","Cardiology","Surgery","Radiology"]],
-["Which would you rather do?",["Procedures","Diagnosis","Patient conversations","Review scans"],["Surgery","Internal Medicine","Psychiatry","Radiology"]],
-["What would make you most satisfied?",["A successful operation","Solving a difficult case","Helping someone emotionally","Helping someone physically"],["Surgery","Internal Medicine","Psychiatry","Orthopaedics"]]
+const Q=[
+["What type of work interests you most?",
+["Emergency care","Operations","Diagnosis","Patient relationships","Medical technology"],
+["Emergency Medicine","Surgery","Internal Medicine","Family Medicine","Radiology"]],
+["Which environment sounds best?",
+["Busy hospital","Operating room","Clinic","Imaging department","Maternity unit"],
+["Emergency Medicine","Surgery","Family Medicine","Radiology","Obstetrics & Gynaecology"]],
+["What do you enjoy most?",
+["Working with your hands","Solving problems","Talking to people","Making quick decisions","Using technology"],
+["Surgery","Internal Medicine","Psychiatry","Emergency Medicine","Radiology"]],
+["Which area interests you most?",
+["Brain and nerves","Heart","Bones and joints","Children","Pregnancy"],
+["Neurology","Cardiology","Orthopaedics","Paediatrics","Obstetrics & Gynaecology"]],
+["Which pace do you prefer?",
+["Very fast","Busy","Moderate","Calm","A mixture"],
+["Emergency Medicine","Surgery","Cardiology","Psychiatry","Family Medicine"]],
+["Which outcome sounds most satisfying?",
+["Fixing a physical problem","Finding a diagnosis","Helping emotionally","Helping recovery","Preventing illness"],
+["Surgery","Internal Medicine","Psychiatry","Rehabilitation","Family Medicine"]],
+["Which patients interest you most?",
+["Children","Adults","Older people","Pregnant patients","Everyone"],
+["Paediatrics","Internal Medicine","Geriatrics","Obstetrics & Gynaecology","Family Medicine"]],
+["How do you feel about procedures?",
+["Love them","Enjoy them","Neutral","Prefer diagnosis","Prefer conversation"],
+["Surgery","Cardiology","Internal Medicine","Radiology","Psychiatry"]],
+["What would you rather spend time doing?",
+["Operating","Diagnosing","Counselling","Reading scans","Managing emergencies"],
+["Surgery","Internal Medicine","Psychiatry","Radiology","Emergency Medicine"]],
+["What motivates you most?",
+["Complex cases","Practical results","Long-term relationships","Technology","Helping in emergencies"],
+["Neurosurgery","Orthopaedics","Family Medicine","Radiology","Emergency Medicine"]]
 ];
 
-let n=0,choice=null,s={};
+let i=0,chosen=-1,s={};
 
 function show(){
-q.innerText=(n+1)+". "+data[n][0];
-options.innerHTML="";
-data[n][1].forEach((x,i)=>{
+num.innerText="Question "+(i+1)+" of "+Q.length;
+q.innerText=Q[i][0];
+opts.innerHTML="";
+Q[i][1].forEach((x,j)=>{
 let d=document.createElement("div");
-d.className="option";d.innerText=x;
-d.onclick=()=>{choice=i;document.querySelectorAll(".option").forEach(a=>a.classList.remove("selected"));d.classList.add("selected")};
-options.appendChild(d);
+d.className="opt";d.innerText=x;
+d.onclick=()=>{
+chosen=j;
+document.querySelectorAll(".opt").forEach(a=>a.classList.remove("sel"));
+d.classList.add("sel");
+};
+opts.appendChild(d);
 });
 }
 
 function next(){
-if(choice===null)return alert("Choose an answer first.");
-let sp=data[n][2][choice];
+if(chosen<0)return alert("Please select an answer.");
+let sp=Q[i][2][chosen];
 s[sp]=(s[sp]||0)+1;
-choice=null;n++;
-if(n<data.length)show();
-else{
-quiz.style.display="none";result.style.display="block";
-let a=Object.entries(s).sort((x,y)=>y[1]-x[1]);
-scores.innerHTML=a.slice(0,3).map((x,i)=>`<h3>${i+1}. ${x[0]}</h3>`).join("");
+chosen=-1;i++;
+if(i<Q.length)show();
+else finish();
 }
+
+function finish(){
+quiz.style.display="none";
+result.style.display="block";
+
+let a=Object.entries(s).sort((x,y)=>y[1]-x[1]).slice(0,5);
+let reasons={
+"Surgery":"You showed interest in practical work and procedures.",
+"Emergency Medicine":"You showed interest in fast-paced decision making.",
+"Internal Medicine":"You showed interest in diagnosis and complex problems.",
+"Family Medicine":"You showed interest in broad, long-term patient care.",
+"Radiology":"You showed interest in technology and medical imaging.",
+"Psychiatry":"You showed interest in communication and emotional care.",
+"Cardiology":"You showed interest in the heart and procedural medicine.",
+"Neurology":"You showed interest in the brain and nervous system.",
+"Neurosurgery":"You showed interest in complex problems and surgery.",
+"Orthopaedics":"You showed interest in practical treatment and movement.",
+"Paediatrics":"You showed interest in caring for children.",
+"Geriatrics":"You showed interest in caring for older adults.",
+"Obstetrics & Gynaecology":"You showed interest in pregnancy and women's health.",
+"Rehabilitation":"You showed interest in helping patients regain function."
+};
+
+out.innerHTML=a.map((x,k)=>{
+let p=Math.round(x[1]/Q.length*100);
+return `<div class="res"><h3>${k+1}. ${x[0]} - ${p}%</h3>
+<p>${reasons[x[0]]||"Your answers showed an interest in this area of medicine."}</p></div>`;
+}).join("");
 }
 show();
 </script>
-
 </body>
 </html>
