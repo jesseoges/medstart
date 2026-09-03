@@ -1,273 +1,262 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MedStart Specialty Quiz</title>
+<title>Medstart Specialty Quiz</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial;background:#f3f8fa;color:#172b35}
-.box{max-width:800px;margin:25px auto;padding:25px;background:#fff;border-radius:18px;box-shadow:0 5px 25px #0001}
-h1,h2{color:#078794}p{line-height:1.5;color:#667}
-.bar{height:9px;background:#e5eeee;border-radius:10px;margin:15px 0 25px}
-.fill{height:100%;background:#078794;border-radius:10px;width:3.3%}
-.q{font-size:21px;font-weight:bold;margin:20px 0}
-.opt{display:block;padding:15px;margin:10px 0;border:2px solid #dce5e8;border-radius:12px;cursor:pointer}
-.opt:hover,.sel{border-color:#078794;background:#eefbfc}
-.opt input{display:none}
-button{padding:13px 22px;border:0;border-radius:10px;background:#078794;color:white;font-weight:bold;cursor:pointer}
-.nav{display:flex;justify-content:space-between;margin-top:25px}
-#back{background:#e7edef;color:#345}
-#resultPage{display:none}
-.card{padding:18px;margin:12px 0;border:1px solid #dce5e8;border-radius:12px}
-.card h3{margin:0;color:#078794}
-.score{float:right;font-weight:bold;color:#078794}
-.note{background:#eef8fa;padding:15px;border-radius:12px;margin-top:20px}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f8fb;color:#123}
+.container{max-width:700px;margin:auto;padding:25px}
+.card{background:white;border-radius:18px;padding:28px;box-shadow:0 5px 25px #0001}
+h1{color:#087f8c;text-align:center}h2{font-size:22px}
+p{line-height:1.5}.progress{height:8px;background:#ddd;border-radius:10px;margin:20px 0}.bar{height:100%;background:#087f8c;border-radius:10px;width:0}
+.option{display:block;width:100%;padding:15px;margin:12px 0;border:2px solid #dbe5e8;background:white;border-radius:12px;text-align:left;font-size:16px;cursor:pointer}
+.option:hover{border-color:#087f8c;background:#effafa}
+button{border:0;border-radius:12px;padding:14px 22px;background:#087f8c;color:white;font-size:16px;cursor:pointer}
+button:hover{background:#066873}.center{text-align:center}
+.result{padding:18px;margin:12px 0;border-radius:12px;background:#effafa}
+.rank{font-size:20px;font-weight:bold;color:#087f8c}
+.small{color:#667;font-size:14px}
 </style>
 </head>
 
 <body>
-<div class="box">
-
-<div id="quizPage">
-<h1>🩺 MedStart Specialty Finder</h1>
-<p>Answer 30 questions to discover your top 5 medical specialty matches.</p>
-
-<div id="counter"></div>
-<div class="bar"><div class="fill" id="progress"></div></div>
-
-<div class="q" id="question"></div>
-<div id="options"></div>
-
-<div class="nav">
-<button id="back" onclick="previousQuestion()">Previous</button>
-<button id="next" onclick="nextQuestion()">Next</button>
-</div>
-</div>
-
-<div id="resultPage">
-<h1>Your Top 5 Medical Specialties</h1>
-<p>Your results are based on the interests you selected. They are for exploration only.</p>
-
-<div id="resultList"></div>
-
-<div class="note">
-<b>Remember:</b> This quiz is not a professional career assessment. Your eventual specialty choice can depend on clinical experience, training, lifestyle and personal goals.
-</div>
-
-<br>
-<button onclick="restartQuiz()">Take Quiz Again</button>
-</div>
-
+<div class="container">
+<div class="card" id="app"></div>
 </div>
 
 <script>
 const specialties={
-neuro:["Neurosurgery","Brain, spinal cord and nervous-system surgery."],
-neurology:["Neurology","Diagnosis and treatment of nervous-system disorders."],
-cardio:["Cardiology","Heart and cardiovascular medicine."],
-cts:["Cardiothoracic Surgery","Surgery of the heart, lungs and chest."],
-surgery:["General Surgery","Surgery involving many areas of the body."],
-ortho:["Orthopedic Surgery","Bones, joints and musculoskeletal conditions."],
-medicine:["Internal Medicine","Complex medical conditions in adults."],
-peds:["Pediatrics","Medical care for children."],
-psych:["Psychiatry","Mental health and behavioral medicine."],
-radio:["Radiology","Medical imaging and diagnosis."],
-path:["Pathology","Disease investigation using laboratory methods."],
-derm:["Dermatology","Skin, hair and nail conditions."],
-obgyn:["Obstetrics & Gynecology","Pregnancy and women's reproductive health."],
-emergency:["Emergency Medicine","Urgent and emergency patient care."],
-gastro:["Gastroenterology","Digestive-system diseases."],
-nephro:["Nephrology","Kidney diseases."],
-resp:["Respiratory Medicine","Lung and respiratory diseases."],
-onc:["Oncology","Cancer diagnosis and treatment."],
-infect:["Infectious Diseases","Diagnosis and treatment of infections."],
-immuno:["Immunology","Immune-system disorders."],
-rheum:["Rheumatology","Autoimmune and inflammatory diseases."],
-endo:["Endocrinology","Hormones and metabolism."],
-prevent:["Preventive Medicine","Disease prevention and population health."],
-eye:["Ophthalmology","Medical and surgical eye care."],
-ent:["ENT","Ear, nose and throat medicine."],
-family:["Family Medicine","Long-term comprehensive patient care."]
+"Internal Medicine":["diagnosis","complex","adult","research"],
+"Surgery":["procedures","hands","acute","anatomy"],
+"Emergency Medicine":["acute","fast","procedures","team"],
+"Pediatrics":["children","communication","longterm"],
+"Obstetrics & Gynecology":["women","procedures","acute","communication"],
+"Psychiatry":["mental","communication","longterm","complex"],
+"Family Medicine":["longterm","communication","prevention","adult","children"],
+"Radiology":["diagnosis","technology","imaging","research"],
+"Anesthesiology":["procedures","acute","physiology","team"],
+"Pathology":["diagnosis","laboratory","research","detail"],
+"Dermatology":["diagnosis","visual","longterm","lifestyle"],
+"Neurology":["diagnosis","complex","brain","longterm"],
+"Cardiology":["heart","procedures","acute","physiology"],
+"Oncology":["complex","communication","longterm","research"],
+"Orthopedics":["procedures","hands","anatomy","acute"],
+"Ophthalmology":["visual","procedures","technology","lifestyle"],
+"ENT":["procedures","anatomy","communication","hands"],
+"Urology":["procedures","anatomy","longterm","adult"],
+"Neurosurgery":["brain","procedures","anatomy","acute"],
+"Plastic Surgery":["procedures","hands","visual","anatomy"],
+"Infectious Diseases":["diagnosis","complex","research","adult"],
+"Nephrology":["complex","diagnosis","physiology","adult"],
+"Gastroenterology":["diagnosis","procedures","adult","longterm"],
+"Endocrinology":["diagnosis","complex","longterm","physiology"],
+"Pulmonology":["diagnosis","physiology","procedures","adult"],
+"Rheumatology":["complex","diagnosis","longterm","communication"],
+"Geriatrics":["longterm","communication","adult","complex"],
+"Preventive Medicine":["prevention","research","communication"],
+"Rehabilitation Medicine":["longterm","communication","procedures"],
+"Critical Care":["acute","physiology","team","procedures"]
 };
 
 const questions=[
-["Which area interests you most?",["Brain and nerves","Heart","Bones and joints","Children","Mental health"]],
-["Which patients interest you most?",["Children","Adults","Older adults","Emergency patients","Pregnant women"]],
-["What sounds most interesting?",["Operating","Diagnosing difficult cases","Medical imaging","Laboratory work","Talking with patients"]],
-["Which organ system interests you?",["Brain","Heart","Lungs","Kidneys","Digestive system"]],
-["How do you feel about surgery?",["Love it","Like it","Neutral","Not sure","Prefer non-surgical medicine"]],
-["Which situation sounds exciting?",["Emergency operation","Complex diagnosis","Treating a child","Managing mental health","Treating infection"]],
-["Which skill would you enjoy most?",["Operating","Clinical reasoning","Imaging","Laboratory analysis","Communication"]],
-["Which environment appeals to you?",["Operating theatre","Hospital ward","Clinic","Emergency department","Laboratory"]],
-["Which problem interests you?",["Brain disease","Heart disease","Cancer","Infection","Kidney disease"]],
-["How important is technology?",["Extremely important","Very important","Moderately important","Slightly important","Not important"]],
-["Which pace do you prefer?",["Very fast","Fast","Mixed","Steady","Long-term"]],
-["What sounds most rewarding?",["Saving a life","Solving a mystery","Helping children","Helping mental health","Preventing disease"]],
-["Which investigation interests you?",["MRI/CT","ECG","Blood tests","Biopsy","Ultrasound"]],
-["Which challenge do you prefer?",["Technical","Analytical","Emotional","Scientific","Communication"]],
-["Would you enjoy procedures?",["Definitely","Probably","Maybe","Not sure","Not really"]],
-["Which field sounds interesting?",["Neuroscience","Cardiovascular medicine","Immunology","Oncology","Hormones"]],
-["What type of impact appeals to you?",["Immediate","Long-term","Preventive","Diagnostic","Research"]],
-["What patient relationship do you prefer?",["Brief","Long-term","Mostly technical","A mixture","No preference"]],
-["How do you feel about difficult diagnoses?",["Love solving them","Enjoy them","Sometimes","Not sure","Prefer simpler cases"]],
-["Which topic would you study for fun?",["Brain","Heart","Cancer","Infections","Genetics"]],
-["Would you enjoy medical images?",["Very much","Yes","Maybe","Not sure","No"]],
-["Would laboratory medicine interest you?",["Very much","Yes","Maybe","Not sure","No"]],
-["How much do you enjoy talking to patients?",["A lot","Quite a lot","Sometimes","A little","Not much"]],
-["Which goal sounds best?",["Cure disease","Control disease","Diagnose disease","Prevent disease","Research treatments"]],
-["Which age group interests you?",["Children","Adults","Older adults","All ages","No preference"]],
-["Which specialty sounds exciting?",["Emergency Medicine","Neurosurgery","Cardiology","Dermatology","Pediatrics"]],
-["Which area would you research?",["Cancer","Infections","Brain disorders","Heart disease","Public health"]],
-["Do you enjoy working under pressure?",["Very much","Yes","Sometimes","A little","Not really"]],
-["Which approach sounds best?",["Hands-on","Analytical","Patient-focused","Technology-focused","Research-focused"]],
-["Which best describes you?",["Problem solver","Surgeon","Scientist","Communicator","Caregiver"]]
+["What type of work sounds most satisfying?",[
+["Solving difficult diagnostic problems",["diagnosis","complex"]],
+["Performing procedures or operations",["procedures","hands"]],
+["Helping patients in urgent situations",["acute","fast"]],
+["Building relationships with patients over time",["longterm","communication"]],
+["Using technology, tests and images to solve problems",["technology","imaging","diagnosis"]]]],
+
+["Which patient group interests you most?",[
+["Children and adolescents",["children"]],
+["Adults with complex medical problems",["adult","complex"]],
+["Pregnant women and women's health",["women"]],
+["People with mental or emotional health concerns",["mental","communication"]],
+["I would prefer to work with many different types of patients",["communication","prevention"]]]],
+
+["Which working environment appeals to you?",[
+["A fast-paced emergency setting",["acute","fast","team"]],
+["An operating or procedure room",["procedures","hands","anatomy"]],
+["A clinic where I can follow patients over time",["longterm","communication"]],
+["A laboratory or diagnostic environment",["laboratory","diagnosis","research"]],
+["A technology-focused environment",["technology","imaging"]]]],
+
+["What would you enjoy most during a typical day?",[
+["Making diagnoses from complicated information",["diagnosis","complex"]],
+["Using my hands to perform procedures",["procedures","hands"]],
+["Talking with patients and understanding their concerns",["communication","mental"]],
+["Interpreting tests, scans or laboratory results",["diagnosis","imaging","laboratory"]],
+["Managing rapidly changing clinical situations",["acute","physiology"]]]],
+
+["How do you feel about long-term patient relationships?",[
+["I really enjoy them",["longterm","communication"]],
+["I prefer shorter encounters",["acute","fast"]],
+["I like a mixture of both",["adult","communication"]],
+["I mainly prefer procedure-based work",["procedures"]],
+["I prefer working mainly with diagnostic information",["diagnosis","research"]]]],
+
+["Which skill would you most like to use?",[
+["Clinical reasoning",["diagnosis","complex"]],
+["Technical and procedural skills",["procedures","hands"]],
+["Communication and counseling",["communication","mental"]],
+["Technology and imaging",["technology","imaging"]],
+["Research and scientific investigation",["research","laboratory"]]]],
+
+["Which kind of challenge attracts you?",[
+["A critically ill patient who needs rapid decisions",["acute","team"]],
+["A complex case that requires careful reasoning",["complex","diagnosis"]],
+["A technically difficult procedure",["procedures","anatomy"]],
+["A patient's long-term health journey",["longterm","communication"]],
+["A scientific problem that needs investigation",["research","diagnosis"]]]],
+
+["How important is variety in your work?",[
+["I want a lot of variety and unpredictability",["acute","fast"]],
+["I like a balance of variety and routine",["communication","adult"]],
+["I enjoy focusing deeply on one area",["complex","research"]],
+["I prefer hands-on procedural variety",["procedures","hands"]],
+["I prefer structured diagnostic work",["diagnosis","technology"]]]],
+
+["Which area of medicine interests you most?",[
+["The brain and nervous system",["brain","neurology"]],
+["The heart and circulation",["heart","physiology"]],
+["Bones, joints and movement",["anatomy","procedures"]],
+["Skin and visible conditions",["visual","diagnosis"]],
+["The whole person rather than one body system",["prevention","longterm"]]]],
+
+["How do you feel about surgery?",[
+["I would love to operate",["procedures","hands","anatomy"]],
+["I like procedures but not necessarily major surgery",["procedures"]],
+["I prefer medical rather than surgical care",["diagnosis","complex"]],
+["I am interested in surgical specialties involving delicate anatomy",["procedures","visual"]],
+["I am undecided",["communication"]]]],
+
+["Which pace suits you best?",[
+["Very fast",["acute","fast"]],
+["Moderately fast",["team","procedures"]],
+["Steady and analytical",["diagnosis","complex"]],
+["Relationship-focused and steady",["longterm","communication"]],
+["Research-focused",["research","laboratory"]]]],
+
+["How interested are you in technology?",[
+["Very interested",["technology","imaging"]],
+["Interested when it helps with procedures",["procedures","technology"]],
+["Somewhat interested",["diagnosis"]],
+["I care more about communication",["communication","mental"]],
+["I prefer laboratory/scientific tools",["laboratory","research"]]]],
+
+["Which type of decision-making appeals to you?",[
+["Rapid decisions under pressure",["acute","fast"]],
+["Detailed decisions using lots of information",["complex","diagnosis"]],
+["Technical decisions during procedures",["procedures","anatomy"]],
+["Shared decisions with patients",["communication","longterm"]],
+["Evidence and research-based decisions",["research","diagnosis"]]]],
+
+["What motivates you most?",[
+["Saving lives during emergencies",["acute","team"]],
+["Solving difficult medical problems",["complex","diagnosis"]],
+["Seeing immediate results from procedures",["procedures","hands"]],
+["Helping patients over many years",["longterm","communication"]],
+["Discovering new knowledge",["research","laboratory"]]]],
+
+["Which statement sounds most like you?",[
+["I enjoy anatomy",["anatomy","procedures"]],
+["I enjoy physiology",["physiology","complex"]],
+["I enjoy psychology and human behavior",["mental","communication"]],
+["I enjoy visual pattern recognition",["visual","imaging"]],
+["I enjoy prevention and population health",["prevention","research"]]]],
+
+["What kind of patient interaction do you prefer?",[
+["Frequent and detailed conversations",["communication","mental"]],
+["Short, focused clinical interactions",["acute","fast"]],
+["Interaction around procedures",["procedures","hands"]],
+["Long-term follow-up",["longterm"]],
+["Less direct interaction and more diagnostic work",["diagnosis","laboratory","imaging"]]]],
+
+["Which outcome is most rewarding?",[
+["A patient survives a critical emergency",["acute","critical"]],
+["A difficult diagnosis finally becomes clear",["diagnosis","complex"]],
+["A successful procedure",["procedures","hands"]],
+["A patient improves over years of care",["longterm","communication"]],
+["A new scientific discovery or insight",["research"]]]],
+
+["How do you feel about teamwork?",[
+["I love highly coordinated teams",["team","acute"]],
+["I enjoy working closely with surgeons/procedural teams",["procedures","team"]],
+["I prefer one-on-one patient relationships",["communication","longterm"]],
+["I enjoy multidisciplinary diagnostic work",["diagnosis","team"]],
+["I prefer independent analytical work",["research","laboratory"]]]],
+
+["Which lifestyle sounds most appealing?",[
+["A dynamic and unpredictable career",["acute","fast"]],
+["A highly technical procedural career",["procedures","hands"]],
+["A relationship-based clinical career",["longterm","communication"]],
+["A diagnostic or academic career",["diagnosis","research"]],
+["A balance of clinical work and technology",["technology","imaging"]]]],
+
+["What would you most like your specialty to give you?",[
+["Adrenaline and variety",["acute","fast"]],
+["Technical mastery",["procedures","anatomy"]],
+["Deep patient relationships",["longterm","communication"]],
+["Intellectual challenge",["complex","diagnosis"]],
+["Scientific and technological innovation",["research","technology"]]]]
 ];
 
-/* Each answer has a specialty group */
-const groups=[
-["neuro","cardio","ortho","peds","psych"],
-["peds","medicine","family","emergency","obgyn"],
-["surgery","medicine","radio","path","family"],
-["neuro","cardio","resp","nephro","gastro"],
-["surgery","ortho","medicine","family","medicine"],
-["emergency","medicine","peds","psych","infect"],
-["surgery","medicine","radio","path","family"],
-["surgery","medicine","family","emergency","path"],
-["neuro","cardio","onc","infect","nephro"],
-["radio","cts","medicine","family","medicine"],
-["emergency","surgery","medicine","family","prevent"],
-["emergency","medicine","peds","psych","prevent"],
-["radio","cardio","path","onc","obgyn"],
-["surgery","medicine","psych","research","family"],
-["surgery","surgery","medicine","medicine","family"],
-["neuro","cardio","immuno","onc","endo"],
-["emergency","medicine","prevent","radio","immuno"],
-["emergency","family","radio","family","medicine"],
-["medicine","medicine","family","family","medicine"],
-["neuro","cardio","onc","infect","immuno"],
-["radio","radio","medicine","radio","medicine"],
-["path","path","medicine","path","medicine"],
-["family","family","medicine","family","radio"],
-["onc","medicine","radio","prevent","immuno"],
-["peds","medicine","geriatrics","family","family"],
-["emergency","neuro","cardio","derm","peds"],
-["onc","infect","neuro","cardio","prevent"],
-["emergency","emergency","medicine","medicine","family"],
-["surgery","medicine","family","radio","path"],
-["medicine","surgery","path","family","medicine"]
-];
+let current=0,answers=[];
 
-let current=0;
-let answers=[];
+function showStart(){
+app.innerHTML=`
+<h1>Medstart</h1>
+<h2>Medical Specialty Quiz</h2>
+<p>Discover which medical specialties may fit your interests, working style and preferred clinical environment.</p>
+<p class="small">This is a career-exploration tool, not a definitive career recommendation.</p>
+<div class="center"><button onclick="start()">Start Quiz</button></div>`;
+}
+
+function start(){current=0;answers=[];showQuestion()}
 
 function showQuestion(){
-document.getElementById("counter").textContent=
-"Question "+(current+1)+" of 30";
-
-document.getElementById("progress").style.width=
-((current+1)/30*100)+"%";
-
-document.getElementById("question").textContent=
-questions[current][0];
-
-document.getElementById("options").innerHTML=
-questions[current][1].map((x,i)=>
-`<label class="opt ${answers[current]===i?"sel":""}">
-<input type="radio" name="answer"
-onclick="choose(${i})" ${answers[current]===i?"checked":""}>
-${x}</label>`).join("");
-
-document.getElementById("back").style.visibility=
-current===0?"hidden":"visible";
-
-document.getElementById("next").textContent=
-current===29?"See My Results":"Next";
+let q=questions[current];
+app.innerHTML=`
+<h1>Medstart</h1>
+<div class="small">Question ${current+1} of ${questions.length}</div>
+<div class="progress"><div class="bar" style="width:${current/questions.length*100}%"></div></div>
+<h2>${q[0]}</h2>
+${q[1].map((o,i)=>`<button class="option" onclick="answer(${i})">${o[0]}</button>`).join("")}`;
 }
 
-function choose(i){
-answers[current]=i;
-showQuestion();
-}
-
-function nextQuestion(){
-if(answers[current]===undefined){
-alert("Please select an answer.");
-return;
-}
-
-if(current<29){
+function answer(i){
+answers.push(questions[current][1][i][1]);
 current++;
-showQuestion();
-}else{
-showResults();
-}
-}
-
-function previousQuestion(){
-if(current>0){
-current--;
-showQuestion();
-}
+if(current<questions.length)showQuestion();
+else showResults();
 }
 
 function showResults(){
 let scores={};
+Object.keys(specialties).forEach(s=>scores[s]=0);
 
-Object.keys(specialties).forEach(x=>scores[x]=0);
-
-answers.forEach((answer,i)=>{
-let specialty=groups[i][answer];
-
-if(specialty && scores[specialty]!==undefined)
-scores[specialty]+=5;
+answers.flat().forEach(tag=>{
+Object.entries(specialties).forEach(([s,tags])=>{
+if(tags.includes(tag))scores[s]++;
+});
 });
 
-/* Related specialties receive bonus points */
-if(scores.neuro>0)scores.neurology+=2;
-if(scores.cardio>0)scores.cts+=2;
-if(scores.surgery>0){
-scores.ortho+=1;
-scores.cts+=1;
-}
-if(scores.medicine>0){
-scores.gastro+=1;
-scores.nephro+=1;
-scores.endo+=1;
-}
-if(scores.radio>0)scores.eye+=1;
-if(scores.infect>0)scores.immuno+=1;
+let ranked=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+let max=ranked[0][1]||1;
 
-let top=Object.keys(scores)
-.sort((a,b)=>scores[b]-scores[a])
-.slice(0,5);
-
-let highest=scores[top[0]]||1;
-
-document.getElementById("resultList").innerHTML=
-top.map((x,i)=>`
-<div class="card">
-<span class="score">${Math.round(scores[x]/highest*100)}% match</span>
-<h3>#${i+1} ${specialties[x][0]}</h3>
-<p>${specialties[x][1]}</p>
-</div>
-`).join("");
-
-document.getElementById("quizPage").style.display="none";
-document.getElementById("resultPage").style.display="block";
-
-window.scrollTo(0,0);
+app.innerHTML=`
+<h1>Your Medstart Results</h1>
+<p>Based on your answers, these specialties showed the strongest match with your preferences.</p>
+${ranked.slice(0,3).map((x,i)=>`
+<div class="result">
+<div class="rank">${i+1}. ${x[0]}</div>
+<strong>${Math.round(x[1]/max*100)}% match</strong>
+</div>`).join("")}
+<p class="small">Your result reflects your quiz responses and should be used as a starting point for exploring specialties. It does not predict your future performance or determine which specialty you should choose.</p>
+<div class="center"><button onclick="start()">Take Quiz Again</button></div>`;
 }
 
-function restartQuiz(){
-current=0;
-answers=[];
-document.getElementById("quizPage").style.display="block";
-document.getElementById("resultPage").style.display="none";
-showQuestion();
-}
-
-showQuestion();
+showStart();
 </script>
 </body>
 </html>
