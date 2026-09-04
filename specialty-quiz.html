@@ -5,20 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MedStart Specialty Quiz</title>
 <style>
-body{font-family:Arial;margin:0;background:#f3f8fa;color:#17313b}
-.box{max-width:760px;margin:20px auto;background:white;padding:25px;border-radius:15px;box-shadow:0 3px 15px #ccd}
+*{box-sizing:border-box}
+body{margin:0;background:#f3f8fa;font-family:Arial;color:#17313b}
+.box{max-width:760px;margin:20px auto;background:#fff;padding:24px;border-radius:16px;box-shadow:0 3px 18px #ccd}
 h1{text-align:center;color:#087f8c}
-.q{font-size:19px;font-weight:bold;margin:20px 0}
-.opt{display:block;width:100%;padding:13px;margin:9px 0;border:1px solid #ccd;border-radius:9px;background:#f8fbfc;text-align:left;cursor:pointer}
-.opt:hover{background:#e7f5f6}
-button{padding:13px 22px;border:0;border-radius:9px;background:#087f8c;color:white;font-weight:bold;cursor:pointer}
-.bar{height:10px;background:#ddd;border-radius:10px;margin:10px 0 20px}
+.q{font-size:19px;font-weight:bold;margin:22px 0}
+.opt{display:block;width:100%;padding:14px;margin:9px 0;border:1px solid #ccd;border-radius:10px;background:#f8fbfc;text-align:left;cursor:pointer}
+.opt:hover{background:#e4f5f6}
+button{padding:13px 20px;border:0;border-radius:9px;background:#087f8c;color:#fff;font-weight:bold;cursor:pointer}
+.bar{height:9px;background:#ddd;border-radius:10px;margin:10px 0 20px}
 .fill{height:100%;background:#087f8c;border-radius:10px}
-.rank{display:flex;gap:8px;margin:10px 0}
-.rank select{padding:8px}
 input[type=range]{width:100%}
+.rank{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f7fafb;margin:7px 0;border-radius:8px}
+.rank select{padding:7px}
 .result{padding:15px;margin:10px 0;background:#eef8f9;border-radius:10px}
-small{color:#567}
+.pct{font-size:21px;font-weight:bold;color:#087f8c}
+small{color:#526b72;line-height:1.5}
 </style>
 </head>
 
@@ -29,167 +31,497 @@ small{color:#567}
 </div>
 
 <script>
+
+/* ================= SPECIALTIES ================= */
+
 const specialties=[
-["Cardiology",["heart","physiology","technology","long-term care"]],
-["Interventional Cardiology",["procedures","heart","technology","acute care"]],
-["Neurology",["brain","diagnosis","complex cases","long-term care"]],
-["Neurosurgery",["brain","procedures","precision","acute care"]],
-["Gastroenterology",["diagnosis","procedures","digestive","technology"]],
-["Hepatology",["liver","diagnosis","long-term care","complex cases"]],
-["Endocrinology",["hormones","diagnosis","long-term care","research"]],
-["Nephrology",["kidney","physiology","long-term care","complex cases"]],
-["Pulmonology",["lungs","diagnosis","critical care","technology"]],
-["Rheumatology",["immune system","diagnosis","long-term care","complex cases"]],
-["Infectious Disease",["infection","diagnosis","research","public health"]],
-["Hematology",["blood","diagnosis","research","complex cases"]],
-["Medical Oncology",["cancer","research","technology","long-term care"]],
-["Allergy & Immunology",["immune system","diagnosis","research","patient education"]],
-["General Surgery",["procedures","variety","acute care","teamwork"]],
-["Orthopedic Surgery",["movement","procedures","precision","rehabilitation"]],
-["Cardiothoracic Surgery",["heart","lungs","procedures","precision"]],
-["Vascular Surgery",["blood vessels","procedures","technology","acute care"]],
-["Plastic Surgery",["precision","procedures","creativity","reconstruction"]],
-["Urology",["procedures","technology","long-term care","surgery"]],
-["Otolaryngology",["head and neck","procedures","technology","variety"]],
-["Ophthalmology",["eyes","precision","technology","procedures"]],
-["Obstetrics & Gynecology",["women","procedures","long-term care","acute care"]],
-["Maternal-Fetal Medicine",["pregnancy","complex cases","technology","women"]],
-["Pediatrics",["children","communication","long-term care","variety"]],
-["Neonatology",["newborns","critical care","technology","acute care"]],
-["Pediatric Cardiology",["children","heart","technology","long-term care"]],
-["Child Psychiatry",["children","communication","mental health","long-term care"]],
-["Psychiatry",["mental health","communication","long-term care","complex cases"]],
-["Emergency Medicine",["acute care","variety","quick decisions","teamwork"]],
-["Anesthesiology",["physiology","procedures","technology","acute care"]],
-["Critical Care Medicine",["critical care","physiology","technology","teamwork"]],
-["Radiology",["imaging","technology","diagnosis","problem solving"]],
-["Interventional Radiology",["imaging","procedures","technology","precision"]],
-["Pathology",["laboratory","diagnosis","research","problem solving"]],
-["Dermatology",["skin","diagnosis","long-term care","procedures"]],
-["Ophthalmology Retina",["eyes","precision","technology","procedures"]],
-["Family Medicine",["variety","communication","long-term care","community"]],
-["Internal Medicine",["diagnosis","complex cases","long-term care","variety"]],
-["Geriatrics",["older adults","communication","long-term care","complex cases"]],
-["Sports Medicine",["movement","rehabilitation","prevention","communication"]],
-["Physical Medicine & Rehabilitation",["rehabilitation","communication","long-term care","movement"]],
-["Public Health Medicine",["community","prevention","research","population"]],
-["Occupational Medicine",["prevention","workplace","public health","long-term care"]],
-["Preventive Medicine",["prevention","research","community","public health"]],
-["Genetics",["genetics","diagnosis","research","communication"]],
-["Palliative Medicine",["communication","long-term care","complex cases","patient relationship"]]
+
+["Cardiology",
+["heart","physiology","technology","longterm","diagnosis"],
+"Best suited to people who enjoy physiology, complex diagnosis, technology and following important cardiovascular problems over time."],
+
+["Interventional Cardiology",
+["heart","procedures","technology","precision","acute"],
+"Fits someone who likes cardiovascular medicine combined with technically precise interventions and fast clinical decisions."],
+
+["Neurology",
+["brain","diagnosis","complex","longterm","problem"],
+"Strong fit for people who enjoy difficult diagnostic puzzles, neuroscience and understanding complicated patterns."],
+
+["Neurosurgery",
+["brain","precision","procedures","complex","acute"],
+"Fits someone attracted to highly precise neurological treatment, complex decision-making and technically demanding procedures."],
+
+["Gastroenterology",
+["digestive","diagnosis","procedures","technology","longterm"],
+"Good match for someone who enjoys internal medicine, diagnostic reasoning, technology and procedural treatment."],
+
+["Hepatology",
+["liver","complex","diagnosis","longterm","research"],
+"Fits people interested in complex liver disease, long-term care and detailed medical reasoning."],
+
+["Endocrinology",
+["hormones","diagnosis","longterm","research","physiology"],
+"Strong match for analytical thinkers who enjoy physiology, hormones and managing conditions over time."],
+
+["Nephrology",
+["kidney","physiology","complex","longterm","acute"],
+"Fits someone who enjoys physiology, complex medical problems and long-term patient management."],
+
+["Pulmonology",
+["lungs","diagnosis","technology","acute","longterm"],
+"Good for people interested in respiratory physiology, diagnostic technology and both acute and continuing care."],
+
+["Rheumatology",
+["immune","diagnosis","longterm","complex","patient"],
+"Fits people who enjoy solving complex diagnostic problems while developing long-term patient relationships."],
+
+["Infectious Disease",
+["infection","research","diagnosis","public","complex"],
+"Strong fit for curious people interested in infections, investigation, research and broader health problems."],
+
+["Hematology",
+["blood","diagnosis","research","complex","laboratory"],
+"Fits analytical thinkers who enjoy blood disorders, complex diagnosis, laboratory science and research."],
+
+["Medical Oncology",
+["cancer","research","technology","longterm","complex"],
+"Good match for people drawn to cancer biology, research, advanced treatment and meaningful continuing care."],
+
+["Allergy & Immunology",
+["immune","research","diagnosis","patient","longterm"],
+"Fits someone interested in immune science, diagnosis, research and building lasting patient relationships."],
+
+["General Surgery",
+["procedures","variety","acute","team","problem"],
+"Fits people who enjoy broad clinical variety, practical problem-solving, decisive treatment and technically skilled procedures."],
+
+["Trauma Surgery",
+["acute","team","procedures","quick","critical"],
+"Strong match for people who thrive in urgent situations, teamwork, rapid decisions and complex physical injuries."],
+
+["Orthopedic Surgery",
+["movement","procedures","precision","rehab","problem"],
+"Fits someone interested in movement, anatomy, precise treatment and helping people regain physical function."],
+
+["Orthopedic Sports Surgery",
+["movement","precision","procedures","rehab","sports"],
+"Good fit for people interested in musculoskeletal problems, precision, physical function and recovery."],
+
+["Cardiothoracic Surgery",
+["heart","lungs","precision","procedures","critical"],
+"Fits people fascinated by cardiopulmonary anatomy, technically demanding treatment and high-stakes decision-making."],
+
+["Vascular Surgery",
+["vessels","precision","procedures","technology","acute"],
+"Strong fit for people interested in circulation, detailed anatomy, technology and complex vascular treatment."],
+
+["Plastic & Reconstructive Surgery",
+["precision","creativity","procedures","reconstruction","problem"],
+"Fits people who combine technical precision with creativity and an interest in reconstruction and functional restoration."],
+
+["Urology",
+["urinary","procedures","technology","longterm","problem"],
+"Good match for people interested in anatomy, technology, procedures and both short- and long-term patient care."],
+
+["ENT",
+["head","procedures","technology","variety","patient"],
+"Fits someone who enjoys varied anatomy, communication, technology and a mixture of medical and procedural care."],
+
+["Ophthalmology",
+["eyes","precision","technology","procedures","longterm"],
+"Strong match for people who value precision, technology, visual diagnosis and focused patient care."],
+
+["Obstetrics & Gynecology",
+["women","procedures","communication","acute","longterm"],
+"Fits people interested in women's health, communication, changing clinical situations and both continuing and procedural care."],
+
+["Maternal-Fetal Medicine",
+["pregnancy","complex","technology","acute","women"],
+"Good fit for people who enjoy complex pregnancy problems, advanced monitoring and high-level clinical decision-making."],
+
+["Pediatrics",
+["children","communication","longterm","variety","patient"],
+"Fits people who enjoy communication, variety and forming trusting relationships with children and families."],
+
+["Neonatology",
+["newborn","critical","technology","acute","team"],
+"Strong match for people drawn to fragile newborn patients, intensive decision-making, technology and teamwork."],
+
+["Pediatric Cardiology",
+["children","heart","technology","longterm","complex"],
+"Fits someone interested in cardiovascular medicine while enjoying communication and long-term care of younger patients."],
+
+["Pediatric Surgery",
+["children","procedures","precision","acute","team"],
+"Good match for people interested in technically precise treatment while caring for children and families."],
+
+["Child Psychiatry",
+["children","mental","communication","longterm","patient"],
+"Fits someone interested in child development, communication, behaviour and long-term relationships."],
+
+["Psychiatry",
+["mental","communication","longterm","complex","patient"],
+"Strong fit for people fascinated by human behaviour, communication, psychology and continuing patient relationships."],
+
+["Emergency Medicine",
+["acute","quick","variety","team","problem"],
+"Fits people who enjoy variety, rapid reasoning, urgent problems and working effectively with a team."],
+
+["Anesthesiology",
+["physiology","precision","acute","technology","procedures"],
+"Good match for people who enjoy physiology, precise interventions, technology and rapidly changing clinical situations."],
+
+["Critical Care Medicine",
+["critical","physiology","technology","team","acute"],
+"Strong fit for people who enjoy complex physiology, advanced technology, teamwork and high-acuity care."],
+
+["Radiology",
+["imaging","technology","diagnosis","problem","precision"],
+"Fits people who enjoy pattern recognition, technology, anatomy and solving diagnostic puzzles."],
+
+["Interventional Radiology",
+["imaging","procedures","technology","precision","acute"],
+"Good match for someone who combines diagnostic thinking with image-guided technical treatment."],
+
+["Pathology",
+["laboratory","diagnosis","research","problem","precision"],
+"Strong fit for analytical people who enjoy disease mechanisms, laboratory investigation and diagnostic accuracy."],
+
+["Dermatology",
+["skin","diagnosis","longterm","patient","precision"],
+"Fits people interested in visual diagnosis, focused medicine, continuity of care and precise treatment."],
+
+["Family Medicine",
+["variety","communication","longterm","patient","community"],
+"Excellent fit for people who value broad medicine, continuity, communication and knowing patients over time."],
+
+["Internal Medicine",
+["diagnosis","complex","variety","longterm","problem"],
+"Fits people who enjoy broad adult medicine, complex diagnosis and intellectually challenging cases."],
+
+["Geriatric Medicine",
+["older","communication","complex","longterm","patient"],
+"Good match for people who enjoy complex patients, communication and long-term holistic care."],
+
+["Sports Medicine",
+["movement","rehab","prevention","communication","sports"],
+"Fits people interested in movement, performance, prevention, rehabilitation and patient education."],
+
+["Physical Medicine & Rehabilitation",
+["rehab","movement","communication","longterm","patient"],
+"Strong fit for people who find restoring function and building long-term therapeutic relationships rewarding."],
+
+["Public Health Medicine",
+["public","prevention","research","community","population"],
+"Fits people who want to improve health at a population level through prevention, research and policy."],
+
+["Occupational Medicine",
+["work","prevention","public","longterm","communication"],
+"Good match for people interested in workplace health, prevention, communication and broader systems."],
+
+["Preventive Medicine",
+["prevention","research","public","community","population"],
+"Fits people motivated by preventing disease and improving health before problems become severe."],
+
+["Medical Genetics",
+["genetics","diagnosis","research","communication","complex"],
+"Strong fit for people interested in genetics, rare conditions, investigation and detailed patient counselling."],
+
+["Palliative Medicine",
+["communication","longterm","complex","patient","team"],
+"Fits people who value communication, compassion, complex decision-making and meaningful long-term relationships."]
+
 ];
+
+
+/* ================= QUESTIONS ================= */
 
 const questions=[
-["You are given a difficult problem with several possible explanations. What feels most satisfying?",[
-["Finding the pattern hidden in the details",["diagnosis","problem solving","research"]],
-["Understanding the person behind the problem",["communication","long-term care","patient relationship"]],
-["Taking action when every minute matters",["acute care","quick decisions","teamwork"]],
-["Using technology to reveal something invisible",["technology","imaging","precision"]]]],
-["During a busy day, which kind of challenge would you naturally enjoy?",[
-["A constantly changing mix of problems",["variety","acute care","quick decisions"]],
-["Following one complicated problem over time",["complex cases","long-term care","diagnosis"]],
-["Working with precise technical skills",["precision","procedures","technology"]],
-["Exploring questions that could change future medicine",["research","innovation","laboratory"]]]],
-["A patient asks you to explain a complicated condition. What approach sounds most natural?",[
-["Draw it out and explain how everything connects",["communication","diagnosis","patient education"]],
-["Focus on what we can do right now",["acute care","quick decisions"]],
-["Discuss the evidence and uncertainty",["research","complex cases"]],
-["Use images, tests or measurements to make it clearer",["technology","imaging","diagnosis"]]]],
-["Which working environment sounds most appealing?",[
-["A fast-moving clinical environment",["acute care","teamwork","variety"]],
-["A quieter environment focused on analysis",["diagnosis","laboratory","problem solving"]],
-["A setting where procedures and technology are central",["procedures","technology","precision"]],
-["A clinic where relationships develop over years",["long-term care","communication","patient relationship"]]]],
-["When learning something new, what tends to pull your attention first?",[
-["How it works scientifically",["physiology","research"]],
-["How it affects people",["patient relationship","communication"]],
-["How to diagnose it",["diagnosis","problem solving"]],
-["How to treat it practically",["procedures","acute care"]]]],
-["Which outcome would feel most rewarding?",[
-["Solving a mystery nobody else could explain",["diagnosis","complex cases"]],
-["Seeing someone improve over months or years",["long-term care","patient relationship"]],
-["Making a precise intervention work",["procedures","precision"]],
-["Discovering something that changes medicine",["research","innovation"]]]]
+
+["When faced with a difficult problem, what part tends to interest you most?",[
+["Finding the hidden pattern",["diagnosis","problem","complex"]],
+["Understanding what is happening biologically",["physiology","research"]],
+["Figuring out the most practical solution",["procedures","precision"]],
+["Understanding the person's experience",["communication","patient"]]]],
+
+["Which kind of progress feels most satisfying?",[
+["A difficult problem finally makes sense",["diagnosis","problem"]],
+["Someone's function gradually improves",["rehab","longterm"]],
+["A new discovery changes what is possible",["research","technology"]],
+["A person feels understood and supported",["patient","communication"]]]],
+
+["Imagine your ideal working day. What would you want most?",[
+["A wide variety of challenges",["variety","acute"]],
+["A few complicated problems to investigate deeply",["complex","diagnosis"]],
+["A balance of people and technical work",["procedures","technology"]],
+["Time to build strong relationships",["longterm","patient"]]]],
+
+["Which type of information naturally grabs your attention?",[
+["Images and visual patterns",["imaging","precision"]],
+["Numbers, measurements and physiology",["physiology","diagnosis"]],
+["Stories, behaviour and communication",["mental","communication"]],
+["Laboratory and scientific evidence",["laboratory","research"]]]],
+
+["When pressure rises, which role sounds most natural?",[
+["Make a quick decision and act",["acute","quick"]],
+["Slow down and analyse the situation",["diagnosis","complex"]],
+["Coordinate with others",["team","communication"]],
+["Focus intensely on technical accuracy",["precision","procedures"]]]],
+
+["What kind of impact would you most like your career to have?",[
+["Help individual people over many years",["longterm","patient"]],
+["Solve difficult individual medical problems",["diagnosis","complex"]],
+["Improve treatment through science and innovation",["research","technology"]],
+["Improve health for large groups of people",["public","prevention"]]]],
+
+["Which statement sounds closest to you?",[
+["I like understanding how systems work",["physiology","problem"]],
+["I like working with people",["communication","patient"]],
+["I like mastering difficult skills",["precision","procedures"]],
+["I like discovering things others haven't noticed",["research","diagnosis"]]]],
+
+["Which type of uncertainty would you find most interesting?",[
+["A mysterious diagnosis",["diagnosis","complex"]],
+["A rapidly changing situation",["acute","quick"]],
+["A long-term problem with many factors",["longterm","complex"]],
+["A scientific question without an obvious answer",["research","innovation"]]]],
+
+["What would make you proud at the end of a difficult day?",[
+["I solved something complicated",["diagnosis","problem"]],
+["I helped someone regain independence",["rehab","patient"]],
+["I handled a demanding situation effectively",["acute","team"]],
+["I learned something genuinely new",["research","technology"]]]],
+
+["Which combination sounds most appealing?",[
+["Science + people",["research","patient"]],
+["Technology + diagnosis",["technology","imaging","diagnosis"]],
+["Precision + practical treatment",["precision","procedures"]],
+["Communication + long-term care",["communication","longterm"]]]]
+
 ];
 
-let i=0,answers=[],life=5,priorities={};
-const app=document.getElementById("quiz");
 
-function show(){
-if(i<questions.length){
-let q=questions[i];
-app.innerHTML=`<b>Question ${i+1} of ${questions.length}</b>
-<div class="bar"><div class="fill" style="width:${(i/questions.length)*100}%"></div></div>
+/* ================= STATE ================= */
+
+let current=0;
+let answers=[];
+let lifestyle=5;
+
+
+/* ================= QUIZ ================= */
+
+function showQuestion(){
+
+if(current<questions.length){
+
+let q=questions[current];
+
+document.getElementById("quiz").innerHTML=
+`<b>Question ${current+1} of ${questions.length}</b>
+<div class="bar"><div class="fill" style="width:${current/questions.length*100}%"></div></div>
 <div class="q">${q[0]}</div>`+
-q[1].map((x,n)=>`<button class="opt" onclick="ans(${n})">${x[0]}</button>`).join("");
-}else lifestyle();
+q[1].map((x,n)=>
+`<button class="opt" onclick="answer(${n})">${x[0]}</button>`
+).join("");
+
+}else showLifestyle();
+
 }
 
-function ans(n){answers.push(questions[i][1][n][1]);i++;show()}
+function answer(n){
+answers.push(questions[current][1][n][1]);
+current++;
+showQuestion();
+}
 
-function lifestyle(){
-app.innerHTML=`<b>Lifestyle Balance</b>
-<div class="q">How important is having a predictable, balanced lifestyle to you?</div>
-<input type="range" min="1" max="10" value="5" oninput="life=this.value;document.getElementById('lv').innerText=this.value">
-<p>1 = Not very important &nbsp;&nbsp; 10 = Extremely important</p>
+
+/* ================= LIFESTYLE ================= */
+
+function showLifestyle(){
+
+document.getElementById("quiz").innerHTML=`
+<h2>⚖️ Lifestyle Balance</h2>
+<div class="q">How important is having a balanced and predictable lifestyle to you?</div>
+
+<input id="life" type="range" min="1" max="10" value="5"
+oninput="lifestyle=this.value;document.getElementById('lv').innerText=this.value">
+
+<p>
+1 = Not important<br>
+10 = Extremely important
+</p>
+
 <h2 id="lv">5</h2>
-<button onclick="prior()">Continue</button>`;
+
+<button onclick="showPriorities()">Continue</button>
+`;
+
 }
 
-function prior(){
+
+/* ================= PRIORITIES ================= */
+
+function showPriorities(){
+
 let items=["Prestige","Innovation","Fame","Income","Patient relationship"];
-app.innerHTML=`<b>Your Priorities</b>
-<p>Rank these from <b>1 (most important)</b> to <b>5 (least important)</b>.</p>`+
-items.map((x,n)=>`<div class="rank">${x}
-<select id="p${n}">${[1,2,3,4,5].map(v=>`<option>${v}</option>`).join("")}</select></div>`).join("")+
-`<button onclick="results()">See My Results</button>`;
+
+document.getElementById("quiz").innerHTML=`
+<h2>🏆 Your Priorities</h2>
+<p>Rank each from <b>1 = most important</b> to <b>5 = least important</b>.</p>
+<p>These rankings will directly influence your results.</p>`+
+
+items.map((x,i)=>
+`<div class="rank">
+<b>${x}</b>
+<select id="p${i}">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select>
+</div>`
+).join("")+
+
+`<br><button onclick="results()">Calculate My Specialties</button>`;
+
 }
+
+
+/* ================= RESULT SCORING ================= */
 
 function results(){
-let keys={};
-answers.flat().forEach(x=>keys[x]=(keys[x]||0)+1);
 
-let scored=specialties.map(s=>{
-let score=0;
-s[1].forEach(k=>score+=(keys[k]||0));
-return [s[0],score];
-}).sort((a,b)=>b[1]-a[1]);
+let tags={};
 
-let top=scored.slice(0,5);
-let max=top[0][1]||1;
-
-/* Lifestyle changes weighting rather than producing a perfect match */
-top=top.map((x,n)=>{
-let pct=Math.round((x[1]/max)*78-(n*7)+10);
-return [x[0],Math.max(34,Math.min(92,pct))];
+answers.flat().forEach(tag=>{
+tags[tag]=(tags[tag]||0)+1;
 });
 
-app.innerHTML=`<h2>🎯 Your Top 5 Matches</h2>
-<p>These are compatibility scores, not predictions. Your results can change as your interests develop.</p>`+
-top.map((x,n)=>`<div class="result">
-<b>#${n+1} ${x[0]}</b><br>
-<strong>${x[1]}% match</strong><br>
-<small>${reason(x[0])}</small></div>`).join("")+
+
+/* User priority weights */
+
+let priorityWeights={};
+
+for(let i=0;i<5;i++){
+let rank=Number(document.getElementById("p"+i).value);
+priorityWeights[i]=6-rank;
+}
+
+
+/* Specialty scoring */
+
+let scored=specialties.map(s=>{
+
+let score=0;
+
+
+/* Core personality match */
+
+s[1].forEach(tag=>{
+score+=(tags[tag]||0)*3;
+});
+
+
+/* Patient relationship preference */
+
+if(s[1].includes("patient")||s[1].includes("longterm"))
+score+=priorityWeights[4]*2;
+
+
+/* Innovation */
+
+if(s[1].includes("technology")||s[1].includes("research"))
+score+=priorityWeights[1]*2;
+
+
+/* Prestige */
+
+if(["Neurosurgery","Cardiothoracic Surgery","Cardiology",
+"Plastic & Reconstructive Surgery","Interventional Cardiology",
+"Orthopedic Surgery","Vascular Surgery","Ophthalmology"].includes(s[0]))
+score+=priorityWeights[0]*1.4;
+
+
+/* Fame */
+
+if(["Cardiology","Neurosurgery","General Surgery",
+"Orthopedic Surgery","Pediatrics","Dermatology",
+"Plastic & Reconstructive Surgery"].includes(s[0]))
+score+=priorityWeights[2]*1.2;
+
+
+/* Income */
+
+if(["Dermatology","Ophthalmology","Plastic & Reconstructive Surgery",
+"Orthopedic Surgery","Cardiology","Radiology","Anesthesiology",
+"Urology","ENT"].includes(s[0]))
+score+=priorityWeights[3]*1.3;
+
+
+/* Lifestyle */
+
+let balanceTags=["longterm","patient","prevention","rehab","diagnosis","public"];
+
+let demanding=["acute","critical","quick"];
+
+if(lifestyle>=7){
+
+s[1].forEach(t=>{
+if(balanceTags.includes(t))score+=2;
+if(demanding.includes(t))score-=1.3;
+});
+
+}
+
+return [s[0],score,s[2]];
+
+});
+
+
+/* Sort */
+
+scored.sort((a,b)=>b[1]-a[1]);
+
+let top=scored.slice(0,5);
+
+let highest=top[0][1]||1;
+
+
+/* Percentages deliberately never reach 100 */
+
+top=top.map((x,i)=>{
+
+let pct=72-(i*7)+((x[1]/highest)*18);
+
+pct=Math.round(Math.max(35,Math.min(94,pct)));
+
+return [x[0],pct,x[2]];
+
+});
+
+
+/* Display */
+
+document.getElementById("quiz").innerHTML=`
+<h2>🎯 Your Top 5 Matches</h2>
+<p>Your ranking reflects your answers, lifestyle preference and personal priorities.</p>`+
+
+top.map((x,i)=>
+`<div class="result">
+<h3>#${i+1} ${x[0]}</h3>
+<div class="pct">${x[1]}% match</div>
+<p><small>${x[2]}</small></p>
+</div>`
+).join("")+
+
 `<button onclick="location.reload()">Retake Quiz</button>`;
+
 }
 
-function reason(s){
-let r={
-"Cardiology":"Strong fit for analytical thinking, physiology and meaningful long-term care.",
-"Neurology":"Fits curiosity about complex problems and detailed diagnosis.",
-"Psychiatry":"Fits communication, human behaviour and long-term patient relationships.",
-"Radiology":"Fits pattern recognition, technology and diagnostic problem solving.",
-"Pediatrics":"Fits communication, variety and building trust with younger patients.",
-"Emergency Medicine":"Fits quick decisions, variety and teamwork.",
-"Anesthesiology":"Fits physiology, precision, procedures and acute decision-making.",
-"Pathology":"Fits analytical thinking, diagnosis, laboratory work and investigation.",
-"Dermatology":"Fits diagnosis, continuity of care and focused clinical problem solving.",
-"General Surgery":"Fits practical problem solving, procedures and variety."
-};
-return r[s]||"Your answers suggest a strong connection with the problem-solving style and patient environment of this specialty.";
-}
+showQuestion();
 
-show();
 </script>
 </body>
 </html>
