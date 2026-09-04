@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedStart Medical Case Simulator</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#eef7f8;
+  color:#172b35;
+}
+
+header{
+  background:#063b46;
+  color:white;
+  text-align:center;
+  padding:25px 15px;
+}
+
+header h1{
+  margin:0 0 8px;
+  font-size:28px;
+}
+
+header p{
+  margin:0;
+  opacity:.9;
+}
+
+.container{
+  max-width:850px;
+  margin:25px auto;
+  padding:15px;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:25px;
+  margin-bottom:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.case-title{
+  color:#087f8c;
+  margin-top:0;
+}
+
+.info{
+  background:#f1f8f9;
+  padding:15px;
+  border-radius:10px;
+  margin:15px 0;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin:7px 0;
+  border:0;
+  border-radius:10px;
+  background:#087f8c;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#05636d;
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.option{
+  background:#172b35;
+}
+
+.option:hover{
+  background:#263f49;
+}
+
+.hidden{
+  display:none;
+}
+
+.progress{
+  height:10px;
+  background:#d8e5e7;
+  border-radius:10px;
+  overflow:hidden;
+  margin:15px 0;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#087f8c;
+  transition:.4s;
+}
+
+.feedback{
+  padding:15px;
+  border-radius:10px;
+  margin-top:15px;
+}
+
+.correct{
+  background:#e5f7eb;
+  color:#176b36;
+}
+
+.wrong{
+  background:#fff0f0;
+  color:#8b2020;
+}
+
+.score{
+  font-size:28px;
+  font-weight:bold;
+  color:#087f8c;
+  text-align:center;
+}
+
+.badge{
+  display:inline-block;
+  background:#e7f4f5;
+  color:#087f8c;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+footer{
+  text-align:center;
+  padding:25px;
+  color:#60747a;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🩺 MedStart Medical Case Simulator</h1>
+  <p>Think like a doctor. Investigate. Reason. Diagnose.</p>
+</header>
+
+<div class="container">
+
+<div id="startScreen" class="card">
+  <span class="badge">MEDSTART SIM LAB</span>
+  <h2>Welcome to the Case Simulator</h2>
+
+  <p>
+    You will be given a clinical scenario and asked to work through it
+    step by step.
+  </p>
+
+  <div class="info">
+    <strong>How it works:</strong>
+    <ul>
+      <li>Read the patient presentation.</li>
+      <li>Review the history.</li>
+      <li>Examine the patient.</li>
+      <li>Choose an investigation.</li>
+      <li>Select the most likely diagnosis.</li>
+      <li>See your score and explanation.</li>
+    </ul>
+  </div>
+
+  <button onclick="startCase()">Start Case</button>
+</div>
+
+
+<div id="game" class="hidden">
+
+  <div class="card">
+    <strong id="caseNumber"></strong>
+
+    <div class="progress">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <h2 id="stageTitle"></h2>
+  </div>
+
+
+  <div class="card">
+
+    <div id="caseContent"></div>
+
+    <div id="options"></div>
+
+    <div id="feedback"></div>
+
+  </div>
+
+</div>
+
+
+<div id="resultScreen" class="card hidden">
+
+  <h2>Case Complete 🎉</h2>
+
+  <p class="score" id="finalScore"></p>
+
+  <div id="resultMessage"></div>
+
+  <button onclick="startCase()">Try Another Case</button>
+
+  <button onclick="location.reload()" class="option">
+    Return to Start
+  </button>
+
+</div>
+
+</div>
+
+<footer>
+  MedStart © 2026 • Educational simulation
+</footer>
+
+
+<script>
+
+const cases = [
+
+{
+title:"Acute Appendicitis",
+patient:"A 19-year-old patient presents with abdominal pain that began around the centre of the abdomen and later became more prominent in the lower right side. The patient also has nausea and a mild fever.",
+
+history:[
+"Pain began around the umbilical region before becoming localized to the lower right abdomen.",
+"Nausea is present and appetite has decreased.",
+"There is no previous history of similar episodes."
+],
+
+exam:[
+"Temperature: 38.1°C.",
+"Localized tenderness is present in the right lower abdomen.",
+"Heart rate is mildly elevated."
+],
+
+investigations:[
+"Abdominal ultrasound",
+"Brain MRI",
+"Chest X-ray",
+"Electrocardiogram"
+],
+
+diagnoses:[
+"Acute appendicitis",
+"Acute asthma",
+"Kidney failure",
+"Migraine"
+],
+
+correct:"Acute appendicitis",
+
+explanation:
+"The pattern of abdominal pain migrating toward the right lower abdomen, together with fever, nausea and localized tenderness, is characteristic of acute appendicitis."
+},
+
+{
+title:"Iron Deficiency Anaemia",
+patient:"A 17-year-old patient reports several weeks of tiredness, reduced concentration and feeling short of breath during physical activity.",
+
+history:[
+"The patient reports a diet that may provide insufficient iron.",
+"There is no history of major recent injury.",
+"The symptoms have developed gradually."
+],
+
+exam:[
+"The patient appears tired.",
+"Pulse is mildly elevated.",
+"No obvious respiratory infection is present."
+],
+
+investigations:[
+"Full blood count and iron studies",
+"Brain CT",
+"Chest ultrasound",
+"Electroencephalogram"
+],
+
+diagnoses:[
+"Iron deficiency anaemia",
+"Acute appendicitis",
+"Type 1 diabetes",
+"Acute meningitis"
+],
+
+correct:"Iron deficiency anaemia",
+
+explanation:
+"Gradually developing tiredness and reduced exercise tolerance can occur with anaemia. A full blood count together with iron studies can help investigate suspected iron deficiency."
+},
+
+{
+title:"Asthma",
+patient:"A 16-year-old patient develops episodes of wheezing, chest tightness and difficulty breathing, particularly after exposure to a known trigger.",
+
+history:[
+"The episodes occur intermittently.",
+"The patient has experienced similar episodes previously.",
+"Symptoms improve between episodes."
+],
+
+exam:[
+"Wheezing is heard during the episode.",
+"Respiratory rate is increased.",
+"The patient is conscious and able to speak."
+],
+
+investigations:[
+"Peak expiratory flow assessment",
+"Brain MRI",
+"Abdominal X-ray",
+"Bone scan"
+],
+
+diagnoses:[
+"Asthma",
+"Appendicitis",
+"Iron deficiency anaemia",
+"Fractured femur"
+],
+
+correct:"Asthma",
+
+explanation:
+"Intermittent episodes of wheezing, chest tightness and breathing difficulty associated with triggers are typical features of asthma. Peak expiratory flow can help assess airflow limitation."
+}
+
+];
+
+
+let currentCase;
+let stage=0;
+let score=0;
+let selectedCase=0;
+
+const stages=["Presentation","History","Examination","Investigation","Diagnosis"];
+
+function startCase(){
+
+  selectedCase++;
+
+  if(selectedCase > cases.length){
+    selectedCase=1;
+  }
+
+  currentCase=cases[selectedCase-1];
+
+  stage=0;
+  score=0;
+
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  showStage();
+}
+
+
+function showStage(){
+
+  document.getElementById("caseNumber").textContent =
+    "Case " + selectedCase + " of " + cases.length;
+
+  document.getElementById("stageTitle").textContent =
+    stages[stage];
+
+  document.getElementById("progressBar").style.width =
+    ((stage+1)/stages.length*100)+"%";
+
+  document.getElementById("feedback").innerHTML="";
+
+  const content=document.getElementById("caseContent");
+  const options=document.getElementById("options");
+
+  options.innerHTML="";
+
+  if(stage===0){
+
+    content.innerHTML=
+      "<h2 class='case-title'>"+currentCase.title+"</h2>"+
+      "<div class='info'>"+currentCase.patient+"</div>";
+
+    addContinueButton();
+
+  }
+
+  else if(stage===1){
+
+    content.innerHTML="<h3>What does the history reveal?</h3>";
+
+    currentCase.history.forEach(item=>{
+      content.innerHTML+="<div class='info'>"+item+"</div>";
+    });
+
+    addContinueButton();
+  }
+
+  else if(stage===2){
+
+    content.innerHTML="<h3>Physical examination</h3>";
+
+    currentCase.exam.forEach(item=>{
+      content.innerHTML+="<div class='info'>"+item+"</div>";
+    });
+
+    addContinueButton();
+  }
+
+  else if(stage===3){
+
+    content.innerHTML=
+      "<h3>Which investigation would be most appropriate to help investigate this case?</h3>";
+
+    currentCase.investigations.forEach((item,index)=>{
+      let btn=document.createElement("button");
+      btn.className="option";
+      btn.textContent=item;
+      btn.onclick=()=>chooseInvestigation(item);
+      options.appendChild(btn);
+    });
+
+  }
+
+  else if(stage===4){
+
+    content.innerHTML=
+      "<h3>Based on the information available, what is the most likely diagnosis?</h3>";
+
+    currentCase.diagnoses.forEach(item=>{
+      let btn=document.createElement("button");
+      btn.className="option";
+      btn.textContent=item;
+      btn.onclick=()=>chooseDiagnosis(item);
+      options.appendChild(btn);
+    });
+
+  }
+
+}
+
+
+function addContinueButton(){
+
+  const btn=document.createElement("button");
+
+  btn.textContent="Continue";
+
+  btn.onclick=()=>{
+    stage++;
+    showStage();
+  };
+
+  document.getElementById("options").appendChild(btn);
+}
+
+
+function chooseInvestigation(answer){
+
+  const correct =
+    answer===currentCase.investigations[0];
+
+  if(correct){
+    score++;
+    showFeedback(true,
+      "Good choice. This investigation can provide useful information when evaluating this presentation.");
+  }else{
+    showFeedback(false,
+      "This would not be the most appropriate first investigation for this presentation.");
+  }
+
+  disableButtons();
+
+  setTimeout(()=>{
+    stage++;
+    showStage();
+  },1300);
+}
+
+
+function chooseDiagnosis(answer){
+
+  const correct=answer===currentCase.correct;
+
+  if(correct){
+    score++;
+    showFeedback(true,currentCase.explanation);
+  }else{
+    showFeedback(false,
+      "The clinical findings fit another diagnosis more closely. Review the presentation, history and examination.");
+  }
+
+  disableButtons();
+
+  setTimeout(showResults,1800);
+}
+
+
+function showFeedback(correct,text){
+
+  const box=document.getElementById("feedback");
+
+  box.className="feedback "+(correct?"correct":"wrong");
+
+  box.innerHTML=
+    "<strong>"+(correct?"✓ Good reasoning":"✗ Not quite")+
+    "</strong><br><br>"+text;
+}
+
+
+function disableButtons(){
+
+  document.querySelectorAll("#options button").forEach(btn=>{
+    btn.disabled=true;
+  });
+
+}
+
+
+function showResults(){
+
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("resultScreen").classList.remove("hidden");
+
+  document.getElementById("finalScore").textContent=
+    score+" / 2 points";
+
+  let message="";
+
+  if(score===2){
+    message=
+      "<div class='feedback correct'><strong>Excellent clinical reasoning!</strong><br><br>"+
+      "You correctly selected the investigation and diagnosis.</div>";
+  }
+
+  else if(score===1){
+    message=
+      "<div class='feedback'>"+
+      "<strong>Good attempt.</strong><br><br>"+
+      "You got part of the case correct. Review the reasoning and try another case.</div>";
+  }
+
+  else{
+    message=
+      "<div class='feedback wrong'>"+
+      "<strong>Keep learning.</strong><br><br>"+
+      "Clinical reasoning improves with practice. Try another case and look carefully at the pattern of findings.</div>";
+  }
+
+  document.getElementById("resultMessage").innerHTML=message;
+}
+
+</script>
+
+</body>
+</html>
