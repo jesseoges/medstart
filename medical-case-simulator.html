@@ -1,303 +1,532 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MedStart Surgical Simulator</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#06111c;color:#fff;font-family:Arial}
-header{padding:14px;background:#0b2030;text-align:center}
-h1{font-size:20px;margin:0 0 4px}
-#app{max-width:850px;margin:auto;padding:10px}
-.top{display:flex;justify-content:space-between;margin-bottom:8px}
-.bar{height:6px;background:#243746;border-radius:8px}
-#progress{height:100%;width:0;background:#20a8ff}
-#room{height:470px;position:relative;overflow:hidden;border-radius:15px;
-background:linear-gradient(#18384d 0 55%,#0b1720 55%)}
-.lamp{position:absolute;top:12px;left:50%;transform:translateX(-50%);
-width:130px;height:38px;border-radius:50%;background:#dceaf0;
-box-shadow:0 0 40px #b8d9e8}
-.table{position:absolute;left:12%;right:12%;top:90px;height:320px;
-background:#496779;border-radius:25px}
-.patient{position:absolute;left:20%;right:20%;top:40px;height:260px;
-background:#bca392;border-radius:100px 100px 35px 35px}
-.sheet{position:absolute;left:10%;right:10%;top:55px;height:210px;
-background:#dce7eb;border-radius:70px 70px 20px 20px}
-.anatomy{position:absolute;left:50%;top:150px;transform:translateX(-50%);
-width:145px;height:105px;border-radius:50%;background:#cda9a1;
-display:none;border:4px solid #8c6862}
-.zone{position:absolute;border:3px dashed #22b5ff;border-radius:15px;
-background:#14658a55;padding:10px;display:none;animation:pulse 1s infinite}
-@keyframes pulse{50%{box-shadow:0 0 22px #22b5ff}}
-#incisionZone{left:50%;top:150px;transform:translateX(-50%);
-width:190px;height:80px}
-#deliveryZone{left:50%;top:135px;transform:translateX(-50%);
-width:160px;height:100px}
-#recoveryZone{left:18px;top:120px}
-.monitor{position:absolute;right:20px;top:105px;background:#102b3d;
-padding:14px;border-radius:10px}
-.tray{position:absolute;bottom:12px;right:15px;background:#263c49;
-padding:10px;border-radius:12px;display:flex;gap:8px}
-.tool{width:70px;height:58px;background:#132b3b;border:2px solid #47677c;
-border-radius:9px;text-align:center;padding:7px;cursor:grab}
-.tool.active{border-color:#20baff;box-shadow:0 0 15px #20baff}
-#held{position:absolute;display:none;z-index:10;pointer-events:none;
-font-size:42px}
-#message{text-align:center;min-height:25px;padding:8px}
-#card{display:none;background:#102b3d;border-left:4px solid #20a8ff;
-padding:12px;border-radius:8px}
-button{background:#1688d4;color:white;border:0;padding:11px 16px;
-border-radius:8px;font-weight:bold}
+body{
+ margin:0;background:#050b12;color:#fff;
+ font-family:Arial,sans-serif;overflow-x:hidden
+}
+header{
+ height:58px;background:#091824;border-bottom:1px solid #294254;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 15px
+}
+.logo{font-weight:bold;font-size:18px}
+#app{max-width:1000px;margin:auto}
+#menu{
+ padding:15px;text-align:center
+}
+.case{
+ display:inline-block;width:42%;min-width:145px;margin:7px;
+ padding:22px 10px;background:#102b3d;
+ border:1px solid #34576e;border-radius:15px;
+ cursor:pointer;font-size:17px
+}
+.case:hover{border-color:#28b8ff}
+#sim{display:none}
+.top{
+ padding:10px 15px;background:#0b1c29;
+ display:flex;justify-content:space-between
+}
+#bar{
+ height:5px;background:#263c4c
+}
+#fill{
+ height:100%;width:0;background:#20aaff;transition:.5s
+}
+
+/* OPERATING ROOM */
+
+#screen{
+ height:560px;position:relative;overflow:hidden;
+ background:
+ radial-gradient(circle at 50% 20%,#dce9ee 0 4%,transparent 5%),
+ linear-gradient(#1a3545 0 58%,#071017 58%)
+}
+
+.ceiling{
+ position:absolute;top:0;left:0;right:0;height:90px;
+ background:#243f4d
+}
+
+.lamp{
+ position:absolute;top:22px;left:50%;
+ transform:translateX(-50%);
+ width:180px;height:50px;border-radius:50%;
+ background:#e5f0f3;
+ box-shadow:0 0 65px #dcecf2
+}
+
+/* simulated patient */
+
+.table{
+ position:absolute;
+ width:74%;height:420px;
+ left:13%;top:100px;
+ background:#465f6c;
+ border-radius:30px;
+ transform:perspective(600px) rotateX(4deg)
+}
+
+.body{
+ position:absolute;
+ left:18%;right:18%;top:25px;height:330px;
+ background:linear-gradient(90deg,#b9937e,#d0aa92,#b9937e);
+ border-radius:100px 100px 45px 45px
+}
+
+.gown{
+ position:absolute;
+ left:10%;right:10%;top:95px;height:210px;
+ background:#d7e5e8;
+ border-radius:80px 80px 25px 25px
+}
+
+/* head */
+
+.head{
+ position:absolute;
+ width:115px;height:125px;
+ background:#c59b84;border-radius:50%;
+ top:-40px;left:50%;
+ transform:translateX(-50%)
+}
+
+.face{
+ position:absolute;inset:25px 20px;
+ border-radius:50%;
+ background:#cda38b
+}
+
+/* legs */
+
+.leg{
+ position:absolute;width:65px;height:210px;
+ background:#c59a83;border-radius:35px;
+ bottom:-30px
+}
+.leftleg{left:20%}
+.rightleg{right:20%}
+
+/* anatomy */
+
+.anatomy{
+ display:none;position:absolute;
+ left:50%;top:145px;
+ transform:translateX(-50%);
+ width:210px;height:150px;
+ background:#8b6a63;
+ border-radius:45% 45% 40% 40%;
+ box-shadow:inset 0 0 0 8px #604942
+}
+
+.brain{
+ display:none;position:absolute;
+ left:50%;top:35px;
+ transform:translateX(-50%);
+ width:105px;height:105px;
+ background:#d29b9c;
+ border-radius:50%;
+ box-shadow:inset 0 0 15px #6f5555
+}
+
+/* interaction targets */
+
+.target{
+ position:absolute;
+ padding:12px;
+ border:2px solid #21b8ff;
+ border-radius:50%;
+ background:#0c719b99;
+ display:none;
+ animation:pulse 1.2s infinite;
+ z-index:8
+}
+
+@keyframes pulse{
+ 50%{box-shadow:0 0 25px #20baff}
+}
+
+#headTarget{left:50%;top:40px;transform:translateX(-50%)}
+#legTarget{left:50%;bottom:55px;transform:translateX(-50%)}
+
+/* instruments */
+
+.tray{
+ position:absolute;right:15px;bottom:15px;
+ background:#172d3b;padding:10px;border-radius:14px;
+ display:flex;gap:8px;z-index:20
+}
+.tool{
+ width:72px;height:65px;background:#0b1e2b;
+ border:1px solid #48697b;border-radius:10px;
+ display:flex;align-items:center;justify-content:center;
+ flex-direction:column;cursor:grab;
+ font-size:27px
+}
+.tool small{font-size:9px;color:#b8cbd5}
+.tool.active{border-color:#20baff}
+
+#held{
+ position:absolute;z-index:50;
+ font-size:42px;display:none;
+ pointer-events:none
+}
+
+/* information */
+
+#panel{
+ background:#091c29;padding:13px;
+ min-height:100px
+}
+#message{text-align:center;min-height:25px}
+#learning{
+ display:none;background:#102f43;
+ border-left:4px solid #20aaff;
+ padding:12px;border-radius:8px
+}
+button{
+ background:#168bd5;color:#fff;border:0;
+ padding:12px 18px;border-radius:9px;
+ font-weight:bold
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>🩺 MedStart Surgical Simulator</h1>
-<small>Emergency C-Section • Interactive Simulation</small>
+<div class="logo">🩺 MedStart</div>
+<div>Interactive Surgery</div>
 </header>
 
-<div id="app">
+<div id="menu">
+<h2>Choose a Case</h2>
 
-<div class="top">
-<b id="stage"></b>
-<b>Score: <span id="score">0</span></b>
+<div class="case" onclick="start('brain')">
+🧠<br><b>Craniotomy</b>
+<br><small>Neurosurgical Simulation</small>
 </div>
 
-<div class="bar"><div id="progress"></div></div>
+<div class="case" onclick="start('leg')">
+🦵<br><b>Leg Amputation</b>
+<br><small>Orthopaedic Simulation</small>
+</div>
+</div>
 
-<div id="room">
+<div id="sim">
 
+<div class="top">
+<b id="title"></b>
+<span>Score: <b id="score">0</b></span>
+</div>
+
+<div id="bar"><div id="fill"></div></div>
+
+<div id="screen">
+
+<div class="ceiling"></div>
 <div class="lamp"></div>
 
 <div class="table">
-<div class="patient"></div>
-<div class="sheet"></div>
-<div class="anatomy" id="anatomy"></div>
 
-<div class="zone" id="incisionZone">
-SIMULATED INCISION ZONE
+<div class="body">
+
+<div class="head">
+<div class="face"></div>
 </div>
 
-<div class="zone" id="deliveryZone">
-NEONATAL CARE AREA
-</div>
+<div class="gown"></div>
+
+<div class="leg leftleg"></div>
+<div class="leg rightleg"></div>
+
+<div class="brain" id="brain"></div>
+<div class="anatomy" id="anat"></div>
+
+<div class="target" id="headTarget">
+🧠 Target
 </div>
 
-<div class="monitor">📈<br><small>Patient Monitor</small></div>
+<div class="target" id="legTarget">
+🦵 Target
+</div>
 
-<div class="tray" id="tray"></div>
+</div>
+</div>
 
 <div id="held"></div>
 
+<div class="tray" id="tray"></div>
+
 </div>
+
+<div id="panel">
 
 <div id="message"></div>
 
-<div id="card">
-<b>📚 Anatomy / Learning Card</b>
-<p id="cardText"></p>
+<div id="learning">
+<b>📚 Surgical Learning</b>
+<p id="learnText"></p>
 </div>
 
 <br>
-<button id="next" onclick="nextStage()" disabled>Next Step →</button>
 
+<button id="next" onclick="next()" disabled>
+Next Scene →
+</button>
+
+</div>
 </div>
 
 <script>
 
-const stages=[
+const cases={
+
+brain:[
 {
-title:"Preparation",
-task:"Select the scalpel from the instrument tray.",
-tool:"🔪",
-zone:"incision",
-card:"The scalpel is a surgical cutting instrument. In this educational simulation, its use is represented by a non-graphic interaction."
+t:"Patient Assessment",
+tool:"🔦",
+name:"Light",
+zone:"head",
+text:"Identify the patient's head region and begin the simulated neurosurgical assessment.",
+learn:"A craniotomy is a neurosurgical operation involving access to the skull. This simulator focuses on anatomy and decision-making rather than real surgical technique."
 },
 {
-title:"Simulated Incision",
-task:"Drag the scalpel onto the highlighted simulation zone.",
-tool:"🔪",
-zone:"incision",
-card:"The simulation now reveals the next anatomical learning layer. Real surgical incision technique is not being taught here."
+t:"Anatomy Exploration",
+tool:"🧠",
+name:"Brain Anatomy",
+zone:"head",
+text:"Explore the simulated cranial anatomy.",
+learn:"The brain is protected by the skull and several layers of tissue. Understanding this relationship is fundamental to neurosurgery."
 },
 {
-title:"Anatomy Review",
-task:"Explore the simulated anatomical layer.",
-tool:"🧬",
-zone:"incision",
-card:"The uterus is the organ that supports pregnancy. The pelvic region also contains the bladder, blood vessels, nerves and other tissues."
-},
-{
-title:"Delivery Coordination",
-task:"Select the neonatal care area.",
-tool:"👶",
-zone:"delivery",
-card:"Emergency delivery involves coordination between obstetric, anesthesia and neonatal teams."
-},
-{
-title:"Recovery",
-task:"Select the recovery monitoring system.",
-tool:"❤️",
-zone:"recovery",
-card:"Postoperative monitoring helps the clinical team identify changes in the patient's condition."
+t:"Instrument Recognition",
+tool:"🧰",
+name:"Instrument Set",
+zone:"head",
+text:"Select the appropriate simulated instrument set.",
+learn:"Neurosurgical procedures use specialized instruments designed for delicate work and precise control."
 }
-];
+],
 
-let stage=0,score=0,held=false,completed=false;
+leg:[
+{
+t:"Limb Assessment",
+tool:"🔦",
+name:"Examination",
+zone:"leg",
+text:"Examine the simulated affected limb.",
+learn:"Before major limb surgery, clinicians evaluate the condition of the limb, circulation, sensation and overall health."
+},
+{
+t:"Anatomy Exploration",
+tool:"🦴",
+name:"Anatomy",
+zone:"leg",
+text:"Explore the simulated leg anatomy.",
+learn:"The lower limb contains bones, muscles, nerves and blood vessels that must be understood when planning treatment."
+},
+{
+t:"Surgical Planning",
+tool:"📋",
+name:"Plan",
+zone:"leg",
+text:"Review the simulated surgical plan.",
+learn:"Major surgical decisions involve assessing the clinical situation, imaging, risks and the patient's overall condition."
+}
+]
 
-const room=document.getElementById("room");
+};
+
+let type="",step=0,score=0,dragging=false;
+
+const menu=document.getElementById("menu");
+const sim=document.getElementById("sim");
 const tray=document.getElementById("tray");
-const heldEl=document.getElementById("held");
-const incision=document.getElementById("incisionZone");
-const delivery=document.getElementById("deliveryZone");
-const anatomy=document.getElementById("anatomy");
+const held=document.getElementById("held");
 const message=document.getElementById("message");
-const card=document.getElementById("card");
-const next=document.getElementById("next");
+const learning=document.getElementById("learning");
+const nextBtn=document.getElementById("next");
+
+function start(x){
+
+ type=x;
+ step=0;
+ score=0;
+
+ menu.style.display="none";
+ sim.style.display="block";
+
+ load();
+}
 
 function load(){
-let s=stages[stage];
 
-document.getElementById("stage").innerText=
-"Step "+(stage+1)+"/"+stages.length+" • "+s.title;
+ let s=cases[type][step];
 
-document.getElementById("progress").style.width=
-(stage/stages.length*100)+"%";
+ title.innerText=
+ (type==="brain"?"🧠 Craniotomy":"🦵 Leg Amputation")
+ +" • "+s.t;
 
-message.innerText=s.task;
-card.style.display="none";
-next.disabled=true;
-completed=false;
+ scoreEl=document.getElementById("score");
+ scoreEl.innerText=score;
 
-incision.style.display="none";
-delivery.style.display="none";
-anatomy.style.display="none";
+ fill.style.width=
+ (step/cases[type].length*100)+"%";
 
-if(s.zone==="incision")incision.style.display="block";
-if(s.zone==="delivery")delivery.style.display="block";
+ message.innerText=s.text;
+ learning.style.display="none";
+ nextBtn.disabled=true;
 
-tray.innerHTML="";
+ headTarget.style.display="none";
+ legTarget.style.display="none";
+ brain.style.display="none";
+ anat.style.display="none";
 
-let t=document.createElement("div");
-t.className="tool";
-t.innerHTML=s.tool+"<br><small>"+toolName(s.tool)+"</small>";
-t.draggable=true;
+ if(s.zone==="head")
+ headTarget.style.display="block";
 
-t.onpointerdown=e=>{
-held=true;
-heldEl.innerText=s.tool;
-heldEl.style.display="block";
-move(e);
-t.classList.add("active");
-};
+ if(s.zone==="leg")
+ legTarget.style.display="block";
 
-window.onpointermove=e=>{
-if(held)move(e);
-};
+ if(step>0){
+   if(type==="brain")brain.style.display="block";
+   else anat.style.display="block";
+ }
 
-window.onpointerup=e=>{
-if(!held)return;
-held=false;
-heldEl.style.display="none";
-t.classList.remove("active");
-checkDrop(e.clientX,e.clientY);
-};
+ tray.innerHTML="";
 
-tray.appendChild(t);
-}
+ let tool=document.createElement("div");
+ tool.className="tool";
+ tool.innerHTML=s.tool+"<small>"+s.name+"</small>";
 
-function toolName(x){
-if(x==="🔪")return"Scalpel";
-if(x==="🧬")return"Anatomy";
-if(x==="👶")return"Neonatal";
-return"Recovery";
+ tool.onpointerdown=e=>{
+   dragging=true;
+   held.innerText=s.tool;
+   held.style.display="block";
+   move(e);
+   tool.classList.add("active");
+ };
+
+ window.onpointermove=e=>{
+   if(dragging)move(e);
+ };
+
+ window.onpointerup=e=>{
+   if(!dragging)return;
+
+   dragging=false;
+   held.style.display="none";
+   tool.classList.remove("active");
+
+   drop(e.clientX,e.clientY);
+ };
+
+ tray.appendChild(tool);
 }
 
 function move(e){
-let r=room.getBoundingClientRect();
-heldEl.style.left=(e.clientX-r.left-20)+"px";
-heldEl.style.top=(e.clientY-r.top-25)+"px";
+
+ let r=screen.getBoundingClientRect();
+
+ held.style.left=
+ (e.clientX-r.left-20)+"px";
+
+ held.style.top=
+ (e.clientY-r.top-25)+"px";
 }
 
-function inside(el,x,y){
-let r=el.getBoundingClientRect();
-return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
+function hit(el,x,y){
+
+ let r=el.getBoundingClientRect();
+
+ return x>=r.left &&
+ x<=r.right &&
+ y>=r.top &&
+ y<=r.bottom;
 }
 
-function checkDrop(x,y){
+function drop(x,y){
 
-let s=stages[stage];
-let target=s.zone==="delivery"?delivery:incision;
+ let s=cases[type][step];
 
-if(inside(target,x,y)){
+ let target=
+ s.zone==="head"?
+ headTarget:legTarget;
 
-if(completed)return;
-completed=true;
-score+=20;
-document.getElementById("score").innerText=score;
+ if(hit(target,x,y)){
 
-message.innerText="✅ Correct interaction";
+   score+=25;
+   document.getElementById("score").innerText=score;
 
-document.getElementById("cardText").innerText=s.card;
-card.style.display="block";
-next.disabled=false;
+   target.style.display="none";
 
-if(stage===1){
-incision.style.display="none";
-anatomy.style.display="block";
-message.innerText="✨ Simulation layer changed. Anatomy is now visible.";
+   if(type==="brain")
+     brain.style.display="block";
+   else
+     anat.style.display="block";
+
+   message.innerText=
+   "✓ Correct. Scene completed.";
+
+   document.getElementById("learnText").innerText=s.learn;
+   learning.style.display="block";
+
+   nextBtn.disabled=false;
+
+ }else{
+
+   score=Math.max(0,score-5);
+
+   document.getElementById("score").innerText=score;
+
+   message.innerText=
+   "Try again. Move the instrument to the highlighted target.";
+ }
 }
 
-if(stage===2){
-incision.style.display="none";
-anatomy.style.display="block";
-}
+function next(){
 
-if(stage===3){
-delivery.style.display="none";
-}
+ if(step<cases[type].length-1){
 
-}else{
-score=Math.max(0,score-5);
-document.getElementById("score").innerText=score;
-message.innerText="❌ Try moving the instrument to the highlighted area.";
-}
-}
+   step++;
+   load();
 
-function nextStage(){
+ }else{
 
-if(stage<stages.length-1){
-stage++;
-load();
-}else{
-finish();
-}
+   finish();
+ }
 }
 
 function finish(){
 
-document.getElementById("progress").style.width="100%";
+ fill.style.width="100%";
 
-room.innerHTML=`
-<div style="text-align:center;padding:120px 20px">
-<div style="font-size:60px">🏆</div>
-<h2>Simulation Complete</h2>
-<p>Emergency C-Section educational simulation finished.</p>
-<h2>${score} points</h2>
-<p>Great work. Repeat the case to improve your score.</p>
-<button onclick="location.reload()">Restart</button>
-</div>`;
+ screen.innerHTML=`
+ <div style="
+ text-align:center;
+ padding-top:180px;
+ ">
+ <div style="font-size:70px">🏆</div>
+ <h2>Case Complete</h2>
+ <p>Simulation score</p>
+ <h1>${score}</h1>
+ <button onclick="location.reload()">New Case</button>
+ </div>
+ `;
 
-message.innerText="";
-card.style.display="none";
-next.style.display="none";
+ message.innerText="";
+ learning.style.display="none";
+ nextBtn.style.display="none";
 }
 
-load();
-
 </script>
+
 </body>
 </html>
