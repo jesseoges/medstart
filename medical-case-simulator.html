@@ -1,25 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MedStart Simulator</title>
+<title>MedStart | Emergency C-Section Simulator</title>
+
 <style>
-body{margin:0;background:#07111f;color:white;font-family:Arial}
-header{text-align:center;background:#0d1d31;padding:15px}
-h1{color:#48dcff}.app{max-width:900px;margin:auto;padding:15px}
-button{background:#168aad;color:white;border:0;border-radius:8px;padding:11px;margin:5px;cursor:pointer}
-.box{background:#10233a;padding:15px;border-radius:12px;margin:12px 0}
-.hide{display:none}
-.scene{height:280px;background:#020911;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center}
-.patient{width:65%;height:65%;background:#33495e;border-radius:50%;position:relative}
-.body{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#a95c6b;padding:35px;border-radius:50%}
-.show{display:block}
-.tools{display:flex;flex-wrap:wrap;gap:7px}
-.tool{background:#193653;padding:13px;border-radius:8px;cursor:pointer}
-.tool:hover{background:#245477}
-.card{background:#10464c;padding:15px;border-radius:10px}
-#feedback{color:#55e3a5}
+*{box-sizing:border-box}
+body{margin:0;background:#07111c;color:#fff;font-family:Arial,sans-serif}
+header{background:#0c1c2c;padding:15px;text-align:center;border-bottom:1px solid #28435b}
+h1{margin:0;font-size:21px}
+#app{max-width:900px;margin:auto;padding:12px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+button{border:0;border-radius:8px;padding:11px 15px;background:#1677c8;color:white;font-weight:bold}
+button:active{transform:scale(.97)}
+.progress{height:7px;background:#203244;border-radius:10px;overflow:hidden;margin:10px 0}
+#bar{height:100%;width:0;background:#20a8ff;transition:.4s}
+#scene{height:390px;background:#102536;border-radius:14px;position:relative;overflow:hidden;border:1px solid #34536c}
+.room{position:absolute;inset:0;background:
+radial-gradient(circle at 50% 20%,#55738a 0 10%,transparent 11%),
+linear-gradient(#173147 0 52%,#0c1a26 52%)}
+.lamp{position:absolute;top:15px;left:50%;transform:translateX(-50%);
+width:105px;height:35px;border-radius:50%;background:#d8e8ef;box-shadow:0 0 45px #d8e8ef}
+.patient{position:absolute;left:20%;right:20%;top:23%;bottom:8%;
+background:#b7a08e;border-radius:80px 80px 20px 20px}
+.sheet{position:absolute;left:12%;right:12%;top:20%;height:58%;
+background:#dce7ec;border-radius:40px 40px 12px 12px}
+.anatomy{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
+width:130px;height:110px;border-radius:50%;background:#cfa49b;
+display:none;box-shadow:0 0 0 5px #8e6660}
+.target{position:absolute;padding:8px 12px;background:#0b82d4;border:2px solid #8bd5ff;
+border-radius:20px;font-size:13px;cursor:pointer;animation:pulse 1.4s infinite}
+.target.off{display:none}
+@keyframes pulse{50%{box-shadow:0 0 18px #25aaff}}
+#monitor{right:15px;top:80px}
+#anatomyTarget{left:50%;top:50%;transform:translate(-50%,-50%)}
+#delivery{left:50%;bottom:25px;transform:translateX(-50%)}
+#recovery{left:15px;top:80px}
+#tray{right:15px;bottom:20px;background:#263c4c}
+#tools{display:flex;gap:8px;overflow:auto;padding:10px 0}
+.tool{min-width:75px;background:#182b3b;border:1px solid #45627a;border-radius:10px;padding:10px;text-align:center;cursor:pointer}
+.tool.selected{border-color:#25aaff;background:#123e5b}
+#info{background:#102536;border-radius:12px;padding:13px;margin-top:8px}
+#card{background:#172f42;border-left:4px solid #20a8ff;padding:12px;margin-top:10px;display:none}
+#feedback{min-height:24px;text-align:center;padding:8px;font-weight:bold}
+.mode{display:flex;gap:8px}
+.small{font-size:13px;color:#a9c1d3}
 </style>
 </head>
 
@@ -27,160 +53,197 @@ button{background:#168aad;color:white;border:0;border-radius:8px;padding:11px;ma
 
 <header>
 <h1>🩺 MedStart Surgical Simulator</h1>
-<p>Interactive Medical Learning</p>
+<div class="small">Emergency C-Section • Interactive Learning Simulation</div>
 </header>
 
-<div class="app">
+<div id="app">
 
-<button onclick="start('c')">🚨 Emergency C-Section</button>
-<button onclick="start('a')">🦴 Amputation</button>
-
-<div id="game" class="hide">
-
-<div class="box">
-<h2 id="title"></h2>
-<p id="stage"></p>
-<p>Score: <b id="score">0</b></p>
+<div class="top">
+<div>
+<b id="stepName">Step 1</b><br>
+<span class="small" id="objective"></span>
+</div>
+<div>Score: <b id="score">0</b></div>
 </div>
 
-<div class="box">
-<div class="scene">
-<div class="patient">
-<div id="body" class="body">🧬 Anatomy</div>
-</div>
-</div>
-<h3 id="sceneTitle"></h3>
-<p id="sceneText"></p>
+<div class="progress"><div id="bar"></div></div>
+
+<div id="scene">
+<div class="room"></div>
+<div class="lamp"></div>
+<div class="patient"></div>
+<div class="sheet"></div>
+<div class="anatomy" id="anat"></div>
+
+<div class="target" id="monitor" onclick="target('monitor')">📈 Monitor</div>
+<div class="target" id="anatomyTarget" onclick="target('anatomy')">🧬 Anatomy</div>
+<div class="target" id="delivery" onclick="target('delivery')">👶 Delivery Area</div>
+<div class="target" id="recovery" onclick="target('recovery')">❤️ Recovery</div>
+<div class="target" id="tray">🧰 Instrument Tray</div>
 </div>
 
-<div class="box">
-<h3>🧰 Equipment</h3>
-<div id="tools" class="tools"></div>
-<p id="feedback">Pick the correct item.</p>
+<div id="tools"></div>
+
+<div id="feedback"></div>
+
+<div id="info">
+<b>Current task</b>
+<p id="instruction" style="margin-bottom:0"></p>
 </div>
 
-<div id="learn" class="box">
-<h3>🧠 Learning Card</h3>
-<p>Select the correct equipment to unlock this stage's lesson.</p>
+<div id="card">
+<b>📚 Learning Card</b>
+<p id="cardText"></p>
 </div>
 
-<button onclick="next()">Next Stage →</button>
-
-</div>
+<br>
+<button onclick="nextStep()" id="next">Next Step →</button>
 </div>
 
 <script>
 
-let type="",step=0,score=0;
+let step=0,score=0,mode="learn",selected="";
 
-const cases={
-
-c:{
-name:"🚨 Emergency C-Section",
-data:[
-["Preparation","🧤","Prepare the patient and team.","Preparation focuses on safety and teamwork.",false],
-["Monitoring","📈","Monitor the patient.","Monitoring helps detect changes in condition.",false],
-["Anatomy","🧬","Study the pelvic anatomy.","The uterus houses the developing pregnancy.",true],
-["Uterus","🔦","Focus on uterine anatomy.","The myometrium is the muscular uterine layer.",true],
-["Delivery","👶","Prepare for delivery.","The obstetric and neonatal teams coordinate care.",false],
-["Recovery","❤️","Begin postoperative monitoring.","Recovery includes observation and follow-up.",false]
-]},
-
-a:{
-name:"🦴 Amputation",
-data:[
-["Assessment","🩺","Assess the limb.","Assessment helps determine treatment options.",false],
-["Imaging","🩻","Review imaging.","Imaging helps visualize bones and surrounding tissues.",true],
-["Circulation","❤️","Assess blood supply.","Adequate circulation supports tissue health.",true],
-["Anatomy","🦴","Study limb anatomy.","The limb contains bones, muscles, vessels and nerves.",true],
-["Recovery","🏥","Begin recovery care.","Recovery includes monitoring and rehabilitation.",false],
-["Rehabilitation","♿","Plan rehabilitation.","Rehabilitation aims to improve mobility and independence.",false]
-]}
-};
-
-function start(t){
-type=t;step=0;score=0;
-document.getElementById("game").classList.remove("hide");
-document.getElementById("title").textContent=cases[t].name;
-load();
+const steps=[
+{
+ name:"Preparation",
+ task:"Prepare the simulated team and patient environment.",
+ target:"monitor",
+ tools:["🧤","📋","📈"],
+ answer:"📋",
+ card:"Before an emergency procedure, preparation includes confirming the clinical situation, team readiness, monitoring and required equipment."
+},
+{
+ name:"Monitoring",
+ task:"Select the patient monitoring system.",
+ target:"monitor",
+ tools:["🩺","📈","🔦"],
+ answer:"📈",
+ card:"Continuous monitoring helps the clinical team recognize changes in the patient's condition."
+},
+{
+ name:"Pelvic Anatomy",
+ task:"Identify the uterus in the simulated anatomy view.",
+ target:"anatomy",
+ tools:["🧬","🦴","🫀"],
+ answer:"🧬",
+ card:"The uterus is the organ that supports pregnancy. Understanding its anatomy is essential in obstetric surgery."
+},
+{
+ name:"Anatomy Review",
+ task:"Explore the important anatomical structures.",
+ target:"anatomy",
+ tools:["🧬","🦴","🩸"],
+ answer:"🧬",
+ card:"The pelvic region contains multiple important structures, including the uterus, bladder, blood vessels, nerves and surrounding tissues."
+},
+{
+ name:"Delivery",
+ task:"Select the simulated neonatal care area.",
+ target:"delivery",
+ tools:["👶","📈","🧤"],
+ answer:"👶",
+ card:"Emergency delivery requires coordination between obstetric, anesthesia and neonatal teams."
+},
+{
+ name:"Postoperative Care",
+ task:"Select the recovery monitoring area.",
+ target:"recovery",
+ tools:["❤️","📈","🏥"],
+ answer:"❤️",
+ card:"After surgery, monitoring and appropriate recovery care are essential for identifying complications early."
 }
+];
 
 function load(){
+ let s=steps[step];
+ stepName.innerText="Step "+(step+1)+" / "+steps.length+" • "+s.name;
+ objective.innerText=s.task;
+ instruction.innerText=s.task;
+ scoreEl.innerText=score;
+ bar.style.width=((step)/steps.length*100)+"%";
 
-let s=cases[type].data[step];
+ document.querySelectorAll(".target").forEach(x=>x.classList.add("off"));
+ document.getElementById(s.target==="anatomy"?"anatomyTarget":s.target).classList.remove("off");
 
-document.getElementById("stage").textContent=
-"Stage "+(step+1)+" / "+cases[type].data.length;
+ if(s.target==="anatomy")anat.style.display="block";
+ else anat.style.display="none";
 
-document.getElementById("sceneTitle").textContent=s[0];
-document.getElementById("sceneText").textContent=s[2];
+ tools.innerHTML="";
+ selected="";
 
-document.getElementById("score").textContent=score;
+ s.tools.forEach(t=>{
+   let d=document.createElement("div");
+   d.className="tool";
+   d.innerHTML=t;
+   d.onclick=()=>{
+     document.querySelectorAll(".tool").forEach(x=>x.classList.remove("selected"));
+     d.classList.add("selected");
+     selected=t;
+   };
+   tools.appendChild(d);
+ });
 
-document.getElementById("feedback").textContent="Pick the correct item.";
-
-document.getElementById("learn").innerHTML=
-"<h3>🧠 Learning Card</h3>"+
-"<p>Select the correct equipment to unlock this lesson.</p>";
-
-document.getElementById("body").classList.remove("show");
-
-let tools=["🧤","📈","🧬","🔦","👶","❤️","🩺","🩻","🦴","🏥","♿"];
-
-document.getElementById("tools").innerHTML="";
-
-tools.forEach(x=>{
-let b=document.createElement("div");
-b.className="tool";
-b.textContent=x;
-b.onclick=()=>pick(x,b);
-document.getElementById("tools").appendChild(b);
-});
-
+ card.style.display="none";
+ feedback.innerText="";
+ next.disabled=true;
 }
 
-function pick(x,b){
+function target(where){
 
-let s=cases[type].data[step];
+ let s=steps[step];
 
-if(x===s[1]){
+ if(where!==s.target){
+   feedback.innerText="❌ Incorrect target. Review the highlighted area.";
+   score=Math.max(0,score-2);
+   scoreEl.innerText=score;
+   return;
+ }
 
-score+=10;
-document.getElementById("score").textContent=score;
+ if(selected!==s.answer){
+   feedback.innerText="⚠️ Select the appropriate item first.";
+   return;
+ }
 
-b.style.background="#17634e";
+ score+=10;
+ scoreEl.innerText=score;
+ feedback.innerText="✓ Correct. Simulation step completed.";
 
-document.getElementById("feedback").textContent=
-"✅ Correct! The simulation continues.";
+ cardText.innerText=s.card;
+ card.style.display="block";
 
-document.getElementById("learn").innerHTML=
-"<div class='card'><h3>🧠 "+s[0]+"</h3><p>"+s[3]+"</p></div>";
+ next.disabled=false;
 
-if(s[4])
-document.getElementById("body").classList.add("show");
-
-}else{
-
-document.getElementById("feedback").textContent=
-"❌ Try another item.";
+ document.querySelectorAll(".target").forEach(x=>x.classList.add("off"));
 }
 
+function nextStep(){
+ if(step<steps.length-1){
+   step++;
+   load();
+ }else{
+   finish();
+ }
 }
 
-function next(){
+function finish(){
+ scene.innerHTML=`
+ <div style="padding:45px;text-align:center">
+ <div style="font-size:55px">🏆</div>
+ <h2>Simulation Complete</h2>
+ <p>You completed the Emergency C-Section learning simulation.</p>
+ <h2>${score} / ${steps.length*10}</h2>
+ <p class="small">Your score reflects correct clinical decisions in this educational simulation.</p>
+ <button onclick="location.reload()">Restart Case</button>
+ </div>`;
+ tools.innerHTML="";
+ info.innerHTML="<b>Case completed</b><p>Review the learning cards and repeat the simulation to improve your score.</p>";
+ next.style.display="none";
+}
 
-if(step<cases[type].data.length-1){
-step++;
+const scoreEl=document.getElementById("score");
 load();
-}else{
-document.getElementById("sceneTitle").textContent="🏆 Simulation Complete";
-document.getElementById("sceneText").textContent=
-"Final score: "+score;
-document.getElementById("tools").innerHTML="";
-}
-}
 
 </script>
-
 </body>
 </html>
