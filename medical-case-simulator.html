@@ -2,190 +2,233 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MedStart Medical Case Simulator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>MedStart Interactive Medical Simulator</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#08111f;
- color:#fff;
+margin:0;
+font-family:Arial,sans-serif;
+background:#07111f;
+color:white;
 }
+
 header{
- background:#0d1b2f;
- padding:18px;
- text-align:center;
- border-bottom:1px solid #243754;
+background:#0c1c30;
+padding:18px;
+text-align:center;
+border-bottom:1px solid #29415f;
 }
-header h1{margin:0;color:#48d7ff}
-header p{margin:6px 0 0;color:#aab9cc}
+
+header h1{
+margin:0;
+color:#45d9ff;
+}
+
+header p{
+color:#aebdce;
+}
 
 .container{
- max-width:1100px;
- margin:auto;
- padding:20px;
-}
-
-.case-select{
- display:flex;
- gap:12px;
- flex-wrap:wrap;
- margin-bottom:20px;
+max-width:1100px;
+margin:auto;
+padding:18px;
 }
 
 button{
- background:#168aad;
- color:white;
- border:0;
- padding:12px 17px;
- border-radius:8px;
- cursor:pointer;
- font-size:15px;
-}
-button:hover{background:#1ba6cf}
-button:disabled{opacity:.4}
-
-.card{
- background:#101f34;
- border:1px solid #29405f;
- border-radius:14px;
- padding:20px;
- margin-bottom:18px;
+border:0;
+border-radius:8px;
+padding:12px 16px;
+background:#168aad;
+color:white;
+font-size:15px;
+cursor:pointer;
 }
 
-.hidden{display:none}
+button:hover{
+background:#1da7ce;
+}
+
+button.selected{
+background:#20b47a;
+}
+
+.case-buttons{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:18px;
+}
+
+.panel{
+background:#102139;
+border:1px solid #294361;
+border-radius:14px;
+padding:18px;
+margin-bottom:18px;
+}
+
+.hidden{
+display:none;
+}
 
 .warning{
- background:#482020;
- border-left:5px solid #ff5757;
- padding:15px;
- border-radius:8px;
+background:#412222;
+border-left:5px solid #ff6262;
+padding:14px;
+border-radius:8px;
 }
 
 .vitals{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:10px;
- margin:15px 0;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-top:15px;
 }
+
 .vital{
- background:#172b46;
- padding:12px;
- border-radius:8px;
- text-align:center;
+background:#172d49;
+padding:12px;
+border-radius:8px;
+text-align:center;
 }
-.vital strong{
- display:block;
- font-size:21px;
- color:#ff7777;
+
+.vital span{
+display:block;
+font-size:20px;
+color:#ff7777;
+font-weight:bold;
 }
 
 .video{
- height:300px;
- background:#020812;
- border-radius:12px;
- display:flex;
- align-items:center;
- justify-content:center;
- text-align:center;
- position:relative;
- overflow:hidden;
- border:1px solid #304b6d;
+height:330px;
+background:#02070d;
+border:1px solid #34516f;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+position:relative;
+overflow:hidden;
 }
 
-.video-content{
- max-width:700px;
- padding:25px;
+.scene{
+max-width:700px;
+padding:20px;
 }
 
-.play{
- font-size:55px;
- margin-bottom:10px;
- color:#49dfff;
+.scene-icon{
+font-size:65px;
+}
+
+.scene h2{
+color:#4bdcff;
 }
 
 .progress{
- height:7px;
- background:#263b56;
- border-radius:10px;
- margin-top:15px;
- overflow:hidden;
-}
-.progress div{
- height:100%;
- background:#38c6ed;
- width:0%;
- transition:.4s;
+height:8px;
+background:#263d58;
+border-radius:10px;
+overflow:hidden;
+margin-top:18px;
 }
 
-.actions{
- display:flex;
- flex-wrap:wrap;
- gap:10px;
- margin-top:15px;
+.progress-bar{
+height:100%;
+background:#35c6e9;
+width:0%;
+transition:.4s;
 }
 
-.flashcards{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
- gap:12px;
+.controls{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:15px;
+}
+
+.equipment{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+gap:10px;
+}
+
+.tool{
+background:#172d49;
+border:1px solid #355576;
+border-radius:10px;
+padding:15px;
+text-align:center;
+cursor:pointer;
+}
+
+.tool:hover{
+background:#20405f;
+}
+
+.tool .emoji{
+font-size:35px;
+display:block;
+margin-bottom:8px;
+}
+
+.tool.picked{
+background:#155c51;
+border-color:#2ce0a2;
+}
+
+.feedback{
+margin-top:15px;
+padding:12px;
+border-radius:8px;
+background:#162b43;
+}
+
+.correct{
+color:#52e3a5;
+}
+
+.wrong{
+color:#ff7777;
 }
 
 .flashcard{
- min-height:150px;
- perspective:800px;
- cursor:pointer;
+background:#183452;
+border:1px solid #376184;
+border-radius:12px;
+padding:18px;
+margin-top:15px;
 }
 
-.flash-inner{
- position:relative;
- width:100%;
- height:100%;
- min-height:150px;
- transition:.5s;
- transform-style:preserve-3d;
+.flashcard h3{
+color:#4ddcff;
 }
 
-.flashcard.flipped .flash-inner{
- transform:rotateY(180deg);
+.step-number{
+display:inline-block;
+background:#168aad;
+padding:7px 11px;
+border-radius:50%;
+margin-right:8px;
 }
 
-.flash-front,.flash-back{
- position:absolute;
- width:100%;
- min-height:150px;
- backface-visibility:hidden;
- border-radius:12px;
- padding:20px;
- background:#183452;
- border:1px solid #31567c;
+.score{
+font-size:20px;
+color:#50e4a5;
 }
 
-.flash-back{
- transform:rotateY(180deg);
- background:#123f45;
+@media(max-width:650px){
+.vitals{
+grid-template-columns:repeat(2,1fr);
 }
 
-.question button{
- display:block;
- width:100%;
- margin:8px 0;
- text-align:left;
- background:#172b46;
+.video{
+height:270px;
 }
-
-.result{
- font-size:20px;
- padding:20px;
- border-radius:10px;
- background:#123f45;
-}
-
-@media(max-width:700px){
- .vitals{grid-template-columns:repeat(2,1fr)}
- .video{height:240px}
 }
 </style>
 </head>
@@ -193,472 +236,759 @@ button:disabled{opacity:.4}
 <body>
 
 <header>
-<h1>🩺 MedStart Medical Case Simulator</h1>
-<p>Interactive clinical decision-making and anatomy learning</p>
+<h1>🩺 MedStart Medical Simulator</h1>
+<p>Interactive clinical learning</p>
 </header>
 
 <div class="container">
 
-<div class="case-select">
-<button onclick="startCase('csection')">🚨 Emergency C-Section</button>
-<button onclick="startCase('amputation')">🦴 Amputation Case</button>
+<div class="case-buttons">
+<button onclick="startCase('csection')">
+🚨 Emergency C-Section
+</button>
+
+<button onclick="startCase('amputation')">
+🦴 Amputation Case
+</button>
 </div>
+
 
 <!-- ================= C SECTION ================= -->
 
 <section id="csection" class="hidden">
 
-<div class="card">
-<h2>🚨 Case 1: Emergency C-Section</h2>
+<div class="panel">
+
+<h2>🚨 Emergency Caesarean Simulation</h2>
 
 <div class="warning">
-<strong>Emergency situation</strong><br>
-A pregnant patient is in labour and fetal monitoring shows a concerning pattern.
-The team is preparing for an emergency Caesarean delivery.
+<strong>Simulation:</strong>
+The patient requires urgent delivery because of concerning maternal/fetal
+clinical findings. This is a non-graphic educational simulation.
 </div>
 
 <div class="vitals">
-<div class="vital">HR<strong>112</strong>bpm</div>
-<div class="vital">BP<strong>138/86</strong></div>
-<div class="vital">SpO₂<strong>98%</strong></div>
-<div class="vital">FHR<strong>175</strong>bpm</div>
+<div class="vital">
+Heart Rate
+<span>112</span>
 </div>
 
-<p>
-Your role: work through the simulated case, identify important anatomy,
-and make appropriate clinical decisions.
+<div class="vital">
+Blood Pressure
+<span>138/86</span>
+</div>
+
+<div class="vital">
+SpO₂
+<span>98%</span>
+</div>
+
+<div class="vital">
+Fetal HR
+<span>175</span>
+</div>
+</div>
+
+<p class="score">
+Score: <span id="cScore">0</span>
 </p>
+
 </div>
 
-<div class="card">
-<h2>🎬 Surgical Simulation</h2>
+
+<!-- VIDEO -->
+
+<div class="panel">
+
+<h2>🎬 Interactive Surgical Scene</h2>
 
 <div class="video">
-<div class="video-content">
-<div class="play" id="cIcon">▶</div>
-<h2 id="cTitle">Preparation</h2>
+
+<div class="scene">
+
+<div class="scene-icon" id="cIcon">
+🎬
+</div>
+
+<h2 id="cTitle">
+Preparation
+</h2>
+
 <p id="cDescription">
-The operating team prepares the patient and confirms the indication
-for emergency Caesarean delivery.
+The team prepares the patient and confirms the emergency indication.
 </p>
 
 <div class="progress">
-<div id="cProgress"></div>
-</div>
-</div>
-</div>
-
-<div class="actions">
-<button onclick="previousC()">← Previous</button>
-<button onclick="nextC()">Next Stage →</button>
-</div>
-
-<p id="cStage">Stage 1 of 7</p>
-</div>
-
-<div class="card question" id="cQuestion">
-<h2>🧠 Decision Point</h2>
-<p>What is the main reason an emergency C-section may be required?</p>
-
-<button onclick="answerC(0)">A. Fetal or maternal compromise requiring urgent delivery</button>
-<button onclick="answerC(1)">B. The patient wants to leave hospital</button>
-<button onclick="answerC(1)">C. Normal labour progression</button>
-
-<p id="cFeedback"></p>
-</div>
-
-<div class="card">
-<h2>🧬 Anatomy Flashcards</h2>
-<p>Tap a card to reveal the explanation.</p>
-
-<div class="flashcards">
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Uterus</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Uterus</h3>
-<p>The muscular organ that houses the developing pregnancy.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Myometrium</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Myometrium</h3>
-<p>The muscular layer of the uterine wall.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Endometrium</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Endometrium</h3>
-<p>The inner lining of the uterus.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Bladder</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Bladder</h3>
-<p>A pelvic organ located anterior to the uterus.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Placenta</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Placenta</h3>
-<p>An organ that supports exchange between maternal and fetal circulation during pregnancy.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Abdominal wall</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Abdominal wall</h3>
-<p>Contains layers including skin, connective tissue and muscles that surround the abdominal cavity.</p>
-</div>
-</div>
+<div class="progress-bar" id="cProgress"></div>
 </div>
 
 </div>
+
+</div>
+
+<p>
+<strong>Current stage:</strong>
+<span id="cStage">1</span>/7
+</p>
+
+</div>
+
+
+<!-- EQUIPMENT -->
+
+<div class="panel">
+
+<h2>🧰 Pick Up Equipment</h2>
+
+<p>
+Choose the item that belongs to the current simulated stage.
+</p>
+
+<div class="equipment" id="cEquipment"></div>
+
+<div class="feedback" id="cFeedback">
+Choose an item to continue.
+</div>
+
+</div>
+
+
+<!-- FLASHCARD -->
+
+<div class="panel">
+
+<h2>🧠 Surgical Learning Card</h2>
+
+<div id="cFlashcard">
+
+<p>
+The learning card will appear when an appropriate simulated action
+has been selected.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="controls">
+
+<button onclick="previousC()">
+← Previous Stage
+</button>
+
+<button onclick="nextC()">
+Next Stage →
+</button>
+
 </div>
 
 </section>
+
+
 
 <!-- ================= AMPUTATION ================= -->
 
 <section id="amputation" class="hidden">
 
-<div class="card">
-<h2>🦴 Case 2: Limb Amputation Simulation</h2>
+<div class="panel">
+
+<h2>🦴 Limb Amputation Simulation</h2>
 
 <div class="warning">
-<strong>Educational simulation</strong><br>
-This scenario focuses on clinical reasoning, anatomy, surgical planning
-and postoperative management. The simulation does not depict graphic injury.
+<strong>Non-graphic educational simulation.</strong><br>
+This case teaches clinical reasoning, anatomy, surgical planning and
+rehabilitation without depicting an actual cutting procedure.
 </div>
 
-<p>
-A patient has a severe limb condition that has resulted in irreversible
-tissue damage. The multidisciplinary team is considering amputation.
+<p class="score">
+Score: <span id="aScore">0</span>
 </p>
+
 </div>
 
-<div class="card">
-<h2>🎬 Procedure Simulation</h2>
+
+<div class="panel">
+
+<h2>🎬 Interactive Surgical Scene</h2>
 
 <div class="video">
-<div class="video-content">
-<div class="play">▶</div>
-<h2 id="aTitle">Clinical Assessment</h2>
+
+<div class="scene">
+
+<div class="scene-icon" id="aIcon">
+🎬
+</div>
+
+<h2 id="aTitle">
+Clinical Assessment
+</h2>
+
 <p id="aDescription">
-Assess the patient, establish the indication and determine whether
-limb preservation is possible.
+The team assesses the patient's condition and reviews whether limb
+preservation is possible.
 </p>
 
 <div class="progress">
-<div id="aProgress"></div>
-</div>
-</div>
+<div class="progress-bar" id="aProgress"></div>
 </div>
 
-<div class="actions">
-<button onclick="previousA()">← Previous</button>
-<button onclick="nextA()">Next Stage →</button>
 </div>
 
-<p id="aStage">Stage 1 of 6</p>
 </div>
-
-<div class="card question">
-<h2>🧠 Decision Point</h2>
 
 <p>
-Which factor is important when determining the appropriate level
-for an amputation?
+<strong>Current stage:</strong>
+<span id="aStage">1</span>/6
 </p>
 
-<button onclick="answerA(0)">
-A. Viable tissue, blood supply and functional potential
+</div>
+
+
+<div class="panel">
+
+<h2>🧰 Equipment & Clinical Tools</h2>
+
+<p>
+Pick the appropriate item for the current stage.
+</p>
+
+<div class="equipment" id="aEquipment"></div>
+
+<div class="feedback" id="aFeedback">
+Choose an item to continue.
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>🧠 Surgical Learning Card</h2>
+
+<div id="aFlashcard">
+
+<p>
+Select the appropriate simulated item to reveal the learning card.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="controls">
+
+<button onclick="previousA()">
+← Previous Stage
 </button>
 
-<button onclick="answerA(1)">
-B. Choosing a level randomly
+<button onclick="nextA()">
+Next Stage →
 </button>
 
-<button onclick="answerA(1)">
-C. Always choosing the highest possible level
-</button>
-
-<p id="aFeedback"></p>
-</div>
-
-<div class="card">
-<h2>🧬 Anatomy Flashcards</h2>
-
-<div class="flashcards">
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Femur</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Femur</h3>
-<p>The major bone of the thigh and the longest bone in the body.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Tibia</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Tibia</h3>
-<p>The major weight-bearing bone of the lower leg.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Femoral artery</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Femoral artery</h3>
-<p>A major artery supplying the lower limb.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Peripheral nerves</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Peripheral nerves</h3>
-<p>Nerves carry sensory and motor signals between the limb and nervous system.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Muscle groups</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Muscle groups</h3>
-<p>Muscles contribute to movement, stability and future prosthetic function.</p>
-</div>
-</div>
-</div>
-
-<div class="flashcard" onclick="flip(this)">
-<div class="flash-inner">
-<div class="flash-front">
-<h3>Prosthetic planning</h3>
-<p>Tap to learn</p>
-</div>
-<div class="flash-back">
-<h3>Prosthetic planning</h3>
-<p>Functional planning can influence rehabilitation and the patient's future mobility.</p>
-</div>
-</div>
-</div>
-
-</div>
-</div>
-
-<div class="card">
-<h2>📚 Learning Objectives</h2>
-<ul>
-<li>Recognize major anatomical structures.</li>
-<li>Understand the clinical reasoning behind surgical decisions.</li>
-<li>Identify important preoperative considerations.</li>
-<li>Understand the importance of rehabilitation.</li>
-<li>Practice decision-making in simulated clinical cases.</li>
-</ul>
 </div>
 
 </section>
 
 </div>
 
+
 <script>
 
-let cStep=0;
-let aStep=0;
+/* ===========================
+   GLOBAL
+=========================== */
 
-const cStages=[
- ["Preparation",
- "The operating team prepares the patient and confirms the indication for emergency Caesarean delivery."],
- ["Anaesthesia",
- "Appropriate anaesthesia is established and the patient's vital signs are monitored."],
- ["Positioning",
- "The patient is positioned appropriately and the surgical field is prepared."],
- ["Abdominal Access",
- "The simulation demonstrates the anatomical layers encountered when accessing the pelvic region."],
- ["Uterine Access",
- "The simulator highlights the uterus and explains the principles of accessing the uterine cavity."],
- ["Delivery",
- "The fetus is delivered and the neonatal team begins assessment. No graphic imagery is shown."],
- ["Closure & Recovery",
- "The surgical team completes closure and the patient moves to postoperative monitoring."]
-];
-
-const aStages=[
- ["Clinical Assessment",
- "Assess the patient, establish the indication and determine whether limb preservation is possible."],
- ["Imaging & Planning",
- "Review imaging and determine the condition of bones, soft tissue and blood supply."],
- ["Level Selection",
- "Select an appropriate level based on viable tissue, circulation and expected function."],
- ["Surgical Planning",
- "The simulation explains the roles of bones, muscles, vessels and nerves without graphic imagery."],
- ["Recovery",
- "Postoperative monitoring includes pain management, wound care and prevention of complications."],
- ["Rehabilitation",
- "Rehabilitation focuses on strength, mobility, psychological support and possible prosthetic planning."]
-];
+let currentCase="";
 
 function startCase(type){
 
- document.getElementById("csection").classList.add("hidden");
- document.getElementById("amputation").classList.add("hidden");
+document.getElementById("csection").classList.add("hidden");
+document.getElementById("amputation").classList.add("hidden");
 
- document.getElementById(type).classList.remove("hidden");
+document.getElementById(type).classList.remove("hidden");
 
- window.scrollTo({top:0,behavior:"smooth"});
+currentCase=type;
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
 }
+
+
+/* ===========================
+   C SECTION
+=========================== */
+
+let cStep=0;
+let cScore=0;
+
+const cStages=[
+
+{
+title:"Preparation",
+icon:"🧤",
+description:
+"The team confirms the emergency indication, checks the patient and prepares the operating environment.",
+tool:"🧤 Sterile gloves",
+cardTitle:"Stage 1: Preparation",
+card:
+"Preparation involves confirming the clinical situation, patient identity, required team members and appropriate monitoring."
+},
+
+{
+title:"Monitoring",
+icon:"📈",
+description:
+"The team monitors the patient and prepares appropriate anaesthesia and monitoring equipment.",
+tool:"📈 Monitor",
+cardTitle:"Stage 2: Monitoring",
+card:
+"Continuous monitoring allows the team to recognize changes in the patient's condition during the procedure."
+},
+
+{
+title:"Positioning",
+icon:"🛏️",
+description:
+"The patient is positioned appropriately and the operative field is prepared.",
+tool:"🛏️ Operating table",
+cardTitle:"Stage 3: Positioning",
+card:
+"Positioning is important for patient safety, access and protection of vulnerable anatomical structures."
+},
+
+{
+title:"Anatomy",
+icon:"🧬",
+description:
+"The simulator reveals the major anatomical structures relevant to Caesarean delivery.",
+tool:"🧬 Anatomy guide",
+cardTitle:"Stage 4: Anatomy",
+card:
+"The abdominal and pelvic regions contain several important structures, including the abdominal wall, bladder and uterus."
+},
+
+{
+title:"Uterine Stage",
+icon:"🩺",
+description:
+"The simulator highlights the uterus and explains its role in delivery.",
+tool:"🩺 Surgical light",
+cardTitle:"Stage 5: Uterus",
+card:
+"The uterus is the muscular organ that houses the pregnancy. Its muscular wall is called the myometrium."
+},
+
+{
+title:"Delivery",
+icon:"👶",
+description:
+"The simulation reaches the delivery stage. The neonatal team prepares to assess the newborn.",
+tool:"👶 Neonatal warmer",
+cardTitle:"Stage 6: Delivery",
+card:
+"After delivery, the newborn is assessed by the appropriate clinical team while the surgical team continues maternal care."
+},
+
+{
+title:"Recovery",
+icon:"❤️",
+description:
+"The simulation moves to postoperative monitoring and recovery.",
+tool:"❤️ Monitoring equipment",
+cardTitle:"Stage 7: Recovery",
+card:
+"Postoperative care includes monitoring the patient's condition, pain management, observation for complications and appropriate follow-up."
+}
+
+];
+
+
+const cTools=[
+
+"🧤 Sterile gloves",
+"📈 Monitor",
+"🛏️ Operating table",
+"🧬 Anatomy guide",
+"🩺 Surgical light",
+"👶 Neonatal warmer",
+"❤️ Monitoring equipment",
+"🔬 Microscope",
+"📚 Textbook"
+
+];
+
+
+function renderCTools(){
+
+let box=document.getElementById("cEquipment");
+
+box.innerHTML="";
+
+cTools.forEach(tool=>{
+
+let div=document.createElement("div");
+
+div.className="tool";
+
+div.innerHTML=
+"<span class='emoji'>"+tool.split(" ")[0]+"</span>"+
+tool.substring(tool.indexOf(" ")+1);
+
+div.onclick=function(){
+
+selectCTool(tool);
+
+};
+
+box.appendChild(div);
+
+});
+
+}
+
+
+function selectCTool(tool){
+
+let stage=cStages[cStep];
+
+let feedback=document.getElementById("cFeedback");
+
+if(tool===stage.tool){
+
+cScore+=10;
+
+document.getElementById("cScore").textContent=cScore;
+
+feedback.innerHTML=
+"<span class='correct'>✅ Correct choice.</span>";
+
+feedback.className="feedback correct";
+
+showCFlashcard();
+
+}else{
+
+feedback.innerHTML=
+"<span class='wrong'>❌ Not the best choice for this stage. Think about what the team is doing now.</span>";
+
+feedback.className="feedback wrong";
+
+}
+
+}
+
+
+function showCFlashcard(){
+
+let s=cStages[cStep];
+
+document.getElementById("cFlashcard").innerHTML=
+
+"<div class='flashcard'>"+
+"<h3><span class='step-number'>"+(cStep+1)+"</span>"+
+s.cardTitle+"</h3>"+
+"<p>"+s.card+"</p>"+
+"</div>";
+
+}
+
 
 function updateC(){
 
- let s=cStages[cStep];
+let s=cStages[cStep];
 
- document.getElementById("cTitle").textContent=s[0];
- document.getElementById("cDescription").textContent=s[1];
- document.getElementById("cStage").textContent=
- "Stage "+(cStep+1)+" of "+cStages.length;
+document.getElementById("cTitle").textContent=s.title;
 
- document.getElementById("cProgress").style.width=
- ((cStep+1)/cStages.length*100)+"%";
+document.getElementById("cIcon").textContent=s.icon;
+
+document.getElementById("cDescription").textContent=s.description;
+
+document.getElementById("cStage").textContent=cStep+1;
+
+document.getElementById("cProgress").style.width=
+((cStep+1)/cStages.length*100)+"%";
+
+document.getElementById("cFeedback").innerHTML=
+"Choose an item to continue.";
+
+document.getElementById("cFeedback").className="feedback";
+
+document.getElementById("cFlashcard").innerHTML=
+"<p>Select the appropriate simulated item to reveal the learning card.</p>";
+
 }
+
 
 function nextC(){
 
- if(cStep<cStages.length-1){
-   cStep++;
-   updateC();
- }
+if(cStep<cStages.length-1){
+
+cStep++;
+
+updateC();
+
 }
+
+else{
+
+document.getElementById("cFeedback").innerHTML=
+"🏆 Simulation complete! Final score: "+cScore;
+
+}
+
+}
+
 
 function previousC(){
 
- if(cStep>0){
-   cStep--;
-   updateC();
- }
+if(cStep>0){
+
+cStep--;
+
+updateC();
+
 }
+
+}
+
+
+
+/* ===========================
+   AMPUTATION
+=========================== */
+
+let aStep=0;
+let aScore=0;
+
+const aStages=[
+
+{
+title:"Clinical Assessment",
+icon:"🩺",
+description:
+"The team assesses the limb condition and considers whether limb preservation is possible.",
+tool:"🩺 Examination set",
+cardTitle:"Stage 1: Clinical Assessment",
+card:
+"Assessment considers the patient's overall condition, the affected limb and whether other treatment options may preserve useful function."
+},
+
+{
+title:"Imaging",
+icon:"🩻",
+description:
+"Imaging is reviewed to understand the condition of the bones and surrounding tissues.",
+tool:"🩻 Imaging screen",
+cardTitle:"Stage 2: Imaging",
+card:
+"Imaging can help the clinical team understand anatomy, tissue involvement and the extent of disease or injury."
+},
+
+{
+title:"Circulation",
+icon:"❤️",
+description:
+"The team evaluates circulation and tissue viability.",
+tool:"❤️ Vascular monitor",
+cardTitle:"Stage 3: Circulation",
+card:
+"Blood supply is an important consideration when planning treatment because healthy tissue requires adequate circulation."
+},
+
+{
+title:"Anatomy Planning",
+icon:"🦴",
+description:
+"The simulator highlights bones, muscles, vessels and nerves.",
+tool:"🦴 Anatomy model",
+cardTitle:"Stage 4: Anatomy",
+card:
+"Important structures include bones, muscles, blood vessels and peripheral nerves. Their location and function matter when planning treatment."
+},
+
+{
+title:"Recovery",
+icon:"🏥",
+description:
+"The simulated procedure ends and the patient enters postoperative care.",
+tool:"🏥 Recovery monitor",
+cardTitle:"Stage 5: Recovery",
+card:
+"Recovery involves monitoring, pain management, wound care and prevention of complications."
+},
+
+{
+title:"Rehabilitation",
+icon:"♿",
+description:
+"The rehabilitation team begins planning mobility and functional recovery.",
+tool:"♿ Rehabilitation equipment",
+cardTitle:"Stage 6: Rehabilitation",
+card:
+"Rehabilitation can include physiotherapy, mobility training, psychological support and assessment for assistive or prosthetic devices."
+}
+
+];
+
+
+const aTools=[
+
+"🩺 Examination set",
+"🩻 Imaging screen",
+"❤️ Vascular monitor",
+"🦴 Anatomy model",
+"🏥 Recovery monitor",
+"♿ Rehabilitation equipment",
+"📚 Textbook",
+"💻 Laptop",
+"🎧 Headphones"
+
+];
+
+
+function renderATools(){
+
+let box=document.getElementById("aEquipment");
+
+box.innerHTML="";
+
+aTools.forEach(tool=>{
+
+let div=document.createElement("div");
+
+div.className="tool";
+
+div.innerHTML=
+"<span class='emoji'>"+tool.split(" ")[0]+"</span>"+
+tool.substring(tool.indexOf(" ")+1);
+
+div.onclick=function(){
+
+selectATool(tool);
+
+};
+
+box.appendChild(div);
+
+});
+
+}
+
+
+function selectATool(tool){
+
+let stage=aStages[aStep];
+
+let feedback=document.getElementById("aFeedback");
+
+if(tool===stage.tool){
+
+aScore+=10;
+
+document.getElementById("aScore").textContent=aScore;
+
+feedback.innerHTML=
+"<span class='correct'>✅ Correct choice.</span>";
+
+feedback.className="feedback correct";
+
+showAFlashcard();
+
+}else{
+
+feedback.innerHTML=
+"<span class='wrong'>❌ Not the best choice for this stage.</span>";
+
+feedback.className="feedback wrong";
+
+}
+
+}
+
+
+function showAFlashcard(){
+
+let s=aStages[aStep];
+
+document.getElementById("aFlashcard").innerHTML=
+
+"<div class='flashcard'>"+
+"<h3><span class='step-number'>"+(aStep+1)+"</span>"+
+s.cardTitle+"</h3>"+
+"<p>"+s.card+"</p>"+
+"</div>";
+
+}
+
 
 function updateA(){
 
- let s=aStages[aStep];
+let s=aStages[aStep];
 
- document.getElementById("aTitle").textContent=s[0];
- document.getElementById("aDescription").textContent=s[1];
- document.getElementById("aStage").textContent=
- "Stage "+(aStep+1)+" of "+aStages.length;
+document.getElementById("aTitle").textContent=s.title;
 
- document.getElementById("aProgress").style.width=
- ((aStep+1)/aStages.length*100)+"%";
+document.getElementById("aIcon").textContent=s.icon;
+
+document.getElementById("aDescription").textContent=s.description;
+
+document.getElementById("aStage").textContent=aStep+1;
+
+document.getElementById("aProgress").style.width=
+((aStep+1)/aStages.length*100)+"%";
+
+document.getElementById("aFeedback").innerHTML=
+"Choose an item to continue.";
+
+document.getElementById("aFeedback").className="feedback";
+
+document.getElementById("aFlashcard").innerHTML=
+"<p>Select the appropriate simulated item to reveal the learning card.</p>";
+
 }
+
 
 function nextA(){
 
- if(aStep<aStages.length-1){
-   aStep++;
-   updateA();
- }
+if(aStep<aStages.length-1){
+
+aStep++;
+
+updateA();
+
 }
+
+else{
+
+document.getElementById("aFeedback").innerHTML=
+"🏆 Simulation complete! Final score: "+aScore;
+
+}
+
+}
+
 
 function previousA(){
 
- if(aStep>0){
-   aStep--;
-   updateA();
- }
+if(aStep>0){
+
+aStep--;
+
+updateA();
+
 }
 
-function answerC(choice){
-
- let feedback=document.getElementById("cFeedback");
-
- if(choice===0){
-   feedback.innerHTML="✅ Correct. Emergency Caesarean delivery may be required when rapid delivery is necessary because of maternal or fetal compromise.";
-   feedback.style.color="#55e6a5";
- }else{
-   feedback.innerHTML="❌ Not quite. Consider the clinical indication for urgent delivery.";
-   feedback.style.color="#ff7777";
- }
 }
 
-function answerA(choice){
 
- let feedback=document.getElementById("aFeedback");
+/* START */
 
- if(choice===0){
-   feedback.innerHTML="✅ Correct. Viable tissue, circulation and future function are important considerations.";
-   feedback.style.color="#55e6a5";
- }else{
-   feedback.innerHTML="❌ Not quite. The surgical level should be based on clinical and anatomical factors.";
-   feedback.style.color="#ff7777";
- }
-}
-
-function flip(card){
- card.classList.toggle("flipped");
-}
+renderCTools();
+renderATools();
 
 updateC();
 updateA();
@@ -666,4 +996,4 @@ updateA();
 </script>
 
 </body>
-</html>sss
+</html>
