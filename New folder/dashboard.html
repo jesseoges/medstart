@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MedStart</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5fafb;
+    text-align: center;
+}
+
+.dashboard {
+    max-width: 700px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    color: #087f8c;
+    font-size: 38px;
+    margin-bottom: 35px;
+}
+
+.stethoscope {
+    width: 100%;
+    max-width: 500px;
+    height: 380px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.quiz {
+    font-size: 21px;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.quiz a {
+    color: #087f8c;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.quiz a:hover {
+    text-decoration: underline;
+}
+
+.home {
+    display: inline-block;
+    background: #087f8c;
+    color: white;
+    padding: 14px 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.home:hover {
+    background: #066b76;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>
+        Welcome back, <span id="name">Student</span>!
+    </h1>
+
+    <img
+        src="stethoscope.jpg"
+        alt="Stethoscope"
+        class="stethoscope"
+    >
+
+    <div class="quiz">
+        Click
+        <a href="https://medstart.com.ng/specialty-quiz.html">
+            here
+        </a>
+        to take the Specialty Quiz.
+    </div>
+
+    <a href="home.html" class="home">
+        Home
+    </a>
+
+</div>
+
+<script>
+const user = JSON.parse(localStorage.getItem("medstartUser"));
+
+if (user) {
+    document.getElementById("name").textContent = user.name;
+}
+</script>
+
+</body>
+</html>
