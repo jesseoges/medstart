@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedStart - Account</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f8fb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:90%;
+    max-width:420px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 25px rgba(0,0,0,.12);
+}
+
+h1{
+    text-align:center;
+    color:#087f8c;
+    margin-bottom:5px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#777;
+    margin-bottom:25px;
+}
+
+.tabs{
+    display:flex;
+    margin-bottom:20px;
+}
+
+.tabs button{
+    width:50%;
+    padding:12px;
+    border:0;
+    cursor:pointer;
+    background:#eee;
+    font-size:16px;
+}
+
+.tabs button.active{
+    background:#087f8c;
+    color:white;
+}
+
+.form{
+    display:none;
+}
+
+.form.active{
+    display:block;
+}
+
+input{
+    width:100%;
+    box-sizing:border-box;
+    padding:13px;
+    margin:8px 0 15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.submit{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:8px;
+    background:#087f8c;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.submit:hover{
+    background:#066b76;
+}
+
+.message{
+    text-align:center;
+    color:#d00;
+    margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>MedStart</h1>
+    <p class="subtitle">Medical Learning Platform</p>
+
+    <div class="tabs">
+        <button id="signInTab" class="active" onclick="showForm('signin')">
+            Sign In
+        </button>
+
+        <button id="signUpTab" onclick="showForm('signup')">
+            Create Account
+        </button>
+    </div>
+
+    <!-- SIGN IN -->
+    <div id="signin" class="form active">
+
+        <form onsubmit="signIn(event)">
+
+            <label>Email</label>
+            <input type="email" id="loginEmail" required>
+
+            <label>Password</label>
+            <input type="password" id="loginPassword" required>
+
+            <button class="submit" type="submit">
+                Sign In
+            </button>
+
+            <p id="loginMessage" class="message"></p>
+
+        </form>
+    </div>
+
+
+    <!-- CREATE ACCOUNT -->
+    <div id="signup" class="form">
+
+        <form onsubmit="createAccount(event)">
+
+            <label>Full Name</label>
+            <input type="text" id="name" required>
+
+            <label>Email</label>
+            <input type="email" id="email" required>
+
+            <label>Password</label>
+            <input type="password" id="password" required>
+
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword" required>
+
+            <button class="submit" type="submit">
+                Create Account
+            </button>
+
+            <p id="signupMessage" class="message"></p>
+
+        </form>
+    </div>
+
+</div>
+
+
+<script>
+
+/* SWITCH BETWEEN SIGN IN AND SIGN UP */
+
+function showForm(form){
+
+    document.getElementById("signin").classList.remove("active");
+    document.getElementById("signup").classList.remove("active");
+
+    document.getElementById("signInTab").classList.remove("active");
+    document.getElementById("signUpTab").classList.remove("active");
+
+    if(form === "signin"){
+
+        document.getElementById("signin").classList.add("active");
+        document.getElementById("signInTab").classList.add("active");
+
+    }else{
+
+        document.getElementById("signup").classList.add("active");
+        document.getElementById("signUpTab").classList.add("active");
+
+    }
+}
+
+
+/* CREATE ACCOUNT */
+
+function createAccount(event){
+
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    const message = document.getElementById("signupMessage");
+
+    if(password !== confirmPassword){
+
+        message.textContent = "Passwords do not match.";
+        return;
+
+    }
+
+    if(password.length < 6){
+
+        message.textContent = "Password must be at least 6 characters.";
+        return;
+
+    }
+
+    /* Save account information */
+
+    localStorage.setItem("medstartAccount", JSON.stringify({
+        name: name,
+        email: email,
+        password: password
+    }));
+
+    /* Save logged-in user */
+
+    localStorage.setItem("medstartUser", JSON.stringify({
+        name: name,
+        email: email
+    }));
+
+    /* Go to dashboard */
+
+    window.location.href = "dashboard.html";
+}
+
+
+/* SIGN IN */
+
+function signIn(event){
+
+    event.preventDefault();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    const message = document.getElementById("loginMessage");
+
+    const account = JSON.parse(
+        localStorage.getItem("medstartAccount")
+    );
+
+    if(!account){
+
+        message.textContent = "No account found. Please create an account first.";
+        return;
+
+    }
+
+    if(email !== account.email || password !== account.password){
+
+        message.textContent = "Incorrect email or password.";
+        return;
+
+    }
+
+    /* Save logged-in user */
+
+    localStorage.setItem("medstartUser", JSON.stringify({
+        name: account.name,
+        email: account.email
+    }));
+
+    /* Go to dashboard */
+
+    window.location.href = "dashboard.html";
+}
+
+</script>
+
+</body>
+</html>
