@@ -4,126 +4,105 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MedStart Dashboard</title>
+<title>MedStart</title>
 
 <style>
-
-*{
-box-sizing:border-box;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5fafb;
+    text-align: center;
 }
 
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f4f9ff;
-color:#222;
+.dashboard {
+    max-width: 700px;
+    margin: auto;
+    padding: 40px 20px;
 }
 
-/* HEADER */
-
-header{
-background:#1677c8;
-color:white;
-padding:18px 25px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+h1 {
+    color: #087f8c;
+    font-size: 38px;
+    margin-bottom: 35px;
 }
 
-.logo{
-font-size:25px;
-font-weight:bold;
+.stethoscope {
+    width: 100%;
+    max-width: 500px;
+    height: 380px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-bottom: 30px;
 }
 
-.logout{
-background:white;
-color:#1677c8;
-border:0;
-padding:9px 15px;
-border-radius:7px;
-font-weight:bold;
-cursor:pointer;
+.quiz {
+    font-size: 21px;
+    color: #333;
+    margin-bottom: 40px;
 }
 
-/* CONTENT */
-
-.container{
-width:92%;
-max-width:1100px;
-margin:30px auto;
+.quiz a {
+    color: #087f8c;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-.welcome{
-background:white;
-padding:25px;
-border-radius:15px;
-box-shadow:0 3px 15px #0001;
-margin-bottom:25px;
+.quiz a:hover {
+    text-decoration: underline;
 }
 
-.welcome h1{
-margin:0 0 8px;
-color:#1677c8;
+.home {
+    display: inline-block;
+    background: #087f8c;
+    color: white;
+    padding: 14px 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.welcome p{
-color:#666;
+.home:hover {
+    background: #066b76;
 }
-
-/* CARDS */
-
-.grid{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-}
-
-.card{
-background:white;
-padding:25px;
-border-radius:15px;
-box-shadow:0 3px 15px #0001;
-transition:.2s;
-}
-
-.card:hover{
-transform:translateY(-3px);
-}
-
-.icon{
-font-size:35px;
-margin-bottom:10px;
-}
-
-.card h2{
-margin:5px 0;
-color:#1677c8;
-font-size:20px;
-}
-
-.card p{
-color:#666;
-line-height:1.5;
-}
-
-.card button{
-background:#1677c8;
-color:white;
-border:0;
-padding:11px 18px;
-border-radius:7px;
-cursor:pointer;
-font-weight:bold;
-}
-
-/* FOOTER */
-
-footer{
-text-align:center;
-color:#777;
-padding:30px;
-}
-
 </style>
-</head
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>
+        Welcome back, <span id="name">Student</span>!
+    </h1>
+
+    <img
+        src="stethoscope.jpg"
+        alt="Stethoscope"
+        class="stethoscope"
+    >
+
+    <div class="quiz">
+        Click
+        <a href="https://medstart.com.ng/specialty-quiz.html">
+            here
+        </a>
+        to take the Specialty Quiz.
+    </div>
+
+    <a href="home.html" class="home">
+        Home
+    </a>
+
+</div>
+
+<script>
+const user = JSON.parse(localStorage.getItem("medstartUser"));
+
+if (user) {
+    document.getElementById("name").textContent = user.name;
+}
+</script>
+
+</body>
+</html>
