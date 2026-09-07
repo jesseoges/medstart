@@ -515,7 +515,21 @@ return [x[0],pct,x[2]];
 });
 
 
-/* Display */
+/* Save results for dashboard */
+
+localStorage.setItem(
+    "medstartSpecialtyResults",
+    JSON.stringify(
+        top.map(x => ({
+            name: x[0],
+            percentage: x[1],
+            description: x[2]
+        }))
+    )
+);
+
+
+/* Display results */
 
 document.getElementById("quiz").innerHTML=`
 <h2>🎯 Your Top 5 Matches</h2>

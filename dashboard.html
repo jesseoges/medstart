@@ -39,13 +39,42 @@ h1 {
 
 .quiz {
     font-size: 21px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .quiz a {
     color: #087f8c;
     font-weight: bold;
     text-decoration: none;
+}
+
+.specialty-results {
+    margin: 20px auto 40px;
+    max-width: 550px;
+}
+
+.specialty-results h2 {
+    color: #087f8c;
+    margin-bottom: 15px;
+}
+
+.specialty {
+    background: white;
+    padding: 14px;
+    margin: 8px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #ddd;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.redo {
+    display: inline-block;
+    margin-top: 12px;
+    color: #087f8c;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 17px;
 }
 
 .home {
@@ -75,26 +104,77 @@ h1 {
         alt="Stethoscope"
     >
 
-    <div class="quiz">
-        Click
-        <a href="https://medstart.com.ng/specialty-quiz.html">
-            here
-        </a>
-        to take the Specialty Quiz.
-    </div>
+    <div id="quizArea"></div>
 
-    <a href="https://medstart.com.ng/index.html?loggedin=1" class="home">
-    Home
-</a>
+    <a href="https://medstart.com.ng/index.html" class="home">
+        Home
+    </a>
 
 </div>
 
 <script>
+
+/* ================= USER NAME ================= */
+
 const user = JSON.parse(localStorage.getItem("medstartUser"));
 
 if (user && user.name) {
     document.getElementById("name").textContent = user.name;
 }
+
+
+/* ================= SPECIALTY RESULTS ================= */
+
+const savedResults = JSON.parse(
+    localStorage.getItem("medstartSpecialtyResults")
+);
+
+const quizArea = document.getElementById("quizArea");
+
+
+if (savedResults && savedResults.length > 0) {
+
+    quizArea.innerHTML = `
+
+        <div class="specialty-results">
+
+            <h2>🎯 Your Top Specialties</h2>
+
+            ${savedResults.map((specialty, index) => `
+                <div class="specialty">
+                    #${index + 1} ${specialty.name}
+                </div>
+            `).join("")}
+
+            <a
+                class="redo"
+                href="https://medstart.com.ng/specialty-quiz.html"
+            >
+                🔄 Redo the test
+            </a>
+
+        </div>
+
+    `;
+
+} else {
+
+    quizArea.innerHTML = `
+
+        <div class="quiz">
+
+            Click
+            <a href="https://medstart.com.ng/specialty-quiz.html">
+                here
+            </a>
+            to take the Specialty Quiz.
+
+        </div>
+
+    `;
+
+}
+
 </script>
 
 </body>
