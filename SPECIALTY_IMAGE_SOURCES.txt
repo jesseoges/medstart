@@ -1,0 +1,38 @@
+MedStart specialty image sources
+Images are loaded from Wikimedia Commons. Each file page contains its own copyright/license information. The site should retain attribution/share-alike notices where the individual license requires them.
+
+Neurosurgery: https://commons.wikimedia.org/wiki/File:Mrgfus_operation_room.jpg
+Cardiology: https://commons.wikimedia.org/wiki/File:Phases_of_the_cardiac_cycle.svg
+Cardiothoracic Surgery: https://commons.wikimedia.org/wiki/File:Cardiac_operating_room.jpg
+Emergency Medicine: https://commons.wikimedia.org/wiki/File:Emergency_Thoracotomy.png
+General Surgery: https://commons.wikimedia.org/wiki/File:Operating_room.JPG
+Anesthesiology: https://commons.wikimedia.org/wiki/File:Tubings_of_anaesthesia_machine.jpg
+Obstetrics & Gynecology: https://commons.wikimedia.org/wiki/File:(Woman_in_labor)_(5038697605).jpg
+Pediatrics: https://commons.wikimedia.org/wiki/File:US_Navy_060531-N-1577S-138_Navy_Cmdr._Sandra_Tomita_examines_a_child_in_the_pediatric_ward_at_the_Zamboanga_Medical_Center.jpg
+Orthopedic Surgery: https://commons.wikimedia.org/wiki/File:Bado_Classification_-_Monteggia_Fractures.jpg
+Plastic Surgery: https://commons.wikimedia.org/wiki/File:4_S%C3%A4ulen_der_Plastischen_Chirurgie.jpg
+ENT (Otolaryngology): https://commons.wikimedia.org/wiki/File:Audi_notarzt.jpg
+Ophthalmology: https://commons.wikimedia.org/wiki/File:Augenarzt_Operation_9e_Augenverband.jpg
+Dermatology: https://commons.wikimedia.org/wiki/File:Dermatology34333231.jpg
+Radiology: https://commons.wikimedia.org/wiki/File:0016_ENVT_Salle_de_Radiologie.JPG
+Pathology: https://commons.wikimedia.org/wiki/File:Histopathology_of_a_lymph_node_with_metastatic_invasive_ductal_carcinoma_from_the_breast.jpg
+Psychiatry: https://commons.wikimedia.org/wiki/File:Psychiatrist_talking_to_patient.jpg
+Family Medicine: https://commons.wikimedia.org/wiki/File:IBPA_135599_-_A_equipe_da_Cl%C3%ADnica_da_Fam%C3%ADlia_Santa_Marta_atende_-_2024-05-21_-_Cristine_Rochol-PMPA.JPG
+Internal Medicine: https://commons.wikimedia.org/wiki/File:Internal_medicine_doctor.jpg
+Neurology: https://commons.wikimedia.org/wiki/File:Basic_structures_of_the_brain_highlighted.png
+Vascular Surgery: https://commons.wikimedia.org/wiki/File:FenGraft.jpg
+Urology: https://commons.wikimedia.org/wiki/File:Surgeon_Dr_Alex_Cato_performs_an_operation_at_the_Vaiola_Hospital_in_Tonga%27s_capital%2C_Nuku%CA%BBalofa.Dr_Alex_Cato_is_taking_part_of_an_AusAID-funded_Pacific_Islands_Program_(PIP)_urology_team_visiting_Tonga._(10727863794).jpg
+Nephrology: https://commons.wikimedia.org/wiki/File:Kidney.jpg
+Gastroenterology: https://commons.wikimedia.org/wiki/File:Abdominal_pain.jpg
+Pulmonology: https://commons.wikimedia.org/wiki/File:Computed_Tomography_CT_Chest_Imaging.jpg
+Endocrinology: https://commons.wikimedia.org/wiki/File:Diabetes.jpg
+Infectious Disease: https://commons.wikimedia.org/wiki/File:Coronavirus_disease.jpg
+Oncology: https://commons.wikimedia.org/wiki/File:Oncology.jpg
+Rheumatology: https://commons.wikimedia.org/wiki/File:Rheumatoid_Arthritis.JPG
+Geriatric Medicine: https://commons.wikimedia.org/wiki/File:Aging_treatment_approaches.jpg
+Physical Medicine & Rehabilitation: https://commons.wikimedia.org/wiki/File:Physical_medicine.jpg
+Pain Medicine: https://commons.wikimedia.org/wiki/File:Pain-Doctor-Medial-Branch-Block-3.jpg
+Transfusion Medicine: https://commons.wikimedia.org/wiki/File:Antonio_e_Biagio_e_Cesare_Arrigo_Stem.jpg
+Hematology: https://commons.wikimedia.org/wiki/File:Sickle_cell_anemia_smear.jpg
+Clinical Genetics: https://commons.wikimedia.org/wiki/File:Chromosomes_.png
+Sports Medicine: https://commons.wikimedia.org/wiki/File:Balance_discus_(1).jpg

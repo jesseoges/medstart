@@ -1,0 +1,18 @@
+MedStart EmailJS setup
+
+The sign-in page now loads EmailJS correctly and never sends/stores the user's password.
+
+To enable sign-in notification emails, the site owner must configure:
+EMAILJS_PUBLIC_KEY
+EMAILJS_SERVICE_ID
+EMAILJS_TEMPLATE_ID
+
+The EmailJS template should send the notification to jesseoges@gmail.com and use only:
+- user_email
+- sign_in_time
+- site
+Do not include the password.
+
+Until those values are configured, sign-in still works as a local prototype and displays that email notification is not configured.
+
+For real production accounts across devices, replace this localStorage prototype with a proper authentication backend such as Supabase or Firebase.

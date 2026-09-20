@@ -1,0 +1,10 @@
+MedStart Specialty Quiz
+20 indirect scenario questions.
+Includes 1-10 work-life balance slider.
+Includes adjustable importance sliders: income, prestige, fame, innovation, patient relationship.
+Results are preference-based exploration, not a medical aptitude test or definitive career recommendation.
+
+Expanded specialty database: 35 specialties. Results intentionally display the top 5 only, selected from the full database. Scores are capped at 97% and are preference-alignment indicators, not aptitude predictions.
+
+
+Hematology was added to the expanded specialty database so the quiz now has 35 available specialties while still displaying only the top 5 results.

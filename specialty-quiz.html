@@ -1,554 +1,222 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MedStart Specialty Quiz</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f3f8fa;font-family:Arial;color:#17313b}
-.box{max-width:760px;margin:20px auto;background:#fff;padding:24px;border-radius:16px;box-shadow:0 3px 18px #ccd}
-h1{text-align:center;color:#087f8c}
-.q{font-size:19px;font-weight:bold;margin:22px 0}
-.opt{
-display:block;
-width:100%;
-padding:14px;
-margin:9px 0;
-border:1px solid #111;
-border-radius:10px;
-background:#000;
-color:#fff;
-text-align:left;
-cursor:pointer
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Specialty Quiz | MedStart</title>
+<link href="assets/medstart-theme.css" rel="stylesheet"/><style>
+:root{--db:#061a33;--db2:#0a2748;--green:#20c997;--green2:#49dfb0;--white:#f5fbff;--muted:#a9bfd2;--card:#0b2340;--line:rgba(32,201,151,.24)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(145deg,var(--db),var(--db2));color:var(--white);min-height:100vh}
+.quiz-wrap{max-width:900px;margin:auto;padding:28px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}
+.logo{font-weight:900;font-size:24px}.logo span{color:var(--green)}.back{color:var(--muted);text-decoration:none}
+.intro,.quiz-card,.result{background:rgba(11,35,64,.94);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+h1{font-size:clamp(28px,6vw,46px);margin:0 0 10px}.intro p{color:var(--muted);line-height:1.65}.start{margin-top:18px}
+button{border:0;border-radius:12px;padding:13px 18px;font-weight:800;cursor:pointer;background:var(--green);color:#03150f}
+button.secondary{background:transparent;color:var(--green);border:1px solid var(--green)}
+.hidden{display:none!important}.progress{height:7px;background:#123352;border-radius:20px;overflow:hidden;margin:18px 0}.bar{height:100%;background:var(--green);width:0;transition:width .25s}
+.qnum{color:var(--green);font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.08em}.question{font-size:23px;line-height:1.35;margin:10px 0 22px}
+.option{display:block;width:100%;text-align:left;margin:10px 0;background:#102f50;color:var(--white);border:1px solid rgba(175,194,212,.18);font-weight:600}
+.option:hover{border-color:var(--green);background:#12395a}.option.selected{border-color:var(--green);background:rgba(32,201,151,.15);box-shadow:0 0 0 2px rgba(32,201,151,.08)}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px}.nav button:disabled{opacity:.4;cursor:not-allowed}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:18px}.control{background:#08203b;border:1px solid rgba(175,194,212,.14);padding:18px;border-radius:16px}
+.control label{display:flex;justify-content:space-between;gap:12px;font-weight:800}.value{color:var(--green)}
+input[type=range]{width:100%;accent-color:var(--green);margin-top:14px}
+.importance{display:grid;gap:13px;margin-top:14px}.imp-row{display:grid;grid-template-columns:110px 1fr 28px;align-items:center;gap:10px;color:#dceaf4}
+.results-grid{display:grid;gap:12px;margin-top:18px}.result-row{background:#102f50;border-radius:14px;padding:15px}.result-row strong{display:block;font-size:18px}.meter{height:7px;background:#173957;border-radius:10px;margin-top:9px;overflow:hidden}.meter i{display:block;height:100%;background:var(--green)}
+.note{font-size:13px;color:var(--muted);line-height:1.55;margin-top:15px}
+@media(max-width:650px){.controls{grid-template-columns:1fr}.quiz-wrap{padding:18px 12px 40px}.quiz-card,.intro,.result{padding:21px}.question{font-size:20px}.imp-row{grid-template-columns:95px 1fr 25px}}
+</style><style>
+/* MedStart unified deep-blue / surgical-green theme */
+:root{--deep:#061a33;--deep2:#0a2748;--panel:#0b2340;--green:#20c997;--text:#eaf4fa;--muted:#afc2d4}
+html,body{background:#061a33!important;color:#eaf4fa!important}
+body{font-family:Arial,Helvetica,sans-serif!important}
+.header{position:sticky!important;top:0!important;z-index:100!important;background:rgba(6,26,51,.98)!important;border-bottom:1px solid rgba(32,201,151,.22)!important;backdrop-filter:blur(8px)}
+.header-inner{max-width:1200px!important;margin:auto!important;padding:11px 18px!important}
+.top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important}
+.brand{display:flex!important;align-items:center!important;gap:10px!important}.logo{width:48px!important;height:48px!important;object-fit:contain!important;border-radius:12px!important;border:1px solid rgba(32,201,151,.35)!important;background:#fff!important}.brand-text strong{display:block!important;color:#20c997!important;font-size:22px!important}.brand-text span{display:block!important;color:#afc2d4!important;font-size:12px!important}
+.signup{background:#20c997!important;color:#061a33!important;padding:10px 15px!important;border-radius:9px!important;font-weight:800!important;display:inline-block!important}.nav-wrap{display:flex!important;align-items:center!important;gap:6px!important;margin-top:9px!important}.nav{display:flex!important;gap:4px!important;overflow-x:auto!important;scrollbar-width:none!important;flex:1!important}.nav::-webkit-scrollbar{display:none}.nav a{padding:8px 11px!important;border-radius:8px!important;white-space:nowrap!important;font-size:14px!important;color:#dceaf4!important}.nav a:hover,.nav a.active{background:#0b3154!important;color:#20c997!important}.arrow{border:0!important;background:#20c997!important;color:#061a33!important;width:34px!important;height:34px!important;border-radius:50%!important;font-size:20px!important;cursor:pointer!important}
+main{background:transparent!important}.hero,.article-hero,.card,.info-card,.contact-card,.hero-card,.feature,.result,.dashboard-panel,.empty{background:#0b2340!important;border-color:rgba(32,201,151,.22)!important;color:#eaf4fa!important}.hero p,.hero-card p,.card p,.info-card p,.info-card li,.contact-card p,.article-content p,.article-content li,.section-head p,.personal-result small{color:#afc2d4!important}.hero h1,.article-content h1,.card h2,.card h3,.info-card h2,.contact-card h2,.section h2{color:#f5fbff!important}.hero-main{background:linear-gradient(135deg,#0a2748,#063b52)!important;border-color:rgba(32,201,151,.25)!important}.eyebrow,.section-link,.tag,.back,.article-content h2{color:#20c997!important}.badge{background:#103a43!important;color:#20c997!important}.bar{background:#173957!important}.bar span,.mini-bar i{background:#20c997!important}.footer{background:#041426!important;color:#dceaf4!important}.footer p{color:#8fa8bb!important}.footer a{color:#20c997!important}
+@media(max-width:520px){.header-inner{padding:9px 10px!important}.brand-text span{display:none!important}.signup{font-size:13px!important;padding:8px 10px!important}}
+</style><style id="medstart-mobile-fix">
+html{overflow-x:hidden}
+body{overflow-x:hidden;max-width:100vw}
+img{max-width:100%;height:auto}
+.header-inner{width:100%;padding:10px 12px!important}
+.top{min-width:0}
+.brand{min-width:0;max-width:calc(100% - 95px)}
+.brand .logo{width:46px!important;height:46px!important;min-width:46px;object-fit:cover!important;display:block!important}
+.brand-text{min-width:0}.brand-text strong{font-size:20px!important}.brand-text span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.signup{flex:none}
+.nav-wrap{width:100%;min-width:0}.nav{min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}.nav a{font-size:13px!important;padding:8px 10px!important}
+main{width:100%;max-width:1200px;padding:22px 12px 48px!important}
+.hero,.hero-main,.article-hero,.card,.info-card,.contact-card,.hero-card,.feature,.result,.dashboard-panel,.empty,.case-card{max-width:100%;overflow:hidden}
+h1{font-size:clamp(28px,8vw,44px)!important}.case-title{font-size:21px!important}
+button,.action,.opt{max-width:100%}
+.controls{flex-wrap:wrap}.controls button{flex:1 1 160px}
+.footer-inner{flex-wrap:wrap;gap:14px}
+@media(max-width:600px){.header-inner{padding:8px 10px!important}.brand-text span{display:none!important}.brand .logo{width:42px!important;height:42px!important;min-width:42px}.signup{font-size:12px!important;padding:8px 10px!important}.hero{padding:22px 18px!important;border-radius:18px}.case-card{padding:16px!important;border-radius:16px}.opt{font-size:14px!important;padding:12px!important;white-space:normal;line-height:1.4}.tabs{padding-bottom:10px}.nav-wrap{margin-top:7px!important}.arrow{flex:none}}
+</style><style id="phone-logo-fix">
+@media(max-width:700px){body{overflow-x:hidden}.header-inner{max-width:100%;overflow:hidden}.top{min-width:0}.brand{min-width:0;max-width:calc(100vw - 80px)}.brand-text{min-width:0}.brand-text strong{white-space:nowrap}.nav-wrap{max-width:100vw;overflow:hidden}.nav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav a{flex:0 0 auto;white-space:nowrap}.logo{width:48px!important;height:48px!important;object-fit:contain!important;display:block!important;flex:0 0 48px!important}.signup{flex:0 0 auto}}
+</style>
+<style id="final-phone-fix">
+@media (max-width:700px){
+  html,body{max-width:100%;overflow-x:hidden!important}
+  .header{width:100%;overflow:hidden}
+  .header-inner{width:100%;box-sizing:border-box;padding:8px 10px!important}
+  .top{width:100%;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .brand{min-width:0;display:flex;align-items:center;gap:8px}
+  .brand .logo{width:46px!important;height:46px!important;min-width:46px!important;object-fit:contain!important;display:block!important}
+  .brand-text{min-width:0}
+  .brand-text strong{font-size:18px!important;white-space:nowrap}
+  .brand-text span{display:none!important}
+  .signup{font-size:12px!important;padding:8px 10px!important;white-space:nowrap}
+  .nav-wrap{width:100%;max-width:100%;overflow:hidden;margin-top:7px!important;display:flex}
+  .nav{display:flex!important;flex:1;min-width:0;overflow-x:auto!important;white-space:nowrap!important;gap:16px!important;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{flex:0 0 auto!important;white-space:nowrap!important;font-size:14px!important}
+  .arrow{flex:0 0 auto!important}
+  main{width:100%;box-sizing:border-box}
+  .hero,.case-card,.result{box-sizing:border-box}
 }
-.opt:hover{
-background:#222;
-}
-button{padding:13px 20px;border:0;border-radius:9px;background:#087f8c;color:#fff;font-weight:bold;cursor:pointer}
-.bar{height:9px;background:#ddd;border-radius:10px;margin:10px 0 20px}
-.fill{height:100%;background:#087f8c;border-radius:10px}
-input[type=range]{width:100%}
-.rank{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f7fafb;margin:7px 0;border-radius:8px}
-.rank select{padding:7px}
-.result{padding:15px;margin:10px 0;background:#eef8f9;border-radius:10px}
-.pct{font-size:21px;font-weight:bold;color:#087f8c}
-small{color:#526b72;line-height:1.5}
 </style>
 </head>
-
-<body>
-<div class="box">
-<h1>🩺 MedStart Specialty Quiz</h1>
-<div id="quiz"></div>
+<body><header class="header">
+  <div class="header-inner">
+    <div class="top">
+      <a class="brand" href="index.html">
+        <img class="logo" src="data:image/jpeg;base64,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" alt="MedStart logo">
+        <div class="brand-text">
+          <strong>MedStart</strong>
+          <span>Explore medicine. Build your path.</span>
+        </div>
+      </a>
+      <a class="signup" href="signup.html">Sign Up</a>
+    </div>
+    <div class="nav-wrap">
+      <nav class="nav" id="nav">
+        <a href="index.html">Home</a>
+        <a href="specialty-quiz.html">Specialty Quiz</a>
+        <a href="specialties.html">Specialties</a>
+        <a href="cases.html">Cases</a>
+        <a href="articles.html">Articles</a>
+        <a href="health-facts.html">Health Facts</a>
+        <a href="about-medicine.html">About Medicine</a>
+        <a href="research.html">Research</a>
+        <a href="contacts.html">Contact</a>
+        <a href="signin.html">Sign In</a>
+      </nav>
+      <button aria-label="Show more navigation" class="arrow" onclick="document.getElementById('nav').scrollBy({left:260,behavior:'smooth'})">›</button>
+    </div>
+  </div>
+</header>
+<div class="quiz-wrap">
+<div class="top"><div class="logo">Med<span>Start</span></div><a class="back" href="index.html">← Home</a></div>
+<section class="intro" id="intro">
+<div class="qnum">MEDSTART SPECIALTY QUIZ</div>
+<h1>Find the fields that fit your preferences.</h1>
+<p>This 20-question exploration uses indirect scenarios rather than simply asking you which specialty you like. Your answers are combined with your work-life preference and the importance you assign to income, prestige, fame, innovation and patient relationship.</p>
+<p class="note">This is an exploration tool, not a medical aptitude test or a prediction of your future specialty.</p>
+<button class="start" id="start">Start Quiz</button>
+</section>
+<section class="quiz-card hidden" id="quiz">
+<div class="qnum" id="qnum"></div><div class="progress"><div class="bar" id="bar"></div></div>
+<div class="question" id="question"></div><div id="options"></div>
+<div class="nav"><button class="secondary" id="prev">← Previous</button><button id="next">Next →</button></div>
+</section>
+<section class="quiz-card hidden" id="preferences">
+<div class="qnum">FINAL PREFERENCES</div>
+<h2>Fine-tune your priorities</h2>
+<p class="note">These settings affect how the final profile is weighted.</p>
+<div class="controls">
+<div class="control"><label>Work-life balance <span class="value" id="wlVal">5/10</span></label>
+<input id="wl" max="10" min="1" type="range" value="5"/></div>
 </div>
-
+<h3>How important are these to you?</h3>
+<div class="note">1 = Not important   •   5 = Very important</div>
+<div class="importance" id="importance"></div>
+<button id="finish">Show My Results</button>
+</section>
+<section class="result hidden" id="results">
+<div class="qnum">YOUR EXPLORATION PROFILE</div><h2>Specialties to explore</h2>
+<p class="note">These are preference-based matches, not a verdict on what you should become.</p>
+<div class="results-grid" id="resultsGrid"></div>
+<button class="secondary" id="restart">Retake Quiz</button>
+</section>
+</div>
 <script>
-
-/* ================= SPECIALTIES ================= */
-
-const specialties=[
-
-["Cardiology",
-["heart","physiology","technology","longterm","diagnosis"],
-"Best suited to people who enjoy physiology, complex diagnosis, technology and following important cardiovascular problems over time."],
-
-["Interventional Cardiology",
-["heart","procedures","technology","precision","acute"],
-"Fits someone who likes cardiovascular medicine combined with technically precise interventions and fast clinical decisions."],
-
-["Neurology",
-["brain","diagnosis","complex","longterm","problem"],
-"Strong fit for people who enjoy difficult diagnostic puzzles, neuroscience and understanding complicated patterns."],
-
-["Neurosurgery",
-["brain","precision","procedures","complex","acute"],
-"Fits someone attracted to highly precise neurological treatment, complex decision-making and technically demanding procedures."],
-
-["Gastroenterology",
-["digestive","diagnosis","procedures","technology","longterm"],
-"Good match for someone who enjoys internal medicine, diagnostic reasoning, technology and procedural treatment."],
-
-["Hepatology",
-["liver","complex","diagnosis","longterm","research"],
-"Fits people interested in complex liver disease, long-term care and detailed medical reasoning."],
-
-["Endocrinology",
-["hormones","diagnosis","longterm","research","physiology"],
-"Strong match for analytical thinkers who enjoy physiology, hormones and managing conditions over time."],
-
-["Nephrology",
-["kidney","physiology","complex","longterm","acute"],
-"Fits someone who enjoys physiology, complex medical problems and long-term patient management."],
-
-["Pulmonology",
-["lungs","diagnosis","technology","acute","longterm"],
-"Good for people interested in respiratory physiology, diagnostic technology and both acute and continuing care."],
-
-["Rheumatology",
-["immune","diagnosis","longterm","complex","patient"],
-"Fits people who enjoy solving complex diagnostic problems while developing long-term patient relationships."],
-
-["Infectious Disease",
-["infection","research","diagnosis","public","complex"],
-"Strong fit for curious people interested in infections, investigation, research and broader health problems."],
-
-["Hematology",
-["blood","diagnosis","research","complex","laboratory"],
-"Fits analytical thinkers who enjoy blood disorders, complex diagnosis, laboratory science and research."],
-
-["Medical Oncology",
-["cancer","research","technology","longterm","complex"],
-"Good match for people drawn to cancer biology, research, advanced treatment and meaningful continuing care."],
-
-["Allergy & Immunology",
-["immune","research","diagnosis","patient","longterm"],
-"Fits someone interested in immune science, diagnosis, research and building lasting patient relationships."],
-
-["General Surgery",
-["procedures","variety","acute","team","problem"],
-"Fits people who enjoy broad clinical variety, practical problem-solving, decisive treatment and technically skilled procedures."],
-
-["Trauma Surgery",
-["acute","team","procedures","quick","critical"],
-"Strong match for people who thrive in urgent situations, teamwork, rapid decisions and complex physical injuries."],
-
-["Orthopedic Surgery",
-["movement","procedures","precision","rehab","problem"],
-"Fits someone interested in movement, anatomy, precise treatment and helping people regain physical function."],
-
-["Orthopedic Sports Surgery",
-["movement","precision","procedures","rehab","sports"],
-"Good fit for people interested in musculoskeletal problems, precision, physical function and recovery."],
-
-["Cardiothoracic Surgery",
-["heart","lungs","precision","procedures","critical"],
-"Fits people fascinated by cardiopulmonary anatomy, technically demanding treatment and high-stakes decision-making."],
-
-["Vascular Surgery",
-["vessels","precision","procedures","technology","acute"],
-"Strong fit for people interested in circulation, detailed anatomy, technology and complex vascular treatment."],
-
-["Plastic & Reconstructive Surgery",
-["precision","creativity","procedures","reconstruction","problem"],
-"Fits people who combine technical precision with creativity and an interest in reconstruction and functional restoration."],
-
-["Urology",
-["urinary","procedures","technology","longterm","problem"],
-"Good match for people interested in anatomy, technology, procedures and both short- and long-term patient care."],
-
-["ENT",
-["head","procedures","technology","variety","patient"],
-"Fits someone who enjoys varied anatomy, communication, technology and a mixture of medical and procedural care."],
-
-["Ophthalmology",
-["eyes","precision","technology","procedures","longterm"],
-"Strong match for people who value precision, technology, visual diagnosis and focused patient care."],
-
-["Obstetrics & Gynecology",
-["women","procedures","communication","acute","longterm"],
-"Fits people interested in women's health, communication, changing clinical situations and both continuing and procedural care."],
-
-["Maternal-Fetal Medicine",
-["pregnancy","complex","technology","acute","women"],
-"Good fit for people who enjoy complex pregnancy problems, advanced monitoring and high-level clinical decision-making."],
-
-["Pediatrics",
-["children","communication","longterm","variety","patient"],
-"Fits people who enjoy communication, variety and forming trusting relationships with children and families."],
-
-["Neonatology",
-["newborn","critical","technology","acute","team"],
-"Strong match for people drawn to fragile newborn patients, intensive decision-making, technology and teamwork."],
-
-["Pediatric Cardiology",
-["children","heart","technology","longterm","complex"],
-"Fits someone interested in cardiovascular medicine while enjoying communication and long-term care of younger patients."],
-
-["Pediatric Surgery",
-["children","procedures","precision","acute","team"],
-"Good match for people interested in technically precise treatment while caring for children and families."],
-
-["Child Psychiatry",
-["children","mental","communication","longterm","patient"],
-"Fits someone interested in child development, communication, behaviour and long-term relationships."],
-
-["Psychiatry",
-["mental","communication","longterm","complex","patient"],
-"Strong fit for people fascinated by human behaviour, communication, psychology and continuing patient relationships."],
-
-["Emergency Medicine",
-["acute","quick","variety","team","problem"],
-"Fits people who enjoy variety, rapid reasoning, urgent problems and working effectively with a team."],
-
-["Anesthesiology",
-["physiology","precision","acute","technology","procedures"],
-"Good match for people who enjoy physiology, precise interventions, technology and rapidly changing clinical situations."],
-
-["Critical Care Medicine",
-["critical","physiology","technology","team","acute"],
-"Strong fit for people who enjoy complex physiology, advanced technology, teamwork and high-acuity care."],
-
-["Radiology",
-["imaging","technology","diagnosis","problem","precision"],
-"Fits people who enjoy pattern recognition, technology, anatomy and solving diagnostic puzzles."],
-
-["Interventional Radiology",
-["imaging","procedures","technology","precision","acute"],
-"Good match for someone who combines diagnostic thinking with image-guided technical treatment."],
-
-["Pathology",
-["laboratory","diagnosis","research","problem","precision"],
-"Strong fit for analytical people who enjoy disease mechanisms, laboratory investigation and diagnostic accuracy."],
-
-["Dermatology",
-["skin","diagnosis","longterm","patient","precision"],
-"Fits people interested in visual diagnosis, focused medicine, continuity of care and precise treatment."],
-
-["Family Medicine",
-["variety","communication","longterm","patient","community"],
-"Excellent fit for people who value broad medicine, continuity, communication and knowing patients over time."],
-
-["Internal Medicine",
-["diagnosis","complex","variety","longterm","problem"],
-"Fits people who enjoy broad adult medicine, complex diagnosis and intellectually challenging cases."],
-
-["Geriatric Medicine",
-["older","communication","complex","longterm","patient"],
-"Good match for people who enjoy complex patients, communication and long-term holistic care."],
-
-["Sports Medicine",
-["movement","rehab","prevention","communication","sports"],
-"Fits people interested in movement, performance, prevention, rehabilitation and patient education."],
-
-["Physical Medicine & Rehabilitation",
-["rehab","movement","communication","longterm","patient"],
-"Strong fit for people who find restoring function and building long-term therapeutic relationships rewarding."],
-
-["Public Health Medicine",
-["public","prevention","research","community","population"],
-"Fits people who want to improve health at a population level through prevention, research and policy."],
-
-["Occupational Medicine",
-["work","prevention","public","longterm","communication"],
-"Good match for people interested in workplace health, prevention, communication and broader systems."],
-
-["Preventive Medicine",
-["prevention","research","public","community","population"],
-"Fits people motivated by preventing disease and improving health before problems become severe."],
-
-["Medical Genetics",
-["genetics","diagnosis","research","communication","complex"],
-"Strong fit for people interested in genetics, rare conditions, investigation and detailed patient counselling."],
-
-["Palliative Medicine",
-["communication","longterm","complex","patient","team"],
-"Fits people who value communication, compassion, complex decision-making and meaningful long-term relationships."]
-
-];
-
-
-/* ================= QUESTIONS ================= */
-
-const questions=[
-
-["When faced with a difficult problem, what part tends to interest you most?",[
-["Finding the hidden pattern",["diagnosis","problem","complex"]],
-["Understanding what is happening biologically",["physiology","research"]],
-["Figuring out the most practical solution",["procedures","precision"]],
-["Understanding the person's experience",["communication","patient"]]]],
-
-["Which kind of progress feels most satisfying?",[
-["A difficult problem finally makes sense",["diagnosis","problem"]],
-["Someone's function gradually improves",["rehab","longterm"]],
-["A new discovery changes what is possible",["research","technology"]],
-["A person feels understood and supported",["patient","communication"]]]],
-
-["Imagine your ideal working day. What would you want most?",[
-["A wide variety of challenges",["variety","acute"]],
-["A few complicated problems to investigate deeply",["complex","diagnosis"]],
-["A balance of people and technical work",["procedures","technology"]],
-["Time to build strong relationships",["longterm","patient"]]]],
-
-["Which type of information naturally grabs your attention?",[
-["Images and visual patterns",["imaging","precision"]],
-["Numbers, measurements and physiology",["physiology","diagnosis"]],
-["Stories, behaviour and communication",["mental","communication"]],
-["Laboratory and scientific evidence",["laboratory","research"]]]],
-
-["When pressure rises, which role sounds most natural?",[
-["Make a quick decision and act",["acute","quick"]],
-["Slow down and analyse the situation",["diagnosis","complex"]],
-["Coordinate with others",["team","communication"]],
-["Focus intensely on technical accuracy",["precision","procedures"]]]],
-
-["What kind of impact would you most like your career to have?",[
-["Help individual people over many years",["longterm","patient"]],
-["Solve difficult individual medical problems",["diagnosis","complex"]],
-["Improve treatment through science and innovation",["research","technology"]],
-["Improve health for large groups of people",["public","prevention"]]]],
-
-["Which statement sounds closest to you?",[
-["I like understanding how systems work",["physiology","problem"]],
-["I like working with people",["communication","patient"]],
-["I like mastering difficult skills",["precision","procedures"]],
-["I like discovering things others haven't noticed",["research","diagnosis"]]]],
-
-["Which type of uncertainty would you find most interesting?",[
-["A mysterious diagnosis",["diagnosis","complex"]],
-["A rapidly changing situation",["acute","quick"]],
-["A long-term problem with many factors",["longterm","complex"]],
-["A scientific question without an obvious answer",["research","innovation"]]]],
-
-["What would make you proud at the end of a difficult day?",[
-["I solved something complicated",["diagnosis","problem"]],
-["I helped someone regain independence",["rehab","patient"]],
-["I handled a demanding situation effectively",["acute","team"]],
-["I learned something genuinely new",["research","technology"]]]],
-
-["Which combination sounds most appealing?",[
-["Science + people",["research","patient"]],
-["Technology + diagnosis",["technology","imaging","diagnosis"]],
-["Precision + practical treatment",["precision","procedures"]],
-["Communication + long-term care",["communication","longterm"]]]]
-
-];
-
-
-/* ================= STATE ================= */
-
-let current=0;
-let answers=[];
-let lifestyle=5;
-
-
-/* ================= QUIZ ================= */
-
-function showQuestion(){
-
-if(current<questions.length){
-
-let q=questions[current];
-
-document.getElementById("quiz").innerHTML=
-`<b>Question ${current+1} of ${questions.length}</b>
-<div class="bar"><div class="fill" style="width:${current/questions.length*100}%"></div></div>
-<div class="q">${q[0]}</div>`+
-q[1].map((x,n)=>
-`<button class="opt" onclick="answer(${n})">${x[0]}</button>`
-).join("");
-
-}else showLifestyle();
-
+const questions=[{id:"q1",text:'You arrive at a complex case where the key problem is hidden inside a delicate structure. Which kind of challenge pulls you in most?',correct:'A',why:'Finding the exact anatomical problem and planning a precise intervention',options:[{value:"A",text:'Precise problem-solving in complex anatomy'},{value:"B",text:'Long-term management of a known condition'},{value:"C",text:'Coordinating many urgent problems at once'},{value:"D",text:'Building a broad preventive plan'}]},{id:"q2",text:'A patient may need a decision that changes their condition within minutes. Which environment sounds most engaging?',correct:'C',why:'A fast-moving setting where priorities change rapidly',options:[{value:"A",text:'A scheduled specialist clinic'},{value:"B",text:'A research laboratory'},{value:"C",text:'An acute-care environment'},{value:"D",text:'A long-term rehabilitation service'}]},{id:"q3",text:'You can spend an afternoon doing one kind of work. Which sounds most satisfying?',correct:'B',why:'Interpreting patterns in tests and connecting them to symptoms',options:[{value:"A",text:'Interpreting cardiovascular tests and physiology'},{value:"B",text:'Connecting diagnostic evidence into a medical explanation'},{value:"C",text:'Performing a technical procedure'},{value:"D",text:'Teaching preventive health'}]},{id:"q4",text:'A difficult case involves an organ system where tiny technical decisions can have major consequences. What attracts you?',correct:'D',why:'Fine technical work where anatomy and precision matter greatly',options:[{value:"A",text:'Population-level prevention'},{value:"B",text:'General outpatient medicine'},{value:"C",text:'Health administration'},{value:"D",text:'High-precision procedural work'}]},{id:"q5",text:'Which type of patient journey would you most like to follow?',correct:'A',why:'A patient through a major intervention and recovery',options:[{value:"A",text:'A major intervention from assessment through recovery'},{value:"B",text:'A brief encounter for an acute complaint'},{value:"C",text:'A long sequence of preventive visits'},{value:"D",text:'A mostly laboratory-based investigation'}]},{id:"q6",text:'When a case has several possible explanations, what would you rather do first?',correct:'B',why:'Build a differential diagnosis from the evidence',options:[{value:"A",text:'Move immediately to a procedure'},{value:"B",text:'Build and test competing explanations'},{value:"C",text:"Focus on the patient's social support"},{value:"D",text:'Choose the simplest routine pathway'}]},{id:"q7",text:'Which kind of result would give you the strongest sense of accomplishment?',correct:'C',why:'Seeing a difficult physiological problem improve after targeted treatment',options:[{value:"A",text:'Publishing a population study'},{value:"B",text:'Completing a routine follow-up'},{value:"C",text:'Seeing a complex physiological problem improve'},{value:"D",text:'Organizing a health campaign'}]},{id:"q8",text:'Imagine your workday has an unexpected emergency. Which response feels most natural?',correct:'D',why:'Quickly reassess the situation and act on the highest priority',options:[{value:"A",text:'Schedule a later review'},{value:"B",text:'Wait for a complete long-term dataset'},{value:"C",text:'Delegate the decision immediately'},{value:"D",text:'Reassess rapidly and act on the highest priority'}]},{id:"q9",text:'Which kind of innovation interests you more?',correct:'A',why:'New procedures, devices or techniques that change how difficult conditions are treated',options:[{value:"A",text:'Procedures, devices or techniques'},{value:"B",text:'New population screening strategies'},{value:"C",text:'New communication campaigns'},{value:"D",text:'New administrative systems'}]},{id:"q10",text:'A patient has a frightening diagnosis and wants someone to explain what happens next. What role would you prefer?',correct:'B',why:'Be the specialist who combines technical knowledge with a clear explanation of the treatment path',options:[{value:"A",text:'Focus mainly on laboratory discovery'},{value:"B",text:'Combine specialist knowledge with clear patient guidance'},{value:"C",text:'Focus mainly on scheduling and logistics'},{value:"D",text:'Refer immediately without discussing options'}]},{id:"q11",text:'Which kind of uncertainty would you rather handle?',correct:'C',why:'Making a careful decision when information is incomplete and time is limited',options:[{value:"A",text:'Uncertainty over a multi-year population trend'},{value:"B",text:'Uncertainty about a routine administrative process'},{value:"C",text:'Incomplete information under time pressure'},{value:"D",text:'Uncertainty that can simply be postponed'}]},{id:"q12",text:'You are offered a project involving either a new surgical technique, a health policy survey, a diagnostic study, or a medical education campaign. Which would you choose?',correct:'A',why:'Testing a new surgical technique',options:[{value:"A",text:'Testing a new surgical technique'},{value:"B",text:'Running a health policy survey'},{value:"C",text:'Designing a diagnostic questionnaire'},{value:"D",text:'Creating a medical education campaign'}]},{id:"q13",text:'Which kind of team dynamic appeals to you?',correct:'D',why:'A tightly coordinated team where each person has a specialized role during high-stakes care',options:[{value:"A",text:'Mostly independent desk work'},{value:"B",text:'A large public-health planning committee'},{value:"C",text:'A small research team with no clinical work'},{value:"D",text:'A tightly coordinated high-stakes clinical team'}]},{id:"q14",text:'A case requires you to connect anatomy, physiology and technology. Which part is most exciting?',correct:'B',why:'Using technology to guide a precise clinical decision or intervention',options:[{value:"A",text:'Writing a general health article'},{value:"B",text:'Using technology for precise clinical decisions'},{value:"C",text:'Managing appointment logistics'},{value:"D",text:'Collecting broad lifestyle surveys'}]},{id:"q15",text:'Which patient interaction sounds most meaningful to you?',correct:'C',why:'Helping a patient understand and prepare for a major treatment decision',options:[{value:"A",text:'A very brief encounter with no follow-up'},{value:"B",text:'A purely administrative conversation'},{value:"C",text:'Helping with a major treatment decision'},{value:"D",text:'Only communicating through written reports'}]},{id:"q16",text:'Your ideal difficult case has what combination?',correct:'D',why:'High stakes, complex anatomy and a need for decisive technical skill',options:[{value:"A",text:'Low stakes and highly predictable'},{value:"B",text:'Mostly administrative complexity'},{value:"C",text:'Mostly population statistics'},{value:"D",text:'High stakes, complex anatomy and technical skill'}]},{id:"q17",text:'Which type of evidence would you most enjoy working with?',correct:'A',why:'Imaging, physiological measurements and detailed clinical findings',options:[{value:"A",text:'Imaging, physiological measurements and clinical findings'},{value:"B",text:'Only financial spreadsheets'},{value:"C",text:'Only social-media engagement data'},{value:"D",text:'Only historical documents'}]},{id:"q18",text:'If your work became very repetitive, what would you most want to change?',correct:'B',why:'Increase the variety and complexity of cases I handle',options:[{value:"A",text:'Reduce patient contact completely'},{value:"B",text:'Increase case variety and complexity'},{value:"C",text:'Increase administrative paperwork'},{value:"D",text:'Make every case follow the same pathway'}]},{id:"q19",text:'Which professional challenge sounds most rewarding?',correct:'C',why:'Mastering a difficult specialty where expertise develops over many years',options:[{value:"A",text:'Finishing work as quickly as possible'},{value:"B",text:'Avoiding complex cases'},{value:"C",text:'Mastering a demanding specialty over time'},{value:"D",text:'Keeping every task identical'}]},{id:"q20",text:'At the end of a demanding week, which thought would make the effort feel most worthwhile?',correct:'A',why:'I solved difficult clinical problems and made a tangible difference for patients',options:[{value:"A",text:'I solved difficult clinical problems with tangible patient impact'},{value:"B",text:'I mostly completed routine paperwork'},{value:"C",text:'I avoided making difficult decisions'},{value:"D",text:'I spent most of the week away from clinical problems'}]}];
+const profiles={'Neurosurgery':[3, 1, 1, 4, 4, 3, 3, 2, 4, 3, 3, 4, 4, 4, 3, 4, 4, 3, 4, 4], 'Cardiology':[4, 3, 4, 2, 3, 4, 4, 3, 3, 4, 3, 2, 3, 3, 4, 3, 4, 3, 3, 4], 'Cardiothoracic Surgery':[4, 3, 3, 4, 4, 3, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4], 'Emergency Medicine':[2, 5, 2, 1, 2, 3, 3, 5, 2, 3, 5, 2, 5, 2, 3, 2, 3, 5, 2, 5], 'General Surgery':[4, 4, 3, 4, 5, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4], 'Anesthesiology':[3, 5, 2, 2, 4, 4, 4, 4, 5, 3, 4, 3, 4, 3, 4, 4, 4, 4, 4, 5], 'Obstetrics & Gynecology':[4, 4, 3, 3, 4, 4, 4, 3, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4], 'Pediatrics':[2, 3, 2, 2, 3, 3, 4, 4, 3, 4, 3, 4, 5, 5, 4, 3, 4, 4, 4, 4], 'Orthopedic Surgery':[4, 4, 3, 4, 5, 3, 4, 4, 4, 4, 4, 4, 4, 3, 4, 5, 4, 4, 5, 4], 'Plastic Surgery':[4, 3, 4, 4, 4, 3, 4, 3, 4, 4, 3, 4, 4, 4, 3, 5, 5, 3, 4, 4], 'ENT (Otolaryngology)':[3, 3, 3, 3, 4, 3, 4, 3, 4, 3, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4], 'Ophthalmology':[3, 2, 3, 3, 3, 2, 4, 2, 4, 3, 3, 4, 4, 4, 3, 4, 4, 2, 4, 3], 'Dermatology':[2, 2, 3, 1, 2, 2, 4, 2, 3, 3, 3, 4, 4, 4, 3, 4, 4, 2, 3, 3], 'Radiology':[3, 2, 4, 1, 3, 4, 4, 3, 5, 3, 4, 3, 3, 2, 4, 5, 4, 2, 4, 4], 'Pathology':[2, 1, 3, 2, 3, 4, 4, 2, 5, 3, 3, 4, 3, 2, 4, 5, 4, 2, 3, 4], 'Psychiatry':[1, 2, 2, 1, 1, 2, 3, 3, 2, 5, 3, 4, 5, 5, 5, 2, 3, 2, 3, 3], 'Family Medicine':[2, 3, 2, 2, 2, 3, 4, 3, 3, 4, 3, 5, 5, 5, 5, 3, 4, 3, 4, 4], 'Internal Medicine':[3, 3, 3, 2, 3, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4], 'Neurology':[3, 2, 3, 3, 3, 4, 4, 3, 4, 4, 3, 4, 4, 4, 4, 4, 4, 3, 4, 4], 'Vascular Surgery':[4, 4, 3, 4, 5, 3, 4, 4, 4, 4, 4, 4, 4, 3, 4, 5, 4, 4, 5, 4], 'Urology':[4, 4, 3, 3, 4, 3, 4, 3, 4, 4, 4, 4, 4, 3, 4, 4, 4, 3, 4, 4], 'Nephrology':[3, 2, 3, 2, 3, 4, 4, 3, 4, 4, 3, 4, 4, 4, 4, 3, 4, 4, 4, 4], 'Gastroenterology':[4, 3, 3, 3, 4, 3, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], 'Pulmonology':[3, 3, 3, 2, 3, 4, 4, 3, 4, 4, 3, 4, 4, 4, 4, 3, 4, 4, 4, 4], 'Endocrinology':[2, 2, 3, 2, 2, 3, 4, 2, 3, 4, 3, 4, 4, 4, 4, 3, 4, 3, 3, 3], 'Infectious Disease':[3, 3, 3, 2, 3, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4], 'Oncology':[3, 3, 4, 3, 4, 4, 4, 3, 4, 5, 4, 4, 5, 4, 5, 4, 5, 4, 4, 4], 'Rheumatology':[2, 2, 3, 2, 2, 3, 4, 2, 3, 4, 3, 4, 5, 4, 5, 3, 4, 3, 3, 3], 'Geriatric Medicine':[1, 2, 2, 1, 2, 3, 4, 2, 3, 5, 3, 5, 5, 5, 5, 2, 4, 3, 3, 3], 'Physical Medicine & Rehabilitation':[2, 3, 2, 2, 3, 3, 4, 3, 3, 4, 3, 5, 5, 5, 5, 4, 4, 4, 4, 4], 'Pain Medicine':[2, 4, 2, 1, 3, 4, 4, 3, 4, 5, 4, 4, 5, 4, 5, 3, 4, 3, 4, 4], 'Transfusion Medicine':[2, 2, 3, 2, 2, 4, 4, 2, 5, 3, 4, 4, 3, 3, 4, 5, 4, 3, 3, 4], 'Hematology':[2, 2, 3, 2, 3, 4, 4, 2, 5, 3, 4, 4, 3, 3, 4, 5, 4, 3, 3, 4], 'Clinical Genetics':[2, 1, 4, 2, 2, 4, 4, 2, 4, 4, 3, 4, 5, 4, 5, 5, 4, 3, 3, 4], 'Sports Medicine':[3, 3, 2, 2, 3, 3, 4, 4, 3, 3, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4]};
+let i=0,answers={},importance={income:5,prestige:5,fame:5,innovation:5,patient:5};
+const importanceLabels={income:"Income",prestige:"Prestige",fame:"Fame",innovation:"Innovation",patient:"Patient relationship"};
+const intro=document.getElementById("intro"),quiz=document.getElementById("quiz"),prefs=document.getElementById("preferences"),results=document.getElementById("results");
+
+function show(el){[intro,quiz,prefs,results].forEach(x=>x.classList.add("hidden"));el.classList.remove("hidden");}
+function renderQ(){
+ const q=questions[i]; document.getElementById("qnum").textContent=`Question ${i+1} of ${questions.length}`;
+ document.getElementById("bar").style.width=((i+1)/questions.length*100)+"%";
+ document.getElementById("question").textContent=q.text;
+ const box=document.getElementById("options"); box.innerHTML="";
+ q.options.forEach(o=>{
+  const b=document.createElement("button"); b.type="button"; b.className="option"+(answers[q.id]===o.value?" selected":"");
+  b.textContent=o.text; b.addEventListener("click",()=>{answers[q.id]=o.value;renderQ();}); box.appendChild(b);
+ });
+ document.getElementById("prev").disabled=i===0;
+ document.getElementById("next").textContent=i===questions.length-1?"Preferences →":"Next →";
+}
+document.getElementById("start").onclick=()=>{show(quiz);renderQ();};
+document.getElementById("prev").onclick=()=>{if(i>0){i--;renderQ();}};
+document.getElementById("next").onclick=()=>{if(!answers[questions[i].id]){alert("Choose an option to continue.");return;} if(i<questions.length-1){i++;renderQ();}else{renderImportance();show(prefs);}};
+document.getElementById("wl").oninput=e=>document.getElementById("wlVal").textContent=e.target.value+"/10";
+
+function renderImportance(){
+ const box=document.getElementById("importance");box.innerHTML="";
+ Object.entries(importanceLabels).forEach(([key,label])=>{
+  const row=document.createElement("div");row.className="imp-row";
+  row.innerHTML=`<span>${label}</span><input type="range" min="1" max="5" value="${importance[key]}" data-key="${key}"><b>${importance[key]}</b>`;
+  const r=row.querySelector("input");r.addEventListener("input",()=>{importance[key]=+r.value;row.querySelector("b").textContent=r.value;});
+  box.appendChild(row);
+ });
 }
 
-function answer(n){
-answers.push(questions[current][1][n][1]);
-current++;
-showQuestion();
-}
-
-
-/* ================= LIFESTYLE ================= */
-
-function showLifestyle(){
-
-document.getElementById("quiz").innerHTML=`
-<h2>⚖️ Lifestyle Balance</h2>
-<div class="q">How important is having a balanced and predictable lifestyle to you?</div>
-
-<input id="life" type="range" min="1" max="10" value="5"
-oninput="lifestyle=this.value;document.getElementById('lv').innerText=this.value">
-
-<p>
-1 = Not important<br>
-10 = Extremely important
-</p>
-
-<h2 id="lv">5</h2>
-
-<button onclick="showPriorities()">Continue</button>
-`;
-
-}
-
-
-/* ================= PRIORITIES ================= */
-
-function showPriorities(){
-
-let items=["Prestige","Innovation","Fame","Income","Patient relationship"];
-
-document.getElementById("quiz").innerHTML=`
-<h2>🏆 Your Priorities</h2>
-<p>Rank each from <b>1 = most important</b> to <b>5 = least important</b>.</p>
-<p>These rankings will directly influence your results.</p>`+
-
-items.map((x,i)=>
-`<div class="rank">
-<b>${x}</b>
-<select id="p${i}">
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-</select>
-</div>`
-).join("")+
-
-`<br><button onclick="results()">Calculate My Specialties</button>`;
-
-}
-
-
-/* ================= RESULT SCORING ================= */
-
-function results(){
-
-let tags={};
-
-answers.flat().forEach(tag=>{
-tags[tag]=(tags[tag]||0)+1;
+document.getElementById("finish").onclick=()=>{
+ const wl=+document.getElementById("wl").value;
+ const ranked=Object.entries(profiles).map(([name,profile])=>{
+  let total=0,max=0;
+  questions.forEach((q,idx)=>{
+    const a=answers[q.id];
+    if(a){
+      const selected=q.options.findIndex(o=>o.value===a)+1;
+      const fit=Math.max(0,5-Math.abs(selected-profile[idx]));
+      total+=fit; max+=5;
+    }
+  });
+  const importanceFactor=(importance.income+importance.prestige+importance.fame+importance.innovation+importance.patient)/25;
+  const wl=document.getElementById("wl").valueAsNumber||5;
+  const lifestyleFactor=0.96 + (1-Math.abs(wl-5)/5)*0.04;
+  const base=max?total/max:0;
+  const pct=Math.min(97,Math.max(1,Math.round(base*importanceFactor*lifestyleFactor*100)));
+  return [name,pct];
+}).sort((a,b)=>b[1]-a[1]).slice(0,5);
+const box=document.getElementById("resultsGrid");box.innerHTML="";
+localStorage.setItem("medstartQuizResults",JSON.stringify({results:ranked.map(([name,pct])=>({name,score:pct})),updatedAt:new Date().toISOString()}));
+ranked.forEach(([name,pct],n)=>{
+  const row=document.createElement("div");row.className="result-row";
+  row.innerHTML=`<a href="specialties.html?specialty=${encodeURIComponent(name.toLowerCase().replace(/[^a-z0-9]+/g,"-"))}" style="display:block"><strong>${n+1}. ${name}</strong><span class="note">Preference alignment score: ${Math.min(97,pct)}%</span><div class="meter"><i style="width:${Math.min(97,pct)}%"></i></div><span class="note" style="color:var(--green)">Open specialty profile →</span></a>`;
+  box.appendChild(row);
 });
-
-
-/* User priority weights */
-
-let priorityWeights={};
-
-for(let i=0;i<5;i++){
-let rank=Number(document.getElementById("p"+i).value);
-priorityWeights[i]=6-rank;
-}
-
-
-/* Specialty scoring */
-
-let scored=specialties.map(s=>{
-
-let score=0;
-
-
-/* Core personality match */
-
-s[1].forEach(tag=>{
-score+=(tags[tag]||0)*3;
-});
-
-
-/* Patient relationship preference */
-
-if(s[1].includes("patient")||s[1].includes("longterm"))
-score+=priorityWeights[4]*2;
-
-
-/* Innovation */
-
-if(s[1].includes("technology")||s[1].includes("research"))
-score+=priorityWeights[1]*2;
-
-
-/* Prestige */
-
-if(["Neurosurgery","Cardiothoracic Surgery","Cardiology",
-"Plastic & Reconstructive Surgery","Interventional Cardiology",
-"Orthopedic Surgery","Vascular Surgery","Ophthalmology"].includes(s[0]))
-score+=priorityWeights[0]*1.4;
-
-
-/* Fame */
-
-if(["Cardiology","Neurosurgery","General Surgery",
-"Orthopedic Surgery","Pediatrics","Dermatology",
-"Plastic & Reconstructive Surgery"].includes(s[0]))
-score+=priorityWeights[2]*1.2;
-
-
-/* Income */
-
-if(["Dermatology","Ophthalmology","Plastic & Reconstructive Surgery",
-"Orthopedic Surgery","Cardiology","Radiology","Anesthesiology",
-"Urology","ENT"].includes(s[0]))
-score+=priorityWeights[3]*1.3;
-
-
-/* Lifestyle */
-
-let balanceTags=["longterm","patient","prevention","rehab","diagnosis","public"];
-
-let demanding=["acute","critical","quick"];
-
-if(lifestyle>=7){
-
-s[1].forEach(t=>{
-if(balanceTags.includes(t))score+=2;
-if(demanding.includes(t))score-=1.3;
-});
-
-}
-
-return [s[0],score,s[2]];
-
-});
-
-
-/* Sort */
-
-scored.sort((a,b)=>b[1]-a[1]);
-
-let top=scored.slice(0,5);
-
-let highest=top[0][1]||1;
-
-
-/* Percentages deliberately never reach 100 */
-
-top=top.map((x,i)=>{
-
-let pct=72-(i*7)+((x[1]/highest)*18);
-
-pct=Math.round(Math.max(35,Math.min(94,pct)));
-
-return [x[0],pct,x[2]];
-
-});
-
-
-/* Save results for dashboard */
-
-localStorage.setItem(
-    "medstartSpecialtyResults",
-    JSON.stringify(
-        top.map(x => ({
-            name: x[0],
-            percentage: x[1],
-            description: x[2]
-        }))
-    )
-);
-
-
-/* Display results */
-
-document.getElementById("quiz").innerHTML=`
-<h2>🎯 Your Top 5 Matches</h2>
-<p>Your ranking reflects your answers, lifestyle preference and personal priorities.</p>`+
-
-top.map((x,i)=>
-`<div class="result">
-<h3>#${i+1} ${x[0]}</h3>
-<div class="pct">${x[1]}% match</div>
-<p><small>${x[2]}</small></p>
-</div>`
-).join("")+
-
-`<button onclick="location.reload()">Retake Quiz</button>`;
-
-}
-
-showQuestion();
-
+ show(results);
+};
+document.getElementById("restart").onclick=()=>{i=0;answers={};importance={income:5,prestige:5,fame:5,innovation:5,patient:5};document.getElementById("wl").value=5;show(intro);};
+</script><script id="medstart-auth-ui">
+(function(){
+ function sync(){
+  let user=null,signed=false;
+  try{user=JSON.parse(localStorage.getItem('medstartUser')||'null');signed=localStorage.getItem('medstartSignedIn')==='true';}catch(e){}
+  if(!signed||!user)return;
+  document.querySelectorAll('a[href="signup.html"],a.signup,.signup-btn,[data-auth="signup"]').forEach(el=>el.style.display='none');
+  document.querySelectorAll('a[href="signin.html"]').forEach(el=>{el.textContent=user.name||'My Account';el.href='index.html';el.classList.add('signed-user');});
+  document.querySelectorAll('[data-auth-name]').forEach(el=>el.textContent=user.name||'My Account');
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+ window.addEventListener('storage',sync);
+})();
 </script>
-</body>
-</html>
+</body></html>

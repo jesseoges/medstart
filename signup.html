@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>MedStart | Can Hepatitis B be Cured? Here's what Science says</title><link href="assets/medstart-theme.css" rel="stylesheet"/><style>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Create Account | MedStart</title>
+<link href="assets/medstart-theme.css" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:#061A33;color:#EAF2F8;min-height:100vh}
+.auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:
+ radial-gradient(circle at 15% 20%,rgba(32,201,151,.12),transparent 30%),
+ linear-gradient(135deg,#061A33,#0A2748)}
+.auth-card{width:min(460px,100%);background:#0B2340;border:1px solid rgba(32,201,151,.25);border-radius:24px;padding:34px;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.brand-mark{width:42px;height:42px;border-radius:12px;background:#20C997;color:#03150F;display:grid;place-items:center;font-weight:900}
+.brand h1{font-size:22px;margin:0;color:#fff}.brand span{color:#20C997}
+h2{font-size:30px;margin:0 0 8px}.sub{color:#AFC2D4;margin:0 0 24px;line-height:1.5}
+label{display:block;font-size:14px;margin:16px 0 7px;color:#D9E6F0}
+input{width:100%;padding:14px 15px;border-radius:12px;border:1px solid rgba(175,194,212,.25);background:#061A33;color:#fff;outline:none}
+input:focus{border-color:#20C997;box-shadow:0 0 0 3px rgba(32,201,151,.12)}
+button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:12px;background:#20C997;color:#03150F;font-weight:800;cursor:pointer}
+.message{margin-top:14px;min-height:20px;color:#20C997;font-size:14px}
+.footer{margin-top:20px;text-align:center;color:#AFC2D4;font-size:14px}.footer a{color:#20C997;text-decoration:none}
+.back{display:inline-block;margin-top:20px;color:#AFC2D4;text-decoration:none;font-size:14px}
+.notice{background:rgba(32,201,151,.08);border:1px solid rgba(32,201,151,.18);padding:12px;border-radius:12px;color:#BFEBDD;font-size:13px;line-height:1.5;margin-top:18px}
+</style>
+<style>
 /* MedStart unified deep-blue / surgical-green theme */
 :root{--deep:#061a33;--deep2:#0a2748;--panel:#0b2340;--green:#20c997;--text:#eaf4fa;--muted:#afc2d4}
 html,body{background:#061a33!important;color:#eaf4fa!important}
@@ -54,7 +80,8 @@ button,.action,.opt{max-width:100%}
   .hero,.case-card,.result{box-sizing:border-box}
 }
 </style>
-</head><body><header class="header">
+</head>
+<body><header class="header">
   <div class="header-inner">
     <div class="top">
       <a class="brand" href="index.html">
@@ -82,5 +109,70 @@ button,.action,.opt{max-width:100%}
       <button aria-label="Show more navigation" class="arrow" onclick="document.getElementById('nav').scrollBy({left:260,behavior:'smooth'})">›</button>
     </div>
   </div>
-</header><main><div class="article-layout"><a class="back" href="articles.html">← Back to Articles</a>
-<article class="article-hero"><img alt="Can Hepatitis B be Cured? Here's what Science says" src="https://medstart.com.ng/assets/images/gyguhtdfvj-1080x720.jpg"/><div class="article-content"><h1>Can Hepatitis B be Cured? Here's what Science says</h1><div>Millions of people are living with hepatitis B without even knowing it. Because the infection often has no early symptoms, it can silently damage the liver for years.<br/><br/>Hepatitis B is a viral infection that attacks the liver and can lead to serious  complications such as cirrhosis and liver cancer if left untreated. It spreads through infected blood and certain body fluids, but not through hugging, sharing food, or shaking hands<br/><br/>So, can it be cured?<br/><br/>At present, there is no complete cure for chronic hepatitis B. However, modern antiviral medicines can control the virus, prevent liver damage, and help people live long, healthy lives.<br/><br/>Scientists are also making exciting progress. In 2026, clinical trials of an experimental drug called bepirovirsen showed that some patients achieved afunctional cure, where the virus become inactive and remained undetectable after treatment.<br/><br/>The best protection is vaccination, early testing, and regular medical care. While a permanent cure is still being researched, the future of hepatitis B treatment has never looked more promising.</div></div></article></div></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer></body></html>
+</header>
+<main class="auth-shell">
+<section class="auth-card">
+<div class="brand"><div class="brand-mark">M</div><h1>Med<span>Start</span></h1></div>
+<h2>Create your MedStart account</h2>
+<p class="sub">Start building your medical learning profile.</p>
+<form id="signupForm">
+<label for="name">Full name</label>
+<input autocomplete="name" id="name" required=""/>
+<label for="email">Email</label>
+<input autocomplete="email" id="email" required="" type="email"/>
+<label for="password">Password</label>
+<input autocomplete="new-password" id="password" minlength="8" required="" type="password"/>
+<label for="confirm">Confirm password</label>
+<input autocomplete="new-password" id="confirm" minlength="8" required="" type="password"/>
+<button type="submit">Create Account</button>
+<div class="message" id="msg"></div>
+</form>
+<div class="footer">Already have an account? <a href="signin.html">Sign In</a></div>
+<a class="back" href="index.html">← Back to MedStart</a>
+</section>
+</main>
+<script>
+async function hashPassword(value){
+ const data=new TextEncoder().encode(value);
+ const digest=await crypto.subtle.digest('SHA-256',data);
+ return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+document.getElementById('signupForm').addEventListener('submit',async function(e){
+ e.preventDefault();
+ const name=document.getElementById('name').value.trim();
+ const email=document.getElementById('email').value.trim().toLowerCase();
+ const password=document.getElementById('password').value;
+ const confirm=document.getElementById('confirm').value;
+ const msg=document.getElementById('msg');
+ if(password!==confirm){msg.textContent='Passwords do not match.';return;}
+ if(password.length<8){msg.textContent='Password must be at least 8 characters.';return;}
+ try{
+   const passwordHash=await hashPassword(password);
+   localStorage.setItem('medstartUser',JSON.stringify({name,email,passwordHash}));
+   localStorage.removeItem('medstartSignedIn');
+   localStorage.removeItem('medstartSignedInEmail');
+   msg.textContent='Account created. Redirecting to Sign In...';
+   setTimeout(()=>location.href='signin.html',700);
+ }catch(err){
+   msg.textContent='Account setup needs a normal website/HTTPS connection.';
+   console.error(err);
+ }
+});
+</script>
+<script id="medstart-auth-ui">
+(function(){
+ function sync(){
+  let user=null,signed=false;
+  try{user=JSON.parse(localStorage.getItem('medstartUser')||'null');signed=localStorage.getItem('medstartSignedIn')==='true';}catch(e){}
+  if(!signed||!user)return;
+  document.querySelectorAll('a[href="signup.html"],a.signup,.signup-btn,[data-auth="signup"]').forEach(el=>el.style.display='none');
+  document.querySelectorAll('a[href="signin.html"]').forEach(el=>{el.textContent=user.name||'My Account';el.href='index.html';el.classList.add('signed-user');});
+  document.querySelectorAll('[data-auth-name]').forEach(el=>el.textContent=user.name||'My Account');
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+ window.addEventListener('storage',sync);
+})();
+</script>
+</body>
+</html>

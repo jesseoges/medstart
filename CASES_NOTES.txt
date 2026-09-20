@@ -1,0 +1,9 @@
+50 educational clinical cases: 5 each for General Surgery, Internal Medicine, Pediatrics, Obstetrics & Gynecology, Emergency Medicine, Cardiology, Orthopedic Surgery, Anesthesiology, Neurology and Radiology. Scores are saved locally under medstartCaseResults and are displayed on the home dashboard only when medstartSignedIn is true.
+
+
+UPDATED CASE FORMAT
+Each of the 10 specialties has 5 cases. Each case contains 5 questions, for 25 questions per specialty. Completing all 5 cases saves a specialty result to localStorage under medstartCaseResults as score/25. The home dashboard shows every completed specialty case result only after sign-in. Completing all 10 specialties produces 10 separate dashboard entries.
+
+
+UPDATED CASE FORMAT
+Each of the 10 specialties has 5 cases. Each case contains 5 questions, for 25 questions per specialty. Completing all 5 cases saves a specialty result to localStorage under medstartCaseResults as score/25. The home dashboard shows every completed specialty case result only after sign-in. Completing all 10 specialties produces 10 separate dashboard entries.
