@@ -9,7 +9,7 @@ body{font-family:Arial,Helvetica,sans-serif!important}
 .header-inner{max-width:1200px!important;margin:auto!important;padding:11px 18px!important}
 .top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important}
 .brand{display:flex!important;align-items:center!important;gap:10px!important}.logo{width:48px!important;height:48px!important;object-fit:contain!important;border-radius:12px!important;border:1px solid rgba(32,201,151,.35)!important;background:#fff!important}.brand-text strong{display:block!important;color:#20c997!important;font-size:22px!important}.brand-text span{display:block!important;color:#afc2d4!important;font-size:12px!important}
-.signup{background:#20c997!important;color:#061a33!important;padding:10px 15px!important;border-radius:9px!important;font-weight:800!important;display:inline-block!important}.nav-wrap{display:flex!important;align-items:center!important;gap:6px!important;margin-top:9px!important}.nav{display:flex!important;gap:4px!important;overflow-x:auto!important;scrollbar-width:none!important;flex:1!important}.nav::-webkit-scrollbar{display:none}.nav a{padding:8px 11px!important;border-radius:8px!important;white-space:nowrap!important;font-size:14px!important;color:#dceaf4!important}.nav a:hover,.nav a.active{background:#0b3154!important;color:#20c997!important}.arrow{border:0!important;background:#20c997!important;color:#061a33!important;width:34px!important;height:34px!important;border-radius:50%!important;font-size:20px!important;cursor:pointer!important}
+.signup{background:#20c997!important;color:#061a33!important;padding:10px 15px!important;border-radius:9px!important;font-weight:800!important;display:inline-block!important}.nav-wrap{display:flex!important;align-items:center!important;gap:6px!important;margin-top:9px!important}.nav{display:flex!important;gap:4px!important;overflow-x:auto!important;scrollbar-width:none!important;flex:1!important}.nav::-webkit-scrollbar{display:none}.nav a{padding:8px 11px!important;border-radius:8px!important;white-space:nowrap!important;font-size:14px!important;color:#dceaf4!important}.nav a:hover,.nav a.active{background:#0b3154!important;color:#20c997!important}
 main{background:transparent!important}.hero,.article-hero,.card,.info-card,.contact-card,.hero-card,.feature,.result,.dashboard-panel,.empty{background:#0b2340!important;border-color:rgba(32,201,151,.22)!important;color:#eaf4fa!important}.hero p,.hero-card p,.card p,.info-card p,.info-card li,.contact-card p,.article-content p,.article-content li,.section-head p,.personal-result small{color:#afc2d4!important}.hero h1,.article-content h1,.card h2,.card h3,.info-card h2,.contact-card h2,.section h2{color:#f5fbff!important}.hero-main{background:linear-gradient(135deg,#0a2748,#063b52)!important;border-color:rgba(32,201,151,.25)!important}.eyebrow,.section-link,.tag,.back,.article-content h2{color:#20c997!important}.badge{background:#103a43!important;color:#20c997!important}.bar{background:#173957!important}.bar span,.mini-bar i{background:#20c997!important}.footer{background:#041426!important;color:#dceaf4!important}.footer p{color:#8fa8bb!important}.footer a{color:#20c997!important}
 @media(max-width:520px){.header-inner{padding:9px 10px!important}.brand-text span{display:none!important}.signup{font-size:13px!important;padding:8px 10px!important}}
 </style><style id="medstart-mobile-fix">
@@ -29,7 +29,7 @@ h1{font-size:clamp(28px,8vw,44px)!important}.case-title{font-size:21px!important
 button,.action,.opt{max-width:100%}
 .controls{flex-wrap:wrap}.controls button{flex:1 1 160px}
 .footer-inner{flex-wrap:wrap;gap:14px}
-@media(max-width:600px){.header-inner{padding:8px 10px!important}.brand-text span{display:none!important}.brand .logo{width:42px!important;height:42px!important;min-width:42px}.signup{font-size:12px!important;padding:8px 10px!important}.hero{padding:22px 18px!important;border-radius:18px}.case-card{padding:16px!important;border-radius:16px}.opt{font-size:14px!important;padding:12px!important;white-space:normal;line-height:1.4}.tabs{padding-bottom:10px}.nav-wrap{margin-top:7px!important}.arrow{flex:none}}
+@media(max-width:600px){.header-inner{padding:8px 10px!important}.brand-text span{display:none!important}.brand .logo{width:42px!important;height:42px!important;min-width:42px}.signup{font-size:12px!important;padding:8px 10px!important}.hero{padding:22px 18px!important;border-radius:18px}.case-card{padding:16px!important;border-radius:16px}.opt{font-size:14px!important;padding:12px!important;white-space:normal;line-height:1.4}.tabs{padding-bottom:10px}.nav-wrap{margin-top:7px!important}}
 </style><style id="phone-logo-fix">
 @media(max-width:700px){body{overflow-x:hidden}.header-inner{max-width:100%;overflow:hidden}.top{min-width:0}.brand{min-width:0;max-width:calc(100vw - 80px)}.brand-text{min-width:0}.brand-text strong{white-space:nowrap}.nav-wrap{max-width:100vw;overflow:hidden}.nav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav a{flex:0 0 auto;white-space:nowrap}.logo{width:48px!important;height:48px!important;object-fit:contain!important;display:block!important;flex:0 0 48px!important}.signup{flex:0 0 auto}}
 </style>
@@ -49,7 +49,7 @@ button,.action,.opt{max-width:100%}
   .nav{display:flex!important;flex:1;min-width:0;overflow-x:auto!important;white-space:nowrap!important;gap:16px!important;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .nav::-webkit-scrollbar{display:none}
   .nav a{flex:0 0 auto!important;white-space:nowrap!important;font-size:14px!important}
-  .arrow{flex:0 0 auto!important}
+  
   main{width:100%;box-sizing:border-box}
   .hero,.case-card,.result{box-sizing:border-box}
 }
@@ -80,7 +80,6 @@ button,.action,.opt{max-width:100%}
         <a href="contacts.html">Contact</a>
         <a href="signin.html">Sign In</a>
       </nav>
-      <button aria-label="Show more navigation" class="arrow" onclick="document.getElementById('nav').scrollBy({left:260,behavior:'smooth'})">›</button>
     </div>
   </div>
 </header><main><section class="hero"><div class="eyebrow">MEDSTART</div><h1>About Medicine</h1><p><strong>What Is Medicine?</strong><br/>Medicine is the science and practice dedicated to maintaining health, preventing disease, diagnosing medical conditions, and providing effective treatment. It combines scientific knowledge, clinical expertise, and compassionate care to improve the lives of individuals and communities.</p></section>
@@ -91,33 +90,30 @@ button,.action,.opt{max-width:100%}
 </section></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer><script id="medstart-global-auth">
 (function(){
   function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
-  function isSigned(){return localStorage.getItem('medstartSignedIn')==='true'}
+  function signed(){return localStorage.getItem('medstartSignedIn')==='true'}
   function syncAuth(){
-    var user=readUser(), signed=isSigned(), name=(user&&user.name||'').trim();
-    // The navigation never contains a Sign Up item.
-    document.querySelectorAll('.nav a').forEach(function(a){
-      if((a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'')==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
-    });
-    // Keep the header account button on every normal site page.
-    document.querySelectorAll('a.signup,[data-auth="signup"]').forEach(function(a){
-      if(signed && name){a.textContent=name;a.href='dashboard.html';a.style.display='inline-block';a.classList.add('signed-user');}
-      else {a.textContent='Sign Up';a.href='signup.html';a.style.display='inline-block';a.classList.remove('signed-user');}
-    });
+    var user=readUser(), ok=signed(), name=(user&&user.name||'').trim();
     document.querySelectorAll('.nav a').forEach(function(a){
       var href=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
-      if(signed && (href==='signin.html'||href==='sign-in.html')) a.remove();
+      if(href==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
+      else if(ok && (href==='signin.html'||href==='sign-in.html')) a.remove();
     });
-    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=signed&&name?name:'Guest';});
-    // Attach any anonymous case results to the signed-in account, so results completed before login remain visible.
-    if(signed && user && user.email){
+    document.querySelectorAll('a.signup,[data-auth="account"]').forEach(function(a){
+      a.textContent=(ok&&name)?name:'Sign Up';
+      a.href=(ok&&name)?'dashboard.html':'signup.html';
+      a.style.display='inline-block';
+      a.classList.toggle('signed-user',!!(ok&&name));
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=(ok&&name)?name:'Guest'});
+    if(ok&&user&&user.email){
       try{
         var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
         var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
         by[user.email]=by[user.email]||{};
-        Object.keys(generic||{}).forEach(function(k){if(!by[user.email][k]) by[user.email][k]=generic[k];});
+        Object.keys(generic).forEach(function(k){if(!by[user.email][k])by[user.email][k]=generic[k]});
         localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
         var q=JSON.parse(localStorage.getItem('medstartQuizResults')||'null');
-        if(q && !JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}')[user.email]){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
+        if(q){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
       }catch(e){}
     }
   }

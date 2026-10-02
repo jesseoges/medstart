@@ -159,27 +159,31 @@ try {
         const byUser = JSON.parse(localStorage.getItem("medstartCaseResultsByUser") || "{}");
         caseResults = byUser[user.email] || {};
     }
-    if (!Object.keys(caseResults).length) {
+    if (!signedIn || !user || !user.email) {
         caseResults = JSON.parse(localStorage.getItem("medstartCaseResults") || "{}");
     }
 } catch (e) { caseResults = {}; }
 
 let caseHtml = "";
-const entries = Object.values(caseResults || {}).sort((a,b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+const entries = Object.values(caseResults || {}).filter(Boolean).sort((a,b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
 
 if (entries.length) {
     caseHtml = `
         <div class="specialty-results">
             <h2>🩺 Your Clinical Case Results</h2>
-            ${entries.map(r => `
+            ${entries.map(r => {
+                const score = Number(r.score || 0);
+                const total = Number(r.total || 25);
+                const pct = total ? Math.round((score / total) * 100) : 0;
+                return `
                 <div class="specialty">
-                    ${r.specialty}
+                    ${r.specialty || "Clinical Cases"}
                     <div style="font-size:15px;margin-top:6px;font-weight:normal;">
-                        ${r.score}/${r.total} (${Math.round((r.score / r.total) * 100)}%) · ${r.completedCases} cases completed
+                        ${score}/${total} (${pct}%) · ${Number(r.completedCases || 0)} cases completed
                     </div>
-                </div>
-            `).join("")}
-            <a class="redo" href="https://medstart.com.ng/cases.html">🔄 Continue / retry cases</a>
+                </div>`;
+            }).join("")}
+            <a class="redo" href="cases.html">🔄 Continue / retry cases</a>
         </div>`;
 } else {
     caseHtml = `
@@ -192,6 +196,7 @@ quizArea.innerHTML = quizHtml + caseHtml;
 
 window.addEventListener("storage", function(){ location.reload(); });
 window.addEventListener("medstart-auth-changed", function(){ location.reload(); });
+window.addEventListener("medstart-case-results-updated", function(){ location.reload(); });
 </script>
 
 <script id="medstart-global-auth">
