@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MedStart Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5fafb;
+    text-align: center;
+    color: #222;
+}
+
+.dashboard {
+    max-width: 700px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    color: #087f8c;
+    font-size: 38px;
+    margin-bottom: 30px;
+}
+
+.stethoscope {
+    width: 100%;
+    max-width: 500px;
+    height: 380px;
+    object-fit: cover;
+    border-radius: 20px;
+    display: block;
+    margin: 0 auto 30px;
+}
+
+.quiz {
+    font-size: 21px;
+    margin-bottom: 30px;
+}
+
+.quiz a {
+    color: #087f8c;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.specialty-results {
+    margin: 20px auto 40px;
+    max-width: 550px;
+}
+
+.specialty-results h2 {
+    color: #087f8c;
+    margin-bottom: 15px;
+}
+
+.specialty {
+    background: white;
+    padding: 14px;
+    margin: 8px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #ddd;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.redo {
+    display: inline-block;
+    margin-top: 12px;
+    color: #087f8c;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.home {
+    display: inline-block;
+    background: #087f8c;
+    color: white;
+    padding: 14px 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>
+        Hey, <span id="name">Student</span>!
+    </h1>
+
+    <img
+        class="stethoscope"
+        src="https://images.pexels.com/photos/6320167/pexels-photo-6320167.jpeg"
+        alt="Stethoscope"
+    >
+
+    <div id="quizArea"></div>
+
+    <a href="https://medstart.com.ng/index.html" class="home">
+        Home
+    </a>
+
+</div>
+
+<script>
+/* ================= USER NAME ================= */
+const user = JSON.parse(localStorage.getItem("medstartUser") || "null");
+const signedIn = localStorage.getItem("medstartSignedIn") === "true";
+if (user && user.name && signedIn) {
+    document.getElementById("name").textContent = user.name;
+}
+
+/* ================= SPECIALTY QUIZ RESULTS ================= */
+let quizSaved = null;
+try {
+    if (signedIn && user && user.email) {
+        const qByUser = JSON.parse(localStorage.getItem("medstartQuizResultsByUser") || "{}");
+        quizSaved = qByUser[user.email] || null;
+    }
+    if (!quizSaved) quizSaved = JSON.parse(localStorage.getItem("medstartQuizResults") || "null");
+} catch (e) { quizSaved = null; }
+const quizArea = document.getElementById("quizArea");
+let quizHtml = "";
+
+if (quizSaved && Array.isArray(quizSaved.results) && quizSaved.results.length) {
+    quizHtml = `
+        <div class="specialty-results">
+            <h2>🎯 Your Top Specialties</h2>
+            ${quizSaved.results.slice(0,5).map((specialty, index) => `
+                <div class="specialty">
+                    #${index + 1} ${specialty.name}
+                    ${specialty.score != null ? `<div style="font-size:14px;margin-top:5px;font-weight:normal;">Preference alignment: ${specialty.score}%</div>` : ""}
+                </div>
+            `).join("")}
+            <a class="redo" href="https://medstart.com.ng/specialty-quiz.html">🔄 Redo the test</a>
+        </div>`;
+} else {
+    quizHtml = `
+        <div class="quiz">
+            Click <a href="https://medstart.com.ng/specialty-quiz.html">here</a>
+            to take the Specialty Quiz.
+        </div>`;
+}
+
+/* ================= CLINICAL CASE RESULTS ================= */
+let caseResults = {};
+try {
+    const byUser = JSON.parse(localStorage.getItem("medstartCaseResultsByUser") || "{}");
+    const userEmail = user && user.email ? String(user.email).toLowerCase() : "";
+    if (signedIn && userEmail) caseResults = byUser[userEmail] || byUser[user.email] || {};
+    if (!Object.keys(caseResults).length && !signedIn) caseResults = JSON.parse(localStorage.getItem("medstartCaseResults") || "{}");
+} catch (e) { caseResults = {}; }
+
+
+let caseHtml = "";
+const entries = Object.values(caseResults || {}).filter(Boolean).sort((a,b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+
+if (entries.length) {
+    caseHtml = `
+        <div class="specialty-results">
+            <h2>🩺 Your Clinical Case Results</h2>
+            ${entries.map(r => {
+                const score = Number(r.score || 0);
+                const total = Number(r.total || 25);
+                const pct = total ? Math.round((score / total) * 100) : 0;
+                return `
+                <div class="specialty">
+                    ${r.specialty || "Clinical Cases"}
+                    <div style="font-size:15px;margin-top:6px;font-weight:normal;">
+                        ${score}/${total} (${pct}%) · ${Number(r.completedCases || 0)} cases completed
+                    </div>
+                </div>`;
+            }).join("")}
+            <a class="redo" href="cases.html">🔄 Continue / retry cases</a>
+        </div>`;
+} else {
+    caseHtml = `
+        <div class="quiz">
+            Your completed specialty case results will appear here after you finish a specialty's 5 cases.
+        </div>`;
+}
+
+quizArea.innerHTML = quizHtml + caseHtml;
+
+window.addEventListener("storage", function(){ location.reload(); });
+window.addEventListener("medstart-auth-changed", function(){ location.reload(); });
+window.addEventListener("medstart-case-results-updated", function(){ location.reload(); });
+</script>
+
+
+<script id="medstart-global-auth-v2">
+(function(){
+  function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
+  function isSigned(){try{return localStorage.getItem('medstartSignedIn')==='true'}catch(e){return false}}
+  function sync(){
+    var u=readUser(), signed=isSigned(), name=(u&&u.name||'').trim();
+    document.querySelectorAll('.nav a').forEach(function(a){
+      var h=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+      if(h==='signup.html' || /^sign\s*up$/i.test(a.textContent.trim())) a.remove();
+      if(signed && (h==='signin.html'||h==='sign-in.html'||/^sign\s*in$/i.test(a.textContent.trim()))) a.remove();
+    });
+    var controls=document.querySelectorAll('a.signup,[data-auth="account"]');
+    controls.forEach(function(a){
+      a.textContent=(signed&&name)?name:'Sign Up';
+      a.href=(signed&&name)?'dashboard.html':'signup.html';
+      a.style.display='inline-block';
+      a.classList.toggle('signed-user',!!(signed&&name));
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=(signed&&name)?name:'Guest'});
+    // Add a consistent account button to headers that do not already have one.
+    if(!document.querySelector('a.signup,[data-auth="account"]') && !/^(signup|signin|sign-in)\.html$/i.test(location.pathname.split('/').pop())){
+      var top=document.querySelector('.top')||document.querySelector('.header-inner');
+      if(top){var a=document.createElement('a');a.className='signup';a.setAttribute('data-auth','account');a.textContent=(signed&&name)?name:'Sign Up';a.href=(signed&&name)?'dashboard.html':'signup.html';top.appendChild(a);}
+    }
+    if(signed&&u&&u.email){
+      try{
+        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
+        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
+        by[u.email]=by[u.email]||{};
+        Object.keys(generic||{}).forEach(function(k){if(!by[u.email][k])by[u.email][k]=generic[k]});
+        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
+      }catch(e){}
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+  window.addEventListener('storage',sync);window.addEventListener('medstart-auth-changed',sync);window.addEventListener('medstart-case-results-updated',sync);
+  window.medstartSyncAuth=sync;
+})();
+</script>
+</body>
+</html>
