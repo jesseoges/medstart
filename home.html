@@ -102,5 +102,28 @@
   
   
 <input name="cookieData" type="hidden" data-cookie-cookiesAlertType='false' data-cookie-customDialogSelector='null' data-cookie-colorText='#424a4d' data-cookie-colorBg='rgb(255, 255, 255)' data-cookie-opacityOverlay='0' data-cookie-bgOpacity='95' data-cookie-textButton='GOT IT' data-cookie-rejectText='REJECT' data-cookie-colorButton='#9fe870' data-cookie-rejectColor='#ffffff' data-cookie-colorLink='#424a4d' data-cookie-underlineLink='true' data-cookie-text="We use cookies to give you the best experience. Read our <a href='privacy.html'>cookie policy</a>.">
-  </body>
+  <script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body>
 </html>

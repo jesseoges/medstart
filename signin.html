@@ -177,20 +177,25 @@ document.getElementById('signinForm').addEventListener('submit',async function(e
      return;
    }
 
+   let notificationSent=false;
    if(window.emailjs && EMAILJS_PUBLIC_KEY!=='YOUR_EMAILJS_PUBLIC_KEY'){
-     emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});
-     await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-       to_email:'jesseoges@gmail.com',
-       user_email:email,
-       sign_in_time:new Date().toLocaleString(),
-       site:'MedStart'
-     });
-     msg.textContent='Signed in. Notification sent.';
-   }else{
-     msg.textContent='Signed in locally. Email notification is not configured yet.';
+     try{
+       emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});
+       await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+         to_email:'jesseoges@gmail.com',
+         user_email:email,
+         sign_in_time:new Date().toLocaleString(),
+         site:'MedStart',
+         event_type:'User signed in'
+       });
+       notificationSent=true;
+     }catch(emailErr){
+       console.warn('Email notification could not be sent:',emailErr);
+     }
    }
    localStorage.setItem('medstartSignedIn','true');
    localStorage.setItem('medstartSignedInEmail',email);
+   msg.textContent=notificationSent?'Signed in. Notification sent.':'Signed in successfully.';
    setTimeout(()=>location.href='index.html',350);
  }catch(err){
    msg.textContent='Sign-in could not be completed. If you are opening the file directly, try it from your website/HTTPS.';
@@ -222,5 +227,28 @@ document.getElementById('signinForm').addEventListener('submit',async function(e
  window.addEventListener('storage',sync);
 })();
 </script>
-</body>
+<script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body>
 </html>

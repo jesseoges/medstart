@@ -528,5 +528,28 @@ function finish(){
 
 </script>
 
-</body>
+<script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body>
 </html>

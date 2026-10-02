@@ -88,4 +88,27 @@ button,.action,.opt{max-width:100%}
 <div class="info-card"><img alt="Medical image" src="https://medstart.com.ng/assets/images/me-160x285.jpg" style="width:100%;height:240px;object-fit:cover;border-radius:12px"/><h2>Why Medicine Matter</h2><p>Medicine plays a vital role in society by:</p><ul><li>Preventing diseases through education and vaccination.</li><li>Diagnosing illnesses using modern medical techniques</li><li>Treating injuries and diseases with evidence-based care</li><li>Promoting healthier lives and improving life expectancy</li></ul></div>
 <div class="info-card"><img alt="Medical image" src="https://medstart.com.ng/assets/images/whatsapp20image202026-07-2620at2017.14.59-160x284.jpg" style="width:100%;height:240px;object-fit:cover;border-radius:12px"/><h2>Major Medical Specialties</h2><ul><li>General practitioner (GP): they provide primary healthcare and treat common illnesses.</li><li>Surgeon: performs operations to treat diseases and injuries.</li><li>Paediatrician: specializes in healthcare for children.</li><li>Cardiologist: treats diseases of the heart and blood vessels.</li><li>Neurologist: diagnoses and treats disorders of the brain and nervous system.</li><li>Obstetrician &amp; gynaecologist (OB-GYN): provide healthcare for women, including pregnancy and childbirth.</li></ul></div>
 <div class="info-card"><img alt="MedStart" src="https://medstart.com.ng/assets/images/whatsapp20image202026-07-2620at2012.56.10-160x160.jpg" style="width:100%;height:240px;object-fit:cover;border-radius:12px"/><h2>Our Mission</h2><p>At <strong>Medstart</strong>, our mission is to make knowledge clear, accessible, and engaging for everyone by introducing the fundamentals of medicine in an informative and inspiring way.</p></div>
-</section></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer></body></html>
+</section></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer><script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body></html>

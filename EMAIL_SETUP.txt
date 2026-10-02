@@ -1,18 +1,28 @@
 MedStart EmailJS setup
 
-The sign-in page now loads EmailJS correctly and never sends/stores the user's password.
+Sign-in notifications are prepared for:
+jesseoges@gmail.com
 
-To enable sign-in notification emails, the site owner must configure:
-EMAILJS_PUBLIC_KEY
-EMAILJS_SERVICE_ID
-EMAILJS_TEMPLATE_ID
+The site uses EmailJS from the browser. To connect the notification email, create an EmailJS account/service/template and replace these three values in BOTH signin.html and signup.html:
+- EMAILJS_PUBLIC_KEY
+- EMAILJS_SERVICE_ID
+- EMAILJS_TEMPLATE_ID
 
-The EmailJS template should send the notification to jesseoges@gmail.com and use only:
-- user_email
-- sign_in_time
-- site
-Do not include the password.
+Recommended EmailJS template variables:
+- {{to_email}}
+- {{user_email}}
+- {{sign_in_time}}
+- {{site}}
+- {{event_type}}
 
-Until those values are configured, sign-in still works as a local prototype and displays that email notification is not configured.
+Set the EmailJS template recipient to use {{to_email}} (or otherwise configure the template to deliver to jesseoges@gmail.com).
 
-For real production accounts across devices, replace this localStorage prototype with a proper authentication backend such as Supabase or Firebase.
+The site NEVER sends the user's password in the notification.
+
+After the values are configured:
+- Signing in sends a notification to jesseoges@gmail.com.
+- Creating an account signs the user in immediately and sends the same notification if EmailJS is configured.
+- If EmailJS is not configured or temporarily fails, the user can still sign in; the site does not block authentication because of an email-delivery failure.
+
+Important:
+This prototype stores account information and quiz/case results in the browser's localStorage. For real multi-device accounts and server-side storage, replace this with a backend such as Supabase or Firebase.

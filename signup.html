@@ -81,7 +81,7 @@ button,.action,.opt{max-width:100%}
 }
 </style>
 <style>.signed-user{color:#061a33!important;text-decoration:none!important}</style>
-</head>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script></head>
 <body><header class="header">
   <div class="header-inner">
     <div class="top">
@@ -133,6 +133,10 @@ button,.action,.opt{max-width:100%}
 </section>
 </main>
 <script>
+const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
+
 async function hashPassword(value){
  const data=new TextEncoder().encode(value);
  const digest=await crypto.subtle.digest('SHA-256',data);
@@ -146,15 +150,32 @@ document.getElementById('signupForm').addEventListener('submit',async function(e
  const password=document.getElementById('password').value;
  const confirm=document.getElementById('confirm').value;
  const msg=document.getElementById('msg');
+ if(!name){msg.textContent='Enter your name.';return;}
+ if(!email){msg.textContent='Enter your email.';return;}
  if(password!==confirm){msg.textContent='Passwords do not match.';return;}
  if(password.length<8){msg.textContent='Password must be at least 8 characters.';return;}
  try{
    const passwordHash=await hashPassword(password);
    localStorage.setItem('medstartUser',JSON.stringify({name,email,passwordHash}));
-   localStorage.removeItem('medstartSignedIn');
-   localStorage.removeItem('medstartSignedInEmail');
-   msg.textContent='Account created. Redirecting to Sign In...';
-   setTimeout(()=>location.href='signin.html',700);
+   localStorage.setItem('medstartSignedIn','true');
+   localStorage.setItem('medstartSignedInEmail',email);
+   msg.textContent='Account created. Signing you in...';
+
+   if(window.emailjs && EMAILJS_PUBLIC_KEY!=='YOUR_EMAILJS_PUBLIC_KEY'){
+     try{
+       emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});
+       await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+         to_email:'jesseoges@gmail.com',
+         user_email:email,
+         sign_in_time:new Date().toLocaleString(),
+         site:'MedStart',
+         event_type:'New account created and signed in'
+       });
+     }catch(emailErr){
+       console.warn('Email notification could not be sent:',emailErr);
+     }
+   }
+   setTimeout(()=>location.href='index.html',500);
  }catch(err){
    msg.textContent='Account setup needs a normal website/HTTPS connection.';
    console.error(err);
@@ -185,5 +206,28 @@ document.getElementById('signupForm').addEventListener('submit',async function(e
  window.addEventListener('storage',sync);
 })();
 </script>
-</body>
+<script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body>
 </html>

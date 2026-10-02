@@ -94,4 +94,27 @@ button,.action,.opt{max-width:100%}
 <li><strong>Babies are born with about 270 bones,</strong> but adults have only <strong>206</strong> because some bones fuse together as they.</li>
 <li><strong>Your brain uses 20% of your body's oxygen,</strong> despite making up only about <strong>2%</strong> of your body weight.</li>
 <li><strong>You shed around 30,000 to 40,000 dead skin cells every minute,</strong> meaning much of the dust in your home contains tiny amount of human skin.</li>
-</ol></div><div class="info-card"><img alt="Health facts illustration" src="https://medstart.com.ng/assets/images/000000-612x1200.jpg" style="width:100%;height:100%;min-height:500px;object-fit:cover;border-radius:14px"/></div></section></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer></body></html>
+</ol></div><div class="info-card"><img alt="Health facts illustration" src="https://medstart.com.ng/assets/images/000000-612x1200.jpg" style="width:100%;height:100%;min-height:500px;object-fit:cover;border-radius:14px"/></div></section></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer><script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body></html>

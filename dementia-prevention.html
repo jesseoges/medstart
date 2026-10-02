@@ -84,4 +84,27 @@ button,.action,.opt{max-width:100%}
     </div>
   </div>
 </header><main><div class="article-layout"><a class="back" href="articles.html">← Back to Articles</a>
-<article class="article-hero"><img alt="WHO Issues New Guidance to Help Reduce the Risk of Dementia" src="https://medstart.com.ng/assets/images/whatsapp-image-2026-07-27-at-20.38.39-719x478.jpg"/><div class="article-content"><h1>WHO Issues New Guidance to Help Reduce the Risk of Dementia</h1><div>The World Health Organization (WHO) has released new recommendations aimed at lowering the risk of dementia. Expert say many cases may be delayed or prevented by adopting a healthier lifestyle.<br/><br/>The guidance encourages regular exercise, eating a balanced diet , avoiding smoking, limiting alcohol, managing blood pressure and diabetes, and staying socially active. These habits can help protect brain health and improve overall well being.<br/><br/>Although there is currently no cure for dementia, experts believe that healthy lifestyle choices can reduce the condition and support better brain health as people age.</div></div></article></div></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer></body></html>
+<article class="article-hero"><img alt="WHO Issues New Guidance to Help Reduce the Risk of Dementia" src="https://medstart.com.ng/assets/images/whatsapp-image-2026-07-27-at-20.38.39-719x478.jpg"/><div class="article-content"><h1>WHO Issues New Guidance to Help Reduce the Risk of Dementia</h1><div>The World Health Organization (WHO) has released new recommendations aimed at lowering the risk of dementia. Expert say many cases may be delayed or prevented by adopting a healthier lifestyle.<br/><br/>The guidance encourages regular exercise, eating a balanced diet , avoiding smoking, limiting alcohol, managing blood pressure and diabetes, and staying socially active. These habits can help protect brain health and improve overall well being.<br/><br/>Although there is currently no cure for dementia, experts believe that healthy lifestyle choices can reduce the condition and support better brain health as people age.</div></div></article></div></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer><script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body></html>

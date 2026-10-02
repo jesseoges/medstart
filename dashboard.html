@@ -113,69 +113,99 @@ h1 {
 </div>
 
 <script>
-
 /* ================= USER NAME ================= */
-
-const user = JSON.parse(localStorage.getItem("medstartUser"));
-
-if (user && user.name) {
+const user = JSON.parse(localStorage.getItem("medstartUser") || "null");
+const signedIn = localStorage.getItem("medstartSignedIn") === "true";
+if (user && user.name && signedIn) {
     document.getElementById("name").textContent = user.name;
 }
 
-
-/* ================= SPECIALTY RESULTS ================= */
-
-const savedResults = JSON.parse(
-    localStorage.getItem("medstartSpecialtyResults")
-);
-
+/* ================= SPECIALTY QUIZ RESULTS ================= */
+const quizSaved = JSON.parse(localStorage.getItem("medstartQuizResults") || "null");
 const quizArea = document.getElementById("quizArea");
+let quizHtml = "";
 
-
-if (savedResults && savedResults.length > 0) {
-
-    quizArea.innerHTML = `
-
+if (quizSaved && Array.isArray(quizSaved.results) && quizSaved.results.length) {
+    quizHtml = `
         <div class="specialty-results">
-
             <h2>🎯 Your Top Specialties</h2>
-
-            ${savedResults.map((specialty, index) => `
+            ${quizSaved.results.slice(0,5).map((specialty, index) => `
                 <div class="specialty">
                     #${index + 1} ${specialty.name}
+                    ${specialty.score != null ? `<div style="font-size:14px;margin-top:5px;font-weight:normal;">Preference alignment: ${specialty.score}%</div>` : ""}
                 </div>
             `).join("")}
-
-            <a
-                class="redo"
-                href="https://medstart.com.ng/specialty-quiz.html"
-            >
-                🔄 Redo the test
-            </a>
-
-        </div>
-
-    `;
-
+            <a class="redo" href="https://medstart.com.ng/specialty-quiz.html">🔄 Redo the test</a>
+        </div>`;
 } else {
-
-    quizArea.innerHTML = `
-
+    quizHtml = `
         <div class="quiz">
-
-            Click
-            <a href="https://medstart.com.ng/specialty-quiz.html">
-                here
-            </a>
+            Click <a href="https://medstart.com.ng/specialty-quiz.html">here</a>
             to take the Specialty Quiz.
-
-        </div>
-
-    `;
-
+        </div>`;
 }
 
+/* ================= CLINICAL CASE RESULTS ================= */
+let caseResults = null;
+if (signedIn && user && user.email) {
+    try {
+        const byUser = JSON.parse(localStorage.getItem("medstartCaseResultsByUser") || "{}");
+        caseResults = byUser[user.email] || {};
+    } catch (e) { caseResults = {}; }
+} else {
+    try { caseResults = JSON.parse(localStorage.getItem("medstartCaseResults") || "{}"); }
+    catch (e) { caseResults = {}; }
+}
+
+let caseHtml = "";
+const entries = Object.values(caseResults || {}).sort((a,b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+
+if (entries.length) {
+    caseHtml = `
+        <div class="specialty-results">
+            <h2>🩺 Your Clinical Case Results</h2>
+            ${entries.map(r => `
+                <div class="specialty">
+                    ${r.specialty}
+                    <div style="font-size:15px;margin-top:6px;font-weight:normal;">
+                        ${r.score}/${r.total} (${Math.round((r.score / r.total) * 100)}%) · ${r.completedCases} cases completed
+                    </div>
+                </div>
+            `).join("")}
+            <a class="redo" href="https://medstart.com.ng/cases.html">🔄 Continue / retry cases</a>
+        </div>`;
+} else {
+    caseHtml = `
+        <div class="quiz">
+            Your completed specialty case results will appear here after you finish a specialty's 5 cases.
+        </div>`;
+}
+
+quizArea.innerHTML = quizHtml + caseHtml;
 </script>
 
-</body>
+<script id="medstart-global-auth">
+(function(){
+  function syncAuth(){
+    let user=null,signed=false;
+    try{
+      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
+      signed=localStorage.getItem('medstartSignedIn')==='true';
+    }catch(e){}
+    if(!signed||!user)return;
+    const name=(user.name||'My Account').trim()||'My Account';
+    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
+      el.textContent=name;
+      el.href='dashboard.html';
+      el.style.display='inline-block';
+    });
+    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
+      el.style.display='none';
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
+  window.addEventListener('storage',syncAuth);
+})();
+</script></body>
 </html>
