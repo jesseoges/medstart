@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedStart Surgical Simulator</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#050b12;color:#fff;
+ font-family:Arial,sans-serif;overflow-x:hidden
+}
+header{
+ height:58px;background:#091824;border-bottom:1px solid #294254;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 15px
+}
+.logo{font-weight:bold;font-size:18px}
+#app{max-width:1000px;margin:auto}
+#menu{
+ padding:15px;text-align:center
+}
+.case{
+ display:inline-block;width:42%;min-width:145px;margin:7px;
+ padding:22px 10px;background:#102b3d;
+ border:1px solid #34576e;border-radius:15px;
+ cursor:pointer;font-size:17px
+}
+.case:hover{border-color:#28b8ff}
+#sim{display:none}
+.top{
+ padding:10px 15px;background:#0b1c29;
+ display:flex;justify-content:space-between
+}
+#bar{
+ height:5px;background:#263c4c
+}
+#fill{
+ height:100%;width:0;background:#20aaff;transition:.5s
+}
+
+/* OPERATING ROOM */
+
+#screen{
+ height:560px;position:relative;overflow:hidden;
+ background:
+ radial-gradient(circle at 50% 20%,#dce9ee 0 4%,transparent 5%),
+ linear-gradient(#1a3545 0 58%,#071017 58%)
+}
+
+.ceiling{
+ position:absolute;top:0;left:0;right:0;height:90px;
+ background:#243f4d
+}
+
+.lamp{
+ position:absolute;top:22px;left:50%;
+ transform:translateX(-50%);
+ width:180px;height:50px;border-radius:50%;
+ background:#e5f0f3;
+ box-shadow:0 0 65px #dcecf2
+}
+
+/* simulated patient */
+
+.table{
+ position:absolute;
+ width:74%;height:420px;
+ left:13%;top:100px;
+ background:#465f6c;
+ border-radius:30px;
+ transform:perspective(600px) rotateX(4deg)
+}
+
+.body{
+ position:absolute;
+ left:18%;right:18%;top:25px;height:330px;
+ background:linear-gradient(90deg,#b9937e,#d0aa92,#b9937e);
+ border-radius:100px 100px 45px 45px
+}
+
+.gown{
+ position:absolute;
+ left:10%;right:10%;top:95px;height:210px;
+ background:#d7e5e8;
+ border-radius:80px 80px 25px 25px
+}
+
+/* head */
+
+.head{
+ position:absolute;
+ width:115px;height:125px;
+ background:#c59b84;border-radius:50%;
+ top:-40px;left:50%;
+ transform:translateX(-50%)
+}
+
+.face{
+ position:absolute;inset:25px 20px;
+ border-radius:50%;
+ background:#cda38b
+}
+
+/* legs */
+
+.leg{
+ position:absolute;width:65px;height:210px;
+ background:#c59a83;border-radius:35px;
+ bottom:-30px
+}
+.leftleg{left:20%}
+.rightleg{right:20%}
+
+/* anatomy */
+
+.anatomy{
+ display:none;position:absolute;
+ left:50%;top:145px;
+ transform:translateX(-50%);
+ width:210px;height:150px;
+ background:#8b6a63;
+ border-radius:45% 45% 40% 40%;
+ box-shadow:inset 0 0 0 8px #604942
+}
+
+.brain{
+ display:none;position:absolute;
+ left:50%;top:35px;
+ transform:translateX(-50%);
+ width:105px;height:105px;
+ background:#d29b9c;
+ border-radius:50%;
+ box-shadow:inset 0 0 15px #6f5555
+}
+
+/* interaction targets */
+
+.target{
+ position:absolute;
+ padding:12px;
+ border:2px solid #21b8ff;
+ border-radius:50%;
+ background:#0c719b99;
+ display:none;
+ animation:pulse 1.2s infinite;
+ z-index:8
+}
+
+@keyframes pulse{
+ 50%{box-shadow:0 0 25px #20baff}
+}
+
+#headTarget{left:50%;top:40px;transform:translateX(-50%)}
+#legTarget{left:50%;bottom:55px;transform:translateX(-50%)}
+
+/* instruments */
+
+.tray{
+ position:absolute;right:15px;bottom:15px;
+ background:#172d3b;padding:10px;border-radius:14px;
+ display:flex;gap:8px;z-index:20
+}
+.tool{
+ width:72px;height:65px;background:#0b1e2b;
+ border:1px solid #48697b;border-radius:10px;
+ display:flex;align-items:center;justify-content:center;
+ flex-direction:column;cursor:grab;
+ font-size:27px
+}
+.tool small{font-size:9px;color:#b8cbd5}
+.tool.active{border-color:#20baff}
+
+#held{
+ position:absolute;z-index:50;
+ font-size:42px;display:none;
+ pointer-events:none
+}
+
+/* information */
+
+#panel{
+ background:#091c29;padding:13px;
+ min-height:100px
+}
+#message{text-align:center;min-height:25px}
+#learning{
+ display:none;background:#102f43;
+ border-left:4px solid #20aaff;
+ padding:12px;border-radius:8px
+}
+button{
+ background:#168bd5;color:#fff;border:0;
+ padding:12px 18px;border-radius:9px;
+ font-weight:bold
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">🩺 MedStart</div>
+<div>Interactive Surgery</div>
+</header>
+
+<div id="menu">
+<h2>Choose a Case</h2>
+
+<div class="case" onclick="start('brain')">
+🧠<br><b>Craniotomy</b>
+<br><small>Neurosurgical Simulation</small>
+</div>
+
+<div class="case" onclick="start('leg')">
+🦵<br><b>Leg Amputation</b>
+<br><small>Orthopaedic Simulation</small>
+</div>
+</div>
+
+<div id="sim">
+
+<div class="top">
+<b id="title"></b>
+<span>Score: <b id="score">0</b></span>
+</div>
+
+<div id="bar"><div id="fill"></div></div>
+
+<div id="screen">
+
+<div class="ceiling"></div>
+<div class="lamp"></div>
+
+<div class="table">
+
+<div class="body">
+
+<div class="head">
+<div class="face"></div>
+</div>
+
+<div class="gown"></div>
+
+<div class="leg leftleg"></div>
+<div class="leg rightleg"></div>
+
+<div class="brain" id="brain"></div>
+<div class="anatomy" id="anat"></div>
+
+<div class="target" id="headTarget">
+🧠 Target
+</div>
+
+<div class="target" id="legTarget">
+🦵 Target
+</div>
+
+</div>
+</div>
+
+<div id="held"></div>
+
+<div class="tray" id="tray"></div>
+
+</div>
+
+<div id="panel">
+
+<div id="message"></div>
+
+<div id="learning">
+<b>📚 Surgical Learning</b>
+<p id="learnText"></p>
+</div>
+
+<br>
+
+<button id="next" onclick="next()" disabled>
+Next Scene →
+</button>
+
+</div>
+</div>
+
+<script>
+
+const cases={
+
+brain:[
+{
+t:"Patient Assessment",
+tool:"🔦",
+name:"Light",
+zone:"head",
+text:"Identify the patient's head region and begin the simulated neurosurgical assessment.",
+learn:"A craniotomy is a neurosurgical operation involving access to the skull. This simulator focuses on anatomy and decision-making rather than real surgical technique."
+},
+{
+t:"Anatomy Exploration",
+tool:"🧠",
+name:"Brain Anatomy",
+zone:"head",
+text:"Explore the simulated cranial anatomy.",
+learn:"The brain is protected by the skull and several layers of tissue. Understanding this relationship is fundamental to neurosurgery."
+},
+{
+t:"Instrument Recognition",
+tool:"🧰",
+name:"Instrument Set",
+zone:"head",
+text:"Select the appropriate simulated instrument set.",
+learn:"Neurosurgical procedures use specialized instruments designed for delicate work and precise control."
+}
+],
+
+leg:[
+{
+t:"Limb Assessment",
+tool:"🔦",
+name:"Examination",
+zone:"leg",
+text:"Examine the simulated affected limb.",
+learn:"Before major limb surgery, clinicians evaluate the condition of the limb, circulation, sensation and overall health."
+},
+{
+t:"Anatomy Exploration",
+tool:"🦴",
+name:"Anatomy",
+zone:"leg",
+text:"Explore the simulated leg anatomy.",
+learn:"The lower limb contains bones, muscles, nerves and blood vessels that must be understood when planning treatment."
+},
+{
+t:"Surgical Planning",
+tool:"📋",
+name:"Plan",
+zone:"leg",
+text:"Review the simulated surgical plan.",
+learn:"Major surgical decisions involve assessing the clinical situation, imaging, risks and the patient's overall condition."
+}
+]
+
+};
+
+let type="",step=0,score=0,dragging=false;
+
+const menu=document.getElementById("menu");
+const sim=document.getElementById("sim");
+const tray=document.getElementById("tray");
+const held=document.getElementById("held");
+const message=document.getElementById("message");
+const learning=document.getElementById("learning");
+const nextBtn=document.getElementById("next");
+
+function start(x){
+
+ type=x;
+ step=0;
+ score=0;
+
+ menu.style.display="none";
+ sim.style.display="block";
+
+ load();
+}
+
+function load(){
+
+ let s=cases[type][step];
+
+ title.innerText=
+ (type==="brain"?"🧠 Craniotomy":"🦵 Leg Amputation")
+ +" • "+s.t;
+
+ scoreEl=document.getElementById("score");
+ scoreEl.innerText=score;
+
+ fill.style.width=
+ (step/cases[type].length*100)+"%";
+
+ message.innerText=s.text;
+ learning.style.display="none";
+ nextBtn.disabled=true;
+
+ headTarget.style.display="none";
+ legTarget.style.display="none";
+ brain.style.display="none";
+ anat.style.display="none";
+
+ if(s.zone==="head")
+ headTarget.style.display="block";
+
+ if(s.zone==="leg")
+ legTarget.style.display="block";
+
+ if(step>0){
+   if(type==="brain")brain.style.display="block";
+   else anat.style.display="block";
+ }
+
+ tray.innerHTML="";
+
+ let tool=document.createElement("div");
+ tool.className="tool";
+ tool.innerHTML=s.tool+"<small>"+s.name+"</small>";
+
+ tool.onpointerdown=e=>{
+   dragging=true;
+   held.innerText=s.tool;
+   held.style.display="block";
+   move(e);
+   tool.classList.add("active");
+ };
+
+ window.onpointermove=e=>{
+   if(dragging)move(e);
+ };
+
+ window.onpointerup=e=>{
+   if(!dragging)return;
+
+   dragging=false;
+   held.style.display="none";
+   tool.classList.remove("active");
+
+   drop(e.clientX,e.clientY);
+ };
+
+ tray.appendChild(tool);
+}
+
+function move(e){
+
+ let r=screen.getBoundingClientRect();
+
+ held.style.left=
+ (e.clientX-r.left-20)+"px";
+
+ held.style.top=
+ (e.clientY-r.top-25)+"px";
+}
+
+function hit(el,x,y){
+
+ let r=el.getBoundingClientRect();
+
+ return x>=r.left &&
+ x<=r.right &&
+ y>=r.top &&
+ y<=r.bottom;
+}
+
+function drop(x,y){
+
+ let s=cases[type][step];
+
+ let target=
+ s.zone==="head"?
+ headTarget:legTarget;
+
+ if(hit(target,x,y)){
+
+   score+=25;
+   document.getElementById("score").innerText=score;
+
+   target.style.display="none";
+
+   if(type==="brain")
+     brain.style.display="block";
+   else
+     anat.style.display="block";
+
+   message.innerText=
+   "✓ Correct. Scene completed.";
+
+   document.getElementById("learnText").innerText=s.learn;
+   learning.style.display="block";
+
+   nextBtn.disabled=false;
+
+ }else{
+
+   score=Math.max(0,score-5);
+
+   document.getElementById("score").innerText=score;
+
+   message.innerText=
+   "Try again. Move the instrument to the highlighted target.";
+ }
+}
+
+function next(){
+
+ if(step<cases[type].length-1){
+
+   step++;
+   load();
+
+ }else{
+
+   finish();
+ }
+}
+
+function finish(){
+
+ fill.style.width="100%";
+
+ screen.innerHTML=`
+ <div style="
+ text-align:center;
+ padding-top:180px;
+ ">
+ <div style="font-size:70px">🏆</div>
+ <h2>Case Complete</h2>
+ <p>Simulation score</p>
+ <h1>${score}</h1>
+ <button onclick="location.reload()">New Case</button>
+ </div>
+ `;
+
+ message.innerText="";
+ learning.style.display="none";
+ nextBtn.style.display="none";
+}
+
+</script>
+
+
+<script id="medstart-global-auth-v2">
+(function(){
+  function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
+  function isSigned(){try{return localStorage.getItem('medstartSignedIn')==='true'}catch(e){return false}}
+  function sync(){
+    var u=readUser(), signed=isSigned(), name=(u&&u.name||'').trim();
+    document.querySelectorAll('.nav a').forEach(function(a){
+      var h=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+      if(h==='signup.html' || /^sign\s*up$/i.test(a.textContent.trim())) a.remove();
+      if(signed && (h==='signin.html'||h==='sign-in.html'||/^sign\s*in$/i.test(a.textContent.trim()))) a.remove();
+    });
+    var controls=document.querySelectorAll('a.signup,[data-auth="account"]');
+    controls.forEach(function(a){
+      a.textContent=(signed&&name)?name:'Sign Up';
+      a.href=(signed&&name)?'dashboard.html':'signup.html';
+      a.style.display='inline-block';
+      a.classList.toggle('signed-user',!!(signed&&name));
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=(signed&&name)?name:'Guest'});
+    // Add a consistent account button to headers that do not already have one.
+    if(!document.querySelector('a.signup,[data-auth="account"]') && !/^(signup|signin|sign-in)\.html$/i.test(location.pathname.split('/').pop())){
+      var top=document.querySelector('.top')||document.querySelector('.header-inner');
+      if(top){var a=document.createElement('a');a.className='signup';a.setAttribute('data-auth','account');a.textContent=(signed&&name)?name:'Sign Up';a.href=(signed&&name)?'dashboard.html':'signup.html';top.appendChild(a);}
+    }
+    if(signed&&u&&u.email){
+      try{
+        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
+        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
+        by[u.email]=by[u.email]||{};
+        Object.keys(generic||{}).forEach(function(k){if(!by[u.email][k])by[u.email][k]=generic[k]});
+        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
+      }catch(e){}
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+  window.addEventListener('storage',sync);window.addEventListener('medstart-auth-changed',sync);window.addEventListener('medstart-case-results-updated',sync);
+  window.medstartSyncAuth=sync;
+})();
+</script>
+</body>
+</html>
