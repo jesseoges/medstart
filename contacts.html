@@ -65,7 +65,7 @@ button,.action,.opt{max-width:100%}
           <span>Explore medicine. Build your path.</span>
         </div>
       </a>
-      <a class="signup" href="signup.html">Sign Up</a>
+      
     </div>
     <div class="nav-wrap">
       <nav class="nav" id="nav">
@@ -88,25 +88,41 @@ button,.action,.opt{max-width:100%}
 <div class="contact-card"><div style="font-size:42px">◉</div><h2>WhatsApp</h2><p>Mon - Fri 09:00 - 18:00</p><a class="btn" href="https://wa.me/2349061697228">Chat me</a></div>
 </section></main><footer class="footer"><div class="footer-inner"><strong>MedStart</strong><p>Medical learning and exploration for students and curious learners.</p><p><a href="about-medicine.html">About medicine</a> · <a href="articles.html">Articles</a> · <a href="contacts.html">Contacts</a></p></div></footer><script id="medstart-global-auth">
 (function(){
+  function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
+  function isSigned(){return localStorage.getItem('medstartSignedIn')==='true'}
   function syncAuth(){
-    let user=null,signed=false;
-    try{
-      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
-      signed=localStorage.getItem('medstartSignedIn')==='true';
-    }catch(e){}
-    if(!signed||!user)return;
-    const name=(user.name||'My Account').trim()||'My Account';
-    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
-      el.textContent=name;
-      el.href='dashboard.html';
-      el.style.display='inline-block';
+    var user=readUser(), signed=isSigned(), name=(user&&user.name||'').trim();
+    // The navigation never contains a Sign Up item.
+    document.querySelectorAll('.nav a').forEach(function(a){
+      if((a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'')==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
     });
-    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
-      el.style.display='none';
+    // Keep the header account button on every normal site page.
+    document.querySelectorAll('a.signup,[data-auth="signup"]').forEach(function(a){
+      if(signed && name){a.textContent=name;a.href='dashboard.html';a.style.display='inline-block';a.classList.add('signed-user');}
+      else {a.textContent='Sign Up';a.href='signup.html';a.style.display='inline-block';a.classList.remove('signed-user');}
     });
-    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+    document.querySelectorAll('.nav a').forEach(function(a){
+      var href=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+      if(signed && (href==='signin.html'||href==='sign-in.html')) a.remove();
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=signed&&name?name:'Guest';});
+    // Attach any anonymous case results to the signed-in account, so results completed before login remain visible.
+    if(signed && user && user.email){
+      try{
+        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
+        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
+        by[user.email]=by[user.email]||{};
+        Object.keys(generic||{}).forEach(function(k){if(!by[user.email][k]) by[user.email][k]=generic[k];});
+        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
+        var q=JSON.parse(localStorage.getItem('medstartQuizResults')||'null');
+        if(q && !JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}')[user.email]){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
+      }catch(e){}
+    }
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
   window.addEventListener('storage',syncAuth);
+  window.addEventListener('medstart-auth-changed',syncAuth);
+  window.medstartSyncAuth=syncAuth;
 })();
-</script></body></html>
+</script>
+</body></html>

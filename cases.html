@@ -74,7 +74,7 @@ button,.action,.opt{max-width:100%}
           <span>Explore medicine. Build your path.</span>
         </div>
       </a>
-      <a class="signup" href="signup.html">Sign Up</a>
+      
     </div>
     <div class="nav-wrap">
       <nav class="nav" id="nav">
@@ -102,7 +102,7 @@ function optionOrder(q){const a=q.options.map((_,i)=>i);let seed=(q.question.len
 function slug(x){return x.toLowerCase().replace(/[^a-z0-9]+/g,'-')}
 function getSigned(){try{return localStorage.getItem('medstartSignedIn')==='true'}catch(e){return false}}
 function renderTabs(){tabs.innerHTML=names.map(n=>`<button class="tab ${n===specialty?'active':''}" data-s="${slug(n)}">${n}</button>`).join('');tabs.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{specialty=names.find(n=>slug(n)===b.dataset.s);caseIndex=0;qIndex=0;caseAnswers=Array.from({length:5},()=>Array(5).fill(undefined));render()})}
-function render(){renderTabs();const c=BANK[specialty][caseIndex],q=c.questions[qIndex],chosen=caseAnswers[caseIndex][qIndex],order=q.options.map((_,i)=>i);app.innerHTML=`<div class="case-card"><div class="case-num">CASE ${caseIndex+1} OF 5 · QUESTION ${qIndex+1} OF 5 · ${specialty.toUpperCase()}</div><h2 class="case-title">${c.title}</h2><p class="stem"><strong>Case:</strong> ${c.stem}</p><div class="question-box"><p class="stem"><strong>Question ${qIndex+1}:</strong> ${q.question}</p><div class="options">${order.map(i=>`<button class="opt ${chosen===i?'selected':''}" data-i="${i}">${String.fromCharCode(65+order.indexOf(i))}. ${q.options[i]}</button>`).join('')}</div></div><div class="progress"><i style="width:${((qIndex+1)/5)*100}%"></i></div><div class="controls"><button class="action secondary" id="prev" ${qIndex===0?'disabled':''}>← Previous question</button><button class="action" id="next">${qIndex===4?(caseIndex===4?'Finish specialty':'Next case →'):'Next question →'}</button></div></div>`;app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{caseAnswers[caseIndex][qIndex]=Number(b.dataset.i);render()});document.getElementById('prev').onclick=()=>{if(qIndex>0){qIndex--;render()}};document.getElementById('next').onclick=()=>{if(caseAnswers[caseIndex][qIndex]===undefined){alert('Choose an answer to continue.');return}if(qIndex<4){qIndex++;render()}else if(caseIndex<4){caseIndex++;qIndex=0;render()}else{finishSpecialty()}}}
+function render(){renderTabs();const c=BANK[specialty][caseIndex],q=c.questions[qIndex],chosen=caseAnswers[caseIndex][qIndex],order=q.options.map((_,i)=>i);app.innerHTML=`<div class="case-card"><div class="case-num">CASE ${caseIndex+1} OF 5 · QUESTION ${qIndex+1} OF 5 · ${specialty.toUpperCase()}</div><p class="stem"><strong>Case:</strong> ${c.stem}</p><div class="question-box"><p class="stem"><strong>Question ${qIndex+1}:</strong> ${q.question}</p><div class="options">${order.map(i=>`<button class="opt ${chosen===i?'selected':''}" data-i="${i}">${String.fromCharCode(65+order.indexOf(i))}. ${q.options[i]}</button>`).join('')}</div></div><div class="progress"><i style="width:${((qIndex+1)/5)*100}%"></i></div><div class="controls"><button class="action secondary" id="prev" ${qIndex===0?'disabled':''}>← Previous question</button><button class="action" id="next">${qIndex===4?(caseIndex===4?'Finish specialty':'Next case →'):'Next question →'}</button></div></div>`;app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{caseAnswers[caseIndex][qIndex]=Number(b.dataset.i);render()});document.getElementById('prev').onclick=()=>{if(qIndex>0){qIndex--;render()}};document.getElementById('next').onclick=()=>{if(caseAnswers[caseIndex][qIndex]===undefined){alert('Choose an answer to continue.');return}if(qIndex<4){qIndex++;render()}else if(caseIndex<4){caseIndex++;qIndex=0;render()}else{finishSpecialty()}}}
 function saveResult(score){
  let all={};
  try{all=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}')}catch(e){}
@@ -124,29 +124,43 @@ function saveResult(score){
 function finishSpecialty(){let score=0;const reviews=[];for(let ci=0;ci<5;ci++){const ca=BANK[specialty][ci];let cs=0;for(let qi=0;qi<5;qi++){const a=caseAnswers[ci][qi];if(a!==undefined && a===ca.questions[qi].correct)cs++;}score+=cs;reviews.push({title:ca.title,score:cs,questions:ca.questions,answers:caseAnswers[ci]});}saveResult(score);app.innerHTML=`<div class="result"><div class="eyebrow">${specialty.toUpperCase()} · 5 CASES COMPLETE</div><div class="score">${score}/25</div><h2>Specialty case result</h2><p class="note">Your score is saved on this device. If you are signed in, it will appear on your MedStart dashboard. If you complete another specialty, its result will be saved separately too.</p>${reviews.map((r,i)=>`<div class="review"><strong>Case ${i+1}: ${r.title}</strong><div class="correct">${r.score}/5 questions correct</div></div>`).join('')}<div class="controls"><button class="action secondary" id="again">Retry ${specialty}</button><button class="action" id="nextSpec">Next specialty →</button></div></div>`;document.getElementById('again').onclick=()=>{caseIndex=0;qIndex=0;caseAnswers=Array.from({length:5},()=>Array(5).fill(undefined));render()};document.getElementById('nextSpec').onclick=()=>{specialty=names[(names.indexOf(specialty)+1)%names.length];caseIndex=0;qIndex=0;caseAnswers=Array.from({length:5},()=>Array(5).fill(undefined));render()}}
 render();
 </script>
-<script>
-(function(){function sync(){let u=null,signed=false;try{u=JSON.parse(localStorage.getItem('medstartUser')||'null');signed=localStorage.getItem('medstartSignedIn')==='true'}catch(e){}if(!signed||!u)return;document.querySelectorAll('a[href="signup.html"]').forEach(x=>x.style.display='none');document.querySelectorAll('a[href="signin.html"]').forEach(x=>{x.textContent=u.name||'My Account';x.href='index.html'})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync()})();
-</script><script id="medstart-global-auth">
+<script id="medstart-global-auth">
 (function(){
+  function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
+  function isSigned(){return localStorage.getItem('medstartSignedIn')==='true'}
   function syncAuth(){
-    let user=null,signed=false;
-    try{
-      user=JSON.parse(localStorage.getItem('medstartUser')||'null');
-      signed=localStorage.getItem('medstartSignedIn')==='true';
-    }catch(e){}
-    if(!signed||!user)return;
-    const name=(user.name||'My Account').trim()||'My Account';
-    document.querySelectorAll('a[href="signup.html"],a[href="./signup.html"],[data-auth="signup"]').forEach(function(el){
-      el.textContent=name;
-      el.href='dashboard.html';
-      el.style.display='inline-block';
+    var user=readUser(), signed=isSigned(), name=(user&&user.name||'').trim();
+    // The navigation never contains a Sign Up item.
+    document.querySelectorAll('.nav a').forEach(function(a){
+      if((a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'')==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
     });
-    document.querySelectorAll('a[href="signin.html"],a[href="./signin.html"],a[href="sign-in.html"],a[href="./sign-in.html"],[data-auth="signin"]').forEach(function(el){
-      el.style.display='none';
+    // Keep the header account button on every normal site page.
+    document.querySelectorAll('a.signup,[data-auth="signup"]').forEach(function(a){
+      if(signed && name){a.textContent=name;a.href='dashboard.html';a.style.display='inline-block';a.classList.add('signed-user');}
+      else {a.textContent='Sign Up';a.href='signup.html';a.style.display='inline-block';a.classList.remove('signed-user');}
     });
-    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=name;});
+    document.querySelectorAll('.nav a').forEach(function(a){
+      var href=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+      if(signed && (href==='signin.html'||href==='sign-in.html')) a.remove();
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=signed&&name?name:'Guest';});
+    // Attach any anonymous case results to the signed-in account, so results completed before login remain visible.
+    if(signed && user && user.email){
+      try{
+        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
+        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
+        by[user.email]=by[user.email]||{};
+        Object.keys(generic||{}).forEach(function(k){if(!by[user.email][k]) by[user.email][k]=generic[k];});
+        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
+        var q=JSON.parse(localStorage.getItem('medstartQuizResults')||'null');
+        if(q && !JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}')[user.email]){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
+      }catch(e){}
+    }
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
   window.addEventListener('storage',syncAuth);
+  window.addEventListener('medstart-auth-changed',syncAuth);
+  window.medstartSyncAuth=syncAuth;
 })();
-</script></body></html>
+</script>
+</body></html>
