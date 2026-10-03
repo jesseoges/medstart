@@ -81,7 +81,7 @@ button,.action,.opt{max-width:100%}
 }
 </style>
 <style>.signed-user{color:#061a33!important;text-decoration:none!important}</style>
-</head>
+<style id="medstart-account-nav-fix">.nav a.signup,.nav a[data-auth="account"]{background:#20C997!important;color:#061A33!important;font-weight:800!important;border-radius:9px!important}.nav a.signup:hover,.nav a[data-auth="account"]:hover{background:#31d9aa!important;color:#061A33!important}</style></head>
 <body><header class="header">
   <div class="header-inner">
     <div class="top">
@@ -141,102 +141,67 @@ const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
 const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
 const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
 
-async function hashPassword(value){
- const data=new TextEncoder().encode(value);
- const digest=await crypto.subtle.digest('SHA-256',data);
- return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+function hashPassword(value){var h=2166136261;for(var i=0;i<value.length;i++){h^=value.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0')+'-'+value.length;}
 
-document.getElementById('signinForm').addEventListener('submit',async function(e){
+document.getElementById('signinForm').addEventListener('submit',function(e){
  e.preventDefault();
- const email=document.getElementById('email').value.trim().toLowerCase();
- const password=document.getElementById('password').value;
- const msg=document.getElementById('msg');
- const saved=JSON.parse(localStorage.getItem('medstartUser')||'null');
-
- if(!saved || saved.email!==email){
-   msg.textContent='No MedStart account found for this email. Create an account first.';
-   return;
- }
- if(!password){
-   msg.textContent='Enter your password.';
-   return;
- }
- if(!saved.passwordHash){
-   msg.textContent='This account was created with an older prototype. Please create the account again.';
-   return;
- }
-
- msg.textContent='Signing in...';
-
- try{
-   const enteredHash=await hashPassword(password);
-   if(enteredHash!==saved.passwordHash){
-     msg.textContent='Incorrect password.';
-     return;
-   }
-
-   let notificationSent=false;
-   if(window.emailjs && EMAILJS_PUBLIC_KEY!=='YOUR_EMAILJS_PUBLIC_KEY'){
-     try{
-       emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});
-       await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-         to_email:'jesseoges@gmail.com',
-         user_email:email,
-         sign_in_time:new Date().toLocaleString(),
-         site:'MedStart',
-         event_type:'User signed in'
-       });
-       notificationSent=true;
-     }catch(emailErr){
-       console.warn('Email notification could not be sent:',emailErr);
-     }
-   }
-   localStorage.setItem('medstartSignedIn','true'); window.dispatchEvent(new Event('medstart-auth-changed'));
-   localStorage.setItem('medstartSignedInEmail',email);
-   msg.textContent=notificationSent?'Signed in. Notification sent.':'Signed in successfully.';
-   setTimeout(()=>location.href='index.html',350);
- }catch(err){
-   msg.textContent='Sign-in could not be completed. If you are opening the file directly, try it from your website/HTTPS.';
-   console.error(err);
- }
+ var email=document.getElementById('email').value.trim().toLowerCase();
+ var password=document.getElementById('password').value;
+ var msg=document.getElementById('msg');
+ var saved=null;
+ try{saved=JSON.parse(localStorage.getItem('medstartAccount')||'null');}catch(err){saved=null;}
+ if(!saved){msg.textContent='No MedStart account found. Create an account first.';return;}
+ if(email!==String(saved.email||'').toLowerCase() || password!==String(saved.password||'')){msg.textContent='Incorrect email or password.';return;}
+ localStorage.setItem('medstartUser',JSON.stringify({name:saved.name,email:saved.email}));
+ localStorage.setItem('medstartSignedIn','true');
+ localStorage.setItem('medstartSignedInEmail',saved.email);
+ window.dispatchEvent(new Event('medstart-auth-changed'));
+ msg.textContent='Signed in successfully.';
+ setTimeout(function(){var ret=new URLSearchParams(location.search).get('return');window.location.href=(ret&&/^(specialty-quiz\.html|cases\.html|dashboard\.html)$/.test(ret))?ret:'index.html';},250);
 });
 </script>
 
-<script id="medstart-global-auth">
+
+<script id="medstart-global-auth-v2">
 (function(){
   function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
-  function signed(){return localStorage.getItem('medstartSignedIn')==='true'}
-  function syncAuth(){
-    var user=readUser(), ok=signed(), name=(user&&user.name||'').trim();
-    document.querySelectorAll('.nav a').forEach(function(a){
-      var href=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
-      if(href==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
-      else if(ok && (href==='signin.html'||href==='sign-in.html')) a.remove();
-    });
-    document.querySelectorAll('a.signup,[data-auth="account"]').forEach(function(a){
-      a.textContent=(ok&&name)?name:'Sign Up';
-      a.href=(ok&&name)?'dashboard.html':'signup.html';
-      a.style.display='inline-block';
-      a.classList.toggle('signed-user',!!(ok&&name));
-    });
-    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=(ok&&name)?name:'Guest'});
-    if(ok&&user&&user.email){
-      try{
-        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
-        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
-        by[user.email]=by[user.email]||{};
-        Object.keys(generic).forEach(function(k){if(!by[user.email][k])by[user.email][k]=generic[k]});
-        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
-        var q=JSON.parse(localStorage.getItem('medstartQuizResults')||'null');
-        if(q){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
-      }catch(e){}
+  function isSigned(){try{return localStorage.getItem('medstartSignedIn')==='true'}catch(e){return false}}
+  function sync(){
+    var u=readUser(), signed=isSigned(), name=(u&&u.name||'').trim();
+    var nav=document.querySelector('.nav');
+    if(nav){
+      nav.querySelectorAll('a').forEach(function(a){
+        var h=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+        var t=(a.textContent||'').trim();
+        if(h==='signup.html' || /^sign\s*up$/i.test(t) || (signed && (h==='signin.html'||h==='sign-in.html'||/^sign\s*in$/i.test(t)))) a.remove();
+      });
+      var account=nav.querySelector('a[data-auth="account"]');
+      if(!account){
+        account=document.createElement('a');
+        account.setAttribute('data-auth','account');
+        account.className='signup';
+        nav.appendChild(account);
+      }
+      account.textContent=(signed&&name)?name:'Sign Up';
+      account.href=(signed&&name)?'dashboard.html':'signup.html';
+      account.classList.toggle('signed-user',!!(signed&&name));
+      account.style.display='inline-block';
     }
+    document.querySelectorAll('a.signup:not(.nav a),[data-auth="account"]:not(.nav a)').forEach(function(a){
+      a.textContent=(signed&&name)?name:'Sign Up';
+      a.href=(signed&&name)?'dashboard.html':'signup.html';
+      a.style.display='inline-block';
+      a.classList.toggle('signed-user',!!(signed&&name));
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){
+      el.textContent=(signed&&name)?name:'Guest';
+    });
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
-  window.addEventListener('storage',syncAuth);
-  window.addEventListener('medstart-auth-changed',syncAuth);
-  window.medstartSyncAuth=syncAuth;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+  window.addEventListener('storage',sync);
+  window.addEventListener('medstart-auth-changed',sync);
+  window.addEventListener('medstart-case-results-updated',sync);
+  window.medstartSyncAuth=sync;
 })();
 </script>
 </body>

@@ -81,7 +81,7 @@ button,.action,.opt{max-width:100%}
 }
 </style>
 <style>.signed-user{color:#061a33!important;text-decoration:none!important}</style>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script></head>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script><style id="medstart-account-nav-fix">.nav a.signup,.nav a[data-auth="account"]{background:#20C997!important;color:#061A33!important;font-weight:800!important;border-radius:9px!important}.nav a.signup:hover,.nav a[data-auth="account"]:hover{background:#31d9aa!important;color:#061A33!important}</style></head>
 <body><header class="header">
   <div class="header-inner">
     <div class="top">
@@ -132,90 +132,85 @@ button,.action,.opt{max-width:100%}
 </section>
 </main>
 <script>
-const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
-const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
-const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
+(function(){
+  function safeGet(key){ try { return localStorage.getItem(key); } catch(e) { return null; } }
+  function safeSet(key,value){ try { localStorage.setItem(key,value); return true; } catch(e) { return false; } }
+  function safeRemove(key){ try { localStorage.removeItem(key); } catch(e) {} }
 
-async function hashPassword(value){
- const data=new TextEncoder().encode(value);
- const digest=await crypto.subtle.digest('SHA-256',data);
- return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+  var form=document.getElementById('signupForm');
+  if(!form) return;
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=document.getElementById('name').value.trim();
+    var email=document.getElementById('email').value.trim().toLowerCase();
+    var password=document.getElementById('password').value;
+    var confirm=document.getElementById('confirm').value;
+    var msg=document.getElementById('msg');
 
-document.getElementById('signupForm').addEventListener('submit',async function(e){
- e.preventDefault();
- const name=document.getElementById('name').value.trim();
- const email=document.getElementById('email').value.trim().toLowerCase();
- const password=document.getElementById('password').value;
- const confirm=document.getElementById('confirm').value;
- const msg=document.getElementById('msg');
- if(!name){msg.textContent='Enter your name.';return;}
- if(!email){msg.textContent='Enter your email.';return;}
- if(password!==confirm){msg.textContent='Passwords do not match.';return;}
- if(password.length<8){msg.textContent='Password must be at least 8 characters.';return;}
- try{
-   const passwordHash=await hashPassword(password);
-   localStorage.setItem('medstartUser',JSON.stringify({name,email,passwordHash}));
-   localStorage.setItem('medstartSignedIn','true'); window.dispatchEvent(new Event('medstart-auth-changed'));
-   localStorage.setItem('medstartSignedInEmail',email);
-   msg.textContent='Account created. Signing you in...';
+    if(!name){msg.textContent='Enter your name.';return;}
+    if(!email || email.indexOf('@')<1 || email.indexOf('.')<email.indexOf('@')+2){msg.textContent='Enter a valid email address.';return;}
+    if(password.length<6){msg.textContent='Password must be at least 6 characters.';return;}
+    if(password!==confirm){msg.textContent='Passwords do not match.';return;}
 
-   if(window.emailjs && EMAILJS_PUBLIC_KEY!=='YOUR_EMAILJS_PUBLIC_KEY'){
-     try{
-       emailjs.init({publicKey:EMAILJS_PUBLIC_KEY});
-       await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-         to_email:'jesseoges@gmail.com',
-         user_email:email,
-         sign_in_time:new Date().toLocaleString(),
-         site:'MedStart',
-         event_type:'New account created and signed in'
-       });
-     }catch(emailErr){
-       console.warn('Email notification could not be sent:',emailErr);
-     }
-   }
-   setTimeout(()=>location.href='index.html',500);
- }catch(err){
-   msg.textContent='Account setup needs a normal website/HTTPS connection.';
-   console.error(err);
- }
-});
+    var account={name:name,email:email,password:password};
+    var ok1=safeSet('medstartAccount',JSON.stringify(account));
+    var ok2=safeSet('medstartUser',JSON.stringify({name:name,email:email}));
+    var ok3=safeSet('medstartSignedIn','true');
+    var ok4=safeSet('medstartSignedInEmail',email);
+
+    if(!(ok1&&ok2&&ok3&&ok4)){
+      msg.textContent='Your browser is blocking Local Storage. Open MedStart in a normal browser tab (Chrome/Firefox) rather than a restricted preview.';
+      return;
+    }
+
+    window.dispatchEvent(new Event('medstart-auth-changed'));
+    msg.textContent='Account created successfully. Opening MedStart...';
+    setTimeout(function(){window.location.href='index.html';},250);
+  });
+})();
 </script>
 
-<script id="medstart-global-auth">
+
+<script id="medstart-global-auth-v2">
 (function(){
   function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
-  function signed(){return localStorage.getItem('medstartSignedIn')==='true'}
-  function syncAuth(){
-    var user=readUser(), ok=signed(), name=(user&&user.name||'').trim();
-    document.querySelectorAll('.nav a').forEach(function(a){
-      var href=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
-      if(href==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
-      else if(ok && (href==='signin.html'||href==='sign-in.html')) a.remove();
-    });
-    document.querySelectorAll('a.signup,[data-auth="account"]').forEach(function(a){
-      a.textContent=(ok&&name)?name:'Sign Up';
-      a.href=(ok&&name)?'dashboard.html':'signup.html';
-      a.style.display='inline-block';
-      a.classList.toggle('signed-user',!!(ok&&name));
-    });
-    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=(ok&&name)?name:'Guest'});
-    if(ok&&user&&user.email){
-      try{
-        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
-        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
-        by[user.email]=by[user.email]||{};
-        Object.keys(generic).forEach(function(k){if(!by[user.email][k])by[user.email][k]=generic[k]});
-        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
-        var q=JSON.parse(localStorage.getItem('medstartQuizResults')||'null');
-        if(q){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
-      }catch(e){}
+  function isSigned(){try{return localStorage.getItem('medstartSignedIn')==='true'}catch(e){return false}}
+  function sync(){
+    var u=readUser(), signed=isSigned(), name=(u&&u.name||'').trim();
+    var nav=document.querySelector('.nav');
+    if(nav){
+      nav.querySelectorAll('a').forEach(function(a){
+        var h=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+        var t=(a.textContent||'').trim();
+        if(h==='signup.html' || /^sign\s*up$/i.test(t) || (signed && (h==='signin.html'||h==='sign-in.html'||/^sign\s*in$/i.test(t)))) a.remove();
+      });
+      var account=nav.querySelector('a[data-auth="account"]');
+      if(!account){
+        account=document.createElement('a');
+        account.setAttribute('data-auth','account');
+        account.className='signup';
+        nav.appendChild(account);
+      }
+      account.textContent=(signed&&name)?name:'Sign Up';
+      account.href=(signed&&name)?'dashboard.html':'signup.html';
+      account.classList.toggle('signed-user',!!(signed&&name));
+      account.style.display='inline-block';
     }
+    document.querySelectorAll('a.signup:not(.nav a),[data-auth="account"]:not(.nav a)').forEach(function(a){
+      a.textContent=(signed&&name)?name:'Sign Up';
+      a.href=(signed&&name)?'dashboard.html':'signup.html';
+      a.style.display='inline-block';
+      a.classList.toggle('signed-user',!!(signed&&name));
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){
+      el.textContent=(signed&&name)?name:'Guest';
+    });
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
-  window.addEventListener('storage',syncAuth);
-  window.addEventListener('medstart-auth-changed',syncAuth);
-  window.medstartSyncAuth=syncAuth;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+  window.addEventListener('storage',sync);
+  window.addEventListener('medstart-auth-changed',sync);
+  window.addEventListener('medstart-case-results-updated',sync);
+  window.medstartSyncAuth=sync;
 })();
 </script>
 </body>

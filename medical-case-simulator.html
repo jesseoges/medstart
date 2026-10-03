@@ -196,7 +196,7 @@ button{
  font-weight:bold
 }
 </style>
-</head>
+<style id="medstart-account-nav-fix">.nav a.signup,.nav a[data-auth="account"]{background:#20C997!important;color:#061A33!important;font-weight:800!important;border-radius:9px!important}.nav a.signup:hover,.nav a[data-auth="account"]:hover{background:#31d9aa!important;color:#061A33!important}</style></head>
 
 <body>
 
@@ -528,43 +528,47 @@ function finish(){
 
 </script>
 
-<script id="medstart-global-auth">
+
+<script id="medstart-global-auth-v2">
 (function(){
   function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
-  function isSigned(){return localStorage.getItem('medstartSignedIn')==='true'}
-  function syncAuth(){
-    var user=readUser(), signed=isSigned(), name=(user&&user.name||'').trim();
-    // The navigation never contains a Sign Up item.
-    document.querySelectorAll('.nav a').forEach(function(a){
-      if((a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'')==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
-    });
-    // Keep the header account button on every normal site page.
-    document.querySelectorAll('a.signup,[data-auth="signup"]').forEach(function(a){
-      if(signed && name){a.textContent=name;a.href='dashboard.html';a.style.display='inline-block';a.classList.add('signed-user');}
-      else {a.textContent='Sign Up';a.href='signup.html';a.style.display='inline-block';a.classList.remove('signed-user');}
-    });
-    document.querySelectorAll('.nav a').forEach(function(a){
-      var href=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
-      if(signed && (href==='signin.html'||href==='sign-in.html')) a.remove();
-    });
-    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=signed&&name?name:'Guest';});
-    // Attach any anonymous case results to the signed-in account, so results completed before login remain visible.
-    if(signed && user && user.email){
-      try{
-        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
-        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
-        by[user.email]=by[user.email]||{};
-        Object.keys(generic||{}).forEach(function(k){if(!by[user.email][k]) by[user.email][k]=generic[k];});
-        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
-        var q=JSON.parse(localStorage.getItem('medstartQuizResults')||'null');
-        if(q && !JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}')[user.email]){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
-      }catch(e){}
+  function isSigned(){try{return localStorage.getItem('medstartSignedIn')==='true'}catch(e){return false}}
+  function sync(){
+    var u=readUser(), signed=isSigned(), name=(u&&u.name||'').trim();
+    var nav=document.querySelector('.nav');
+    if(nav){
+      nav.querySelectorAll('a').forEach(function(a){
+        var h=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+        var t=(a.textContent||'').trim();
+        if(h==='signup.html' || /^sign\s*up$/i.test(t) || (signed && (h==='signin.html'||h==='sign-in.html'||/^sign\s*in$/i.test(t)))) a.remove();
+      });
+      var account=nav.querySelector('a[data-auth="account"]');
+      if(!account){
+        account=document.createElement('a');
+        account.setAttribute('data-auth','account');
+        account.className='signup';
+        nav.appendChild(account);
+      }
+      account.textContent=(signed&&name)?name:'Sign Up';
+      account.href=(signed&&name)?'dashboard.html':'signup.html';
+      account.classList.toggle('signed-user',!!(signed&&name));
+      account.style.display='inline-block';
     }
+    document.querySelectorAll('a.signup:not(.nav a),[data-auth="account"]:not(.nav a)').forEach(function(a){
+      a.textContent=(signed&&name)?name:'Sign Up';
+      a.href=(signed&&name)?'dashboard.html':'signup.html';
+      a.style.display='inline-block';
+      a.classList.toggle('signed-user',!!(signed&&name));
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){
+      el.textContent=(signed&&name)?name:'Guest';
+    });
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
-  window.addEventListener('storage',syncAuth);
-  window.addEventListener('medstart-auth-changed',syncAuth);
-  window.medstartSyncAuth=syncAuth;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+  window.addEventListener('storage',sync);
+  window.addEventListener('medstart-auth-changed',sync);
+  window.addEventListener('medstart-case-results-updated',sync);
+  window.medstartSyncAuth=sync;
 })();
 </script>
 </body>

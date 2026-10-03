@@ -79,7 +79,7 @@ button,.action,.opt{max-width:100%}
 </style>
 <style>.signed-user{color:#061a33!important;text-decoration:none!important}.quiz-logo{width:52px;height:52px;object-fit:contain;border-radius:12px;display:block;background:#fff;border:1px solid rgba(32,201,151,.35)}
 </style>
-</head>
+<style id="medstart-account-nav-fix">.nav a.signup,.nav a[data-auth="account"]{background:#20C997!important;color:#061A33!important;font-weight:800!important;border-radius:9px!important}.nav a.signup:hover,.nav a[data-auth="account"]:hover{background:#31d9aa!important;color:#061A33!important}</style><style>.auth-gate{text-align:center;padding:28px;border:1px solid rgba(32,201,151,.25);border-radius:18px;background:#0b2340}.auth-gate .start,.auth-gate .secondary{display:inline-block;margin:10px 6px;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:800}.auth-gate .start{background:#20C997;color:#061A33}.auth-gate .secondary{background:#102f50;color:#EAF4FA;border:1px solid rgba(175,194,212,.2)}</style></head>
 <body><header class="header">
   <div class="header-inner">
     <div class="top">
@@ -113,7 +113,7 @@ button,.action,.opt{max-width:100%}
 <section class="intro" id="intro">
 <div class="qnum">MEDSTART SPECIALTY QUIZ</div>
 <h1>Find the fields that fit your preferences.</h1>
-<p>This 20-question exploration uses indirect scenarios rather than simply asking you which specialty you like. Your answers are combined with your work-life preference and the importance you assign to income, prestige, fame, innovation and patient relationship.</p>
+<p>This 20-question exploration uses realistic scenarios rather than simply asking you which specialty you like. There are no right or wrong answers. Your answers are combined with your work-life preference and the importance you assign to income, prestige, fame, innovation and patient relationship.</p>
 <p class="note">This is an exploration tool, not a medical aptitude test or a prediction of your future specialty.</p>
 <button class="start" id="start">Start Quiz</button>
 </section>
@@ -177,7 +177,28 @@ function renderImportance(){
  });
 }
 
+try{
+ const pending=JSON.parse(sessionStorage.getItem("medstartPendingQuiz")||"null");
+ if(localStorage.getItem("medstartSignedIn")==="true" && pending && pending.answers){
+   answers=pending.answers||{};
+   importance=Object.assign(importance,pending.importance||{});
+   if(pending.wl) document.getElementById("wl").value=pending.wl;
+   document.getElementById("wlVal").textContent=document.getElementById("wl").value+"/10";
+   renderImportance();
+   sessionStorage.removeItem("medstartPendingQuiz");
+   show(prefs);
+ }
+}catch(e){}
 document.getElementById("finish").onclick=()=>{
+ const signed=localStorage.getItem("medstartSignedIn")==="true";
+ const user=(()=>{try{return JSON.parse(localStorage.getItem("medstartUser")||"null")}catch(e){return null}})();
+ if(!signed || !user || !user.email){
+   try{sessionStorage.setItem("medstartPendingQuiz",JSON.stringify({answers:answers,importance:importance,wl:+document.getElementById("wl").value}));}catch(e){}
+   const box=document.getElementById("resultsGrid");
+   box.innerHTML='<div class="auth-gate"><h3>Sign in to unlock your results</h3><p class="note">Your answers are ready. Sign in to see your specialty matches and save them to your MedStart profile.</p><a class="start" href="signin.html?return=specialty-quiz.html">Sign In</a><a class="secondary" href="signup.html">Create an account</a></div>';
+   show(results);
+   return;
+ }
  const wl=+document.getElementById("wl").value;
  const ranked=Object.entries(profiles).map(([name,profile])=>{
   let total=0,max=0;
@@ -198,8 +219,7 @@ document.getElementById("finish").onclick=()=>{
 }).sort((a,b)=>b[1]-a[1]).slice(0,5);
 const box=document.getElementById("resultsGrid");box.innerHTML="";
 const quizResultPayload={results:ranked.map(([name,pct])=>({name,score:pct})),updatedAt:new Date().toISOString()};
-localStorage.setItem("medstartQuizResults",JSON.stringify(quizResultPayload));
-try{const u=JSON.parse(localStorage.getItem("medstartUser")||"null");if(localStorage.getItem("medstartSignedIn")==="true"&&u&&u.email){const by=JSON.parse(localStorage.getItem("medstartQuizResultsByUser")||"{}");by[u.email]=quizResultPayload;localStorage.setItem("medstartQuizResultsByUser",JSON.stringify(by));}}catch(e){}
+try{const by=JSON.parse(localStorage.getItem("medstartQuizResultsByUser")||"{}");by[user.email]=quizResultPayload;localStorage.setItem("medstartQuizResultsByUser",JSON.stringify(by));localStorage.removeItem("medstartQuizResults");}catch(e){}
 ranked.forEach(([name,pct],n)=>{
   const row=document.createElement("div");row.className="result-row";
   row.innerHTML=`<a href="specialties.html?specialty=${encodeURIComponent(name.toLowerCase().replace(/[^a-z0-9]+/g,"-"))}" style="display:block"><strong>${n+1}. ${name}</strong><span class="note">Preference alignment score: ${Math.min(97,pct)}%</span><div class="meter"><i style="width:${Math.min(97,pct)}%"></i></div><span class="note" style="color:var(--green)">Open specialty profile →</span></a>`;
@@ -209,40 +229,47 @@ ranked.forEach(([name,pct],n)=>{
 };
 document.getElementById("restart").onclick=()=>{i=0;answers={};importance={income:5,prestige:5,fame:5,innovation:5,patient:5};document.getElementById("wl").value=5;show(intro);};
 </script>
-<script id="medstart-global-auth">
+
+<script id="medstart-global-auth-v2">
 (function(){
   function readUser(){try{return JSON.parse(localStorage.getItem('medstartUser')||'null')}catch(e){return null}}
-  function signed(){return localStorage.getItem('medstartSignedIn')==='true'}
-  function syncAuth(){
-    var user=readUser(), ok=signed(), name=(user&&user.name||'').trim();
-    document.querySelectorAll('.nav a').forEach(function(a){
-      var href=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
-      if(href==='signup.html' || /^(sign\s*up)$/i.test(a.textContent.trim())) a.remove();
-      else if(ok && (href==='signin.html'||href==='sign-in.html')) a.remove();
-    });
-    document.querySelectorAll('a.signup,[data-auth="account"]').forEach(function(a){
-      a.textContent=(ok&&name)?name:'Sign Up';
-      a.href=(ok&&name)?'dashboard.html':'signup.html';
-      a.style.display='inline-block';
-      a.classList.toggle('signed-user',!!(ok&&name));
-    });
-    document.querySelectorAll('[data-auth-name]').forEach(function(el){el.textContent=(ok&&name)?name:'Guest'});
-    if(ok&&user&&user.email){
-      try{
-        var generic=JSON.parse(localStorage.getItem('medstartCaseResults')||'{}');
-        var by=JSON.parse(localStorage.getItem('medstartCaseResultsByUser')||'{}');
-        by[user.email]=by[user.email]||{};
-        Object.keys(generic).forEach(function(k){if(!by[user.email][k])by[user.email][k]=generic[k]});
-        localStorage.setItem('medstartCaseResultsByUser',JSON.stringify(by));
-        var q=JSON.parse(localStorage.getItem('medstartQuizResults')||'null');
-        if(q){var qb=JSON.parse(localStorage.getItem('medstartQuizResultsByUser')||'{}');qb[user.email]=q;localStorage.setItem('medstartQuizResultsByUser',JSON.stringify(qb));}
-      }catch(e){}
+  function isSigned(){try{return localStorage.getItem('medstartSignedIn')==='true'}catch(e){return false}}
+  function sync(){
+    var u=readUser(), signed=isSigned(), name=(u&&u.name||'').trim();
+    var nav=document.querySelector('.nav');
+    if(nav){
+      nav.querySelectorAll('a').forEach(function(a){
+        var h=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
+        var t=(a.textContent||'').trim();
+        if(h==='signup.html' || /^sign\s*up$/i.test(t) || (signed && (h==='signin.html'||h==='sign-in.html'||/^sign\s*in$/i.test(t)))) a.remove();
+      });
+      var account=nav.querySelector('a[data-auth="account"]');
+      if(!account){
+        account=document.createElement('a');
+        account.setAttribute('data-auth','account');
+        account.className='signup';
+        nav.appendChild(account);
+      }
+      account.textContent=(signed&&name)?name:'Sign Up';
+      account.href=(signed&&name)?'dashboard.html':'signup.html';
+      account.classList.toggle('signed-user',!!(signed&&name));
+      account.style.display='inline-block';
     }
+    document.querySelectorAll('a.signup:not(.nav a),[data-auth="account"]:not(.nav a)').forEach(function(a){
+      a.textContent=(signed&&name)?name:'Sign Up';
+      a.href=(signed&&name)?'dashboard.html':'signup.html';
+      a.style.display='inline-block';
+      a.classList.toggle('signed-user',!!(signed&&name));
+    });
+    document.querySelectorAll('[data-auth-name]').forEach(function(el){
+      el.textContent=(signed&&name)?name:'Guest';
+    });
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncAuth);else syncAuth();
-  window.addEventListener('storage',syncAuth);
-  window.addEventListener('medstart-auth-changed',syncAuth);
-  window.medstartSyncAuth=syncAuth;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
+  window.addEventListener('storage',sync);
+  window.addEventListener('medstart-auth-changed',sync);
+  window.addEventListener('medstart-case-results-updated',sync);
+  window.medstartSyncAuth=sync;
 })();
 </script>
 </body></html>
