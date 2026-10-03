@@ -97,7 +97,7 @@ button,.action,.opt{max-width:100%}
       nav.querySelectorAll('a').forEach(function(a){
         var h=(a.getAttribute('href')||'').toLowerCase().replace(/^\.\//,'');
         var t=(a.textContent||'').trim();
-        if(h==='signup.html' || /^sign\s*up$/i.test(t) || (signed && (h==='signin.html'||h==='sign-in.html'||/^sign\s*in$/i.test(t)))) a.remove();
+        if(h==='signup.html' || /^sign\s*up$/i.test(t) || (signed && (h==='signin.html'||h==='signin.html'||/^sign\s*in$/i.test(t)))) a.remove();
       });
       var account=nav.querySelector('a[data-auth="account"]');
       if(!account){
@@ -107,13 +107,13 @@ button,.action,.opt{max-width:100%}
         nav.appendChild(account);
       }
       account.textContent=(signed&&name)?name:'Sign Up';
-      account.href=(signed&&name)?'dashboard.html':'signup.html';
+      account.href=(signed&&name)?'index.html':'signup.html';
       account.classList.toggle('signed-user',!!(signed&&name));
       account.style.display='inline-block';
     }
     document.querySelectorAll('a.signup:not(.nav a),[data-auth="account"]:not(.nav a)').forEach(function(a){
       a.textContent=(signed&&name)?name:'Sign Up';
-      a.href=(signed&&name)?'dashboard.html':'signup.html';
+      a.href=(signed&&name)?'index.html':'signup.html';
       a.style.display='inline-block';
       a.classList.toggle('signed-user',!!(signed&&name));
     });
