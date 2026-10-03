@@ -157,7 +157,7 @@ document.getElementById('signinForm').addEventListener('submit',function(e){
  localStorage.setItem('medstartSignedInEmail',saved.email);
  window.dispatchEvent(new Event('medstart-auth-changed'));
  msg.textContent='Signed in successfully.';
- setTimeout(function(){var ret=new URLSearchParams(location.search).get('return');window.location.href=(ret&&/^(specialty-quiz\.html|cases\.html|dashboard\.html)$/.test(ret))?ret:'index.html';},250);
+ setTimeout(function(){var ret=new URLSearchParams(location.search).get('return');window.location.href=(ret&&/^(specialty-quiz\.html|cases\.html)$/.test(ret))?ret:'index.html';},250);
 });
 </script>
 

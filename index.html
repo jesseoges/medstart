@@ -166,7 +166,13 @@ button,.action,.opt{max-width:100%}
     </div>
   </div>
 </header>
-<main>
+<main><section class="section dashboard-section" id="personalDashboard">
+<div class="section-head"><div><span class="eyebrow">YOUR MEDSTART DASHBOARD</span><h2>My learning results</h2><p>When you are signed in, your specialty quiz and clinical case progress will appear here.</p></div></div>
+<div class="dashboard-grid">
+<div class="dashboard-panel"><div class="panel-head"><div><span class="badge">SPECIALTY QUIZ</span><h3>My Specialty Results</h3></div><a href="specialty-quiz.html">Take quiz →</a></div><div class="personal-results" id="signedQuizResults"><div class="empty">Sign in to see your saved specialty quiz results.</div></div></div>
+<div class="dashboard-panel"><div class="panel-head"><div><span class="badge">CLINICAL CASES</span><h3>My Case Results</h3></div><a href="cases.html">Practise cases →</a></div><div class="personal-results" id="caseResults"><div class="empty">Sign in to see your saved clinical case results.</div></div></div>
+</div>
+</section>
 <section class="hero">
 <div class="hero-main">
 <span class="eyebrow">MEDSTART STUDENT HUB</span>
@@ -198,15 +204,9 @@ button,.action,.opt{max-width:100%}
 <a class="card feature" href="health-facts.html"><div class="feature-icon"><img alt="Human body anatomy and cell composition illustration" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Cells_of_the_human_body_by_mass.svg"/></div><h3>Health Facts</h3><p>Discover concise medical and public-health facts.</p></a>
 </div>
 </section>
-<section class="section dashboard-section" id="personalDashboard">
-<div class="section-head"><div><span class="eyebrow">YOUR MEDSTART DASHBOARD</span><h2>My learning results</h2><p>When you are signed in, your specialty quiz and clinical case progress will appear here.</p></div></div>
-<div class="dashboard-grid">
-<div class="dashboard-panel"><div class="panel-head"><div><span class="badge">SPECIALTY QUIZ</span><h3>My Specialty Results</h3></div><a href="specialty-quiz.html">Take quiz →</a></div><div class="personal-results" id="signedQuizResults"><div class="empty">Sign in to see your saved specialty quiz results.</div></div></div>
-<div class="dashboard-panel"><div class="panel-head"><div><span class="badge">CLINICAL CASES</span><h3>My Case Results</h3></div><a href="cases.html">Practise cases →</a></div><div class="personal-results" id="caseResults"><div class="empty">Sign in to see your saved clinical case results.</div></div></div>
-</div>
-</section>
+
 <style>
-.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.dashboard-panel{background:#0B2340;border:1px solid rgba(32,201,151,.22);border-radius:20px;padding:18px}.panel-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.panel-head h3{margin:6px 0 0}.panel-head a{color:#20C997;font-weight:700;font-size:13px}.personal-results{margin-top:15px;display:grid;gap:9px}.personal-result{background:#102f50;border-radius:12px;padding:12px}.personal-result strong{display:block}.personal-result small{color:#AFC2D4}.mini-bar{height:6px;background:#173957;border-radius:10px;overflow:hidden;margin:7px 0}.mini-bar i{display:block;height:100%;background:#20C997}@media(max-width:700px){.dashboard-grid{grid-template-columns:1fr}}
+.dashboard-section{margin-top:0!important;margin-bottom:28px}.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.dashboard-panel{background:#0B2340;border:1px solid rgba(32,201,151,.22);border-radius:20px;padding:18px}.panel-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.panel-head h3{margin:6px 0 0}.panel-head a{color:#20C997;font-weight:700;font-size:13px}.personal-results{margin-top:15px;display:grid;gap:9px}.personal-result{background:#102f50;border-radius:12px;padding:12px}.personal-result strong{display:block}.personal-result small{color:#AFC2D4}.mini-bar{height:6px;background:#173957;border-radius:10px;overflow:hidden;margin:7px 0}.mini-bar i{display:block;height:100%;background:#20C997}@media(max-width:700px){.dashboard-grid{grid-template-columns:1fr}}
 </style>
 </main>
 <footer class="footer"><div class="footer-inner"><div><strong>MedStart</strong><p>Student-focused medical exploration.</p></div><div><a href="contacts.html">Contact</a> · <a href="about-medicine.html">About Medicine</a></div></div></footer>
@@ -222,14 +222,25 @@ button,.action,.opt{max-width:100%}
   const qr=(user&&user.email)?(get('medstartQuizResultsByUser')||{})[user.email]:null;
   const qarr=Array.isArray(qr)?qr:(qr&& (qr.results||qr.top5))||[];
   qbox.innerHTML=qarr.length?qarr.slice(0,5).map((r,i)=>{const name=r.name||r.specialty||r.title||('Specialty '+(i+1));const score=Math.max(0,Math.min(97,Number(r.score||r.percentage||r.percent||0)));return '<a class="personal-result" href="specialties.html?specialty='+encodeURIComponent(name.toLowerCase().replace(/[^a-z0-9]+/g,'-'))+'"><strong>#'+(i+1)+' '+name+'</strong><div class="mini-bar"><i style="width:'+score+'%"></i></div><small>'+score+'% preference alignment</small></a>'}).join(''):'<div class="empty">No specialty quiz result saved yet. <a href="specialty-quiz.html">Take the quiz →</a></div>';
-  const cr=(user&&user.email)?(get('medstartCaseResultsByUser')||{})[user.email]:null;
-  const carr=Array.isArray(cr)?cr:(cr&& (cr.results||cr.history||[]))||[];
-  const entries=Array.isArray(carr)?carr:Object.entries(carr).map(([specialty,r])=>Object.assign({title:specialty},r));
-  if(entries.length){const latest=entries.slice().reverse();cbox.innerHTML=latest.map((r)=>{const title=r.specialty||r.title||r.case||'Clinical Case';const score=Number(r.score);const total=Number(r.total||25);const pct=total?Math.round((score/total)*100):0;return '<a class="personal-result" href="cases.html"><strong>'+title+'</strong><div class="mini-bar"><i style="width:'+pct+'%"></i></div><small>'+score+'/'+total+' questions correct · '+pct+'%'+(r.updatedAt?' · '+new Date(r.updatedAt).toLocaleDateString():'')+'</small></a>';}).join('');}
-  else cbox.innerHTML='<div class="empty">No case result saved yet. Your completed case scores will appear here.</div>';
+  const allCaseResults=get('medstartCaseResultsByUser')||{};
+  const cr=(user&&user.email)?(allCaseResults[user.email]||null):null;
+  const entries=cr && typeof cr==='object' && !Array.isArray(cr)
+    ? Object.entries(cr).map(([specialty,r])=>Object.assign({specialty:specialty},r||{}))
+    : (Array.isArray(cr)?cr:[]);
+  if(entries.length){
+    entries.sort((a,b)=>new Date(b.updatedAt||0)-new Date(a.updatedAt||0));
+    cbox.innerHTML=entries.map((r)=>{
+      const title=r.specialty||r.title||r.case||'Clinical Case';
+      const score=Number(r.score||0), total=Number(r.total||25);
+      const pct=total?Math.round((score/total)*100):0;
+      return '<a class="personal-result" href="cases.html"><strong>'+title+'</strong><div class="mini-bar"><i style="width:'+Math.max(0,Math.min(100,pct))+'%"></i></div><small>'+score+'/'+total+' questions correct · '+pct+'%'+(r.updatedAt?' · '+new Date(r.updatedAt).toLocaleDateString():'')+'</small></a>';
+    }).join('');
+  } else cbox.innerHTML='<div class="empty">No case result saved yet. Your completed case scores will appear here.</div>';
  }
  renderPersonalDashboard();
  window.addEventListener('storage',renderPersonalDashboard);
+ window.addEventListener('medstart-case-results-updated',renderPersonalDashboard);
+ window.addEventListener('medstart-auth-changed',renderPersonalDashboard);
 })();
 </script>
 <script id="medstart-global-auth-v2">
@@ -253,13 +264,13 @@ button,.action,.opt{max-width:100%}
         nav.appendChild(account);
       }
       account.textContent=(signed&&name)?name:'Sign Up';
-      account.href=(signed&&name)?'index.html':'signup.html';
+      account.href=(signed&&name)?'#personalDashboard':'signup.html';
       account.classList.toggle('signed-user',!!(signed&&name));
       account.style.display='inline-block';
     }
     document.querySelectorAll('a.signup:not(.nav a),[data-auth="account"]:not(.nav a)').forEach(function(a){
       a.textContent=(signed&&name)?name:'Sign Up';
-      a.href=(signed&&name)?'index.html':'signup.html';
+      a.href=(signed&&name)?'#personalDashboard':'signup.html';
       a.style.display='inline-block';
       a.classList.toggle('signed-user',!!(signed&&name));
     });
