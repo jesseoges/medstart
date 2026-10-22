@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public readers may see only published articles. Publishing writes remain disabled here.
+    match /articles/{articleId} {
+      allow read: if resource.data.published == true;
+      allow create, update, delete: if false;
+    }
+    // Each signed-in user can access only their own quiz/case results.
+    match /users/{userId}/results/{resultId} {
+      allow read, create, update, delete: if request.auth != null && request.auth.uid == userId
+        && resultId in ['quiz', 'case'];
+    }
+    // Deny all other access unless a rule above explicitly allows it.
+    match /{document=**} { allow read, write: if false; }
+  }
+}
