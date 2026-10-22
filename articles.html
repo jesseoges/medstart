@@ -1,5 +1,379 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="MedStart: Learn, Inspire, Heal."><title>Articles | MedStart</title><link rel="stylesheet" href="styles.css"></head><body><header class="header"><a class="brand" href="index.html"><img class="logo" src="medstart-logo.jpg" alt="MedStart: Learn • Inspire • Heal"><span><b>MedStart</b><small>LEARN • INSPIRE • HEAL</small></span></a><div class="nav-wrap"><nav class="site-nav"><a class="" href="index.html">Home</a><a class="" href="specialties.html">Specialties</a><a class="" href="quiz.html">Specialty Quiz</a><a class="" href="cases.html">Medical Cases</a><a class="active" href="articles.html">Articles</a><a class="" href="health-facts.html">Health Facts</a><a class="" href="about.html">About</a><a class="" href="contact.html">Contact</a></nav></div><button id="authButton" class="auth">Sign in / Sign up</button></header><main><section class="page-hero"><p class="eyebrow">MEDSTART</p><h1>Articles</h1><p>This section is intentionally empty for now. Articles will be published on a separate website.</p></section><section class="content empty-articles"><div><h2>Coming later</h2><p>No articles are published here yet.</p></div></section></main><footer class="footer section"><a class="brand" href="index.html"><b>MedStart</b><small> LEARN • INSPIRE • HEAL</small></a><p>Educational resource only. Not a substitute for professional medical care.</p><small>© 2026 MedStart</small></footer><dialog id="authDialog" class="dialog"><form method="dialog" class="close"><button aria-label="Close">×</button></form><div class="heading"><h2 id="authTitle">Sign in</h2><p>Sign in securely with your MedStart account.</p></div><form id="authForm" class="contact"><label>Your name<input id="authName" required></label><label>Email<input id="authEmail" type="email" required></label><label>Password<input id="authPassword" type="password" minlength="6" required></label><button class="btn primary" id="authSubmit">Sign in</button><p id="authMessage"></p><button type="button" class="linkbtn" id="switchAuth">Need an account? Sign up</button></form><p class="note">Use a unique password. Your account is managed by Firebase Authentication.</p></dialog><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="site.js"></script></body></html>
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Read medical articles, research, and educational resources on MedStart.">
+  <title>Articles | MedStart</title>
+  <link rel="stylesheet" href="styles.css">  <style>
+    .articles-intro {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .articles-toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 24px 0;
+    }
+
+    .articles-toolbar input,
+    .articles-toolbar select {
+      flex: 1;
+      min-width: 180px;
+      padding: 12px;
+      border: 1px solid #d5dce5;
+      border-radius: 8px;
+      background: #fff;
+      font: inherit;
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      padding: 20px 0 45px;
+    }
+
+    .article-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #e0e6ee;
+      border-radius: 14px;
+      box-shadow: 0 5px 18px rgba(16, 44, 82, .06);
+    }
+
+    .article-card img {
+      display: block;
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #edf2f7;
+    }
+
+    .article-card-content {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .article-category {
+      color: #087f5b;
+      font-size: .8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .article-card h2 {
+      margin: 10px 0;
+      color: #102c52;
+      font-size: 1.25rem;
+      line-height: 1.4;
+    }
+
+    .article-summary {
+      color: #526174;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .article-meta {
+      margin-top: auto;
+      padding: 12px 0;
+      color: #68778a;
+      font-size: .85rem;
+    }
+
+    .article-read-more {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 11px 17px;
+      border-radius: 8px;
+      background: #087f5b;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .article-read-more:hover {
+      background: #066548;
+    }
+
+    .articles-message {
+      grid-column: 1 / -1;
+      padding: 28px;
+      border-radius: 12px;
+      background: #f4f7fb;
+      color: #334155;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .article-count {
+      color: #526174;
+      margin-bottom: 8px;
+    }
+  </style></head><body>
+  <header class="header">
+    <a class="brand" href="index.html">
+      <img class="logo" src="medstart-logo.jpg"
+           alt="MedStart: Learn, Inspire, Heal">
+      <span>
+        <b>MedStart</b>
+        <small>LEARN • INSPIRE • HEAL</small>
+      </span>
+    </a><div class="nav-wrap">
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="specialties.html">Specialties</a>
+    <a href="quiz.html">Specialty Quiz</a>
+    <a href="cases.html">Medical Cases</a>
+    <a class="active" href="articles.html">Articles</a>
+    <a href="health-facts.html">Health Facts</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</div>
+
+<button id="authButton" class="auth" type="button">
+  Sign in / Sign up
+</button>
+
+  </header>  <main>
+    <section class="page-hero">
+      <div class="articles-intro">
+        <p class="eyebrow">MEDSTART KNOWLEDGE HUB</p>
+        <h1>Medical Articles</h1>
+        <p>
+          Explore medical knowledge, research, discoveries, and educational
+          articles created to inspire the next generation of healthcare
+          professionals.
+        </p>
+      </div>
+    </section><section class="content">
+  <div class="articles-toolbar">
+    <input
+      id="articleSearch"
+      type="search"
+      placeholder="Search articles..."
+      aria-label="Search articles">
+
+    <select id="articleCategory" aria-label="Filter by category">
+      <option value="">All categories</option>
+    </select>
+  </div>
+
+  <p id="articleCount" class="article-count" aria-live="polite"></p>
+
+  <div id="publishedArticles" class="article-grid" aria-live="polite">
+    <p class="articles-message">Loading published articles...</p>
+  </div>
+</section>
+
+  </main>  <footer class="footer section">
+    <a class="brand" href="index.html">
+      <b>MedStart</b>
+      <small>LEARN • INSPIRE • HEAL</small>
+    </a><p>Educational resource only. Not a substitute for professional medical care.</p>
+<small>© 2026 MedStart</small>
+
+  </footer>  <dialog id="authDialog" class="dialog">
+    <form method="dialog" class="close">
+      <button aria-label="Close">×</button>
+    </form><div class="heading">
+  <h2 id="authTitle">Sign in</h2>
+  <p>Sign in securely with your MedStart account.</p>
+</div>
+
+<form id="authForm" class="contact">
+  <label>
+    Your name
+    <input id="authName" required>
+  </label>
+
+  <label>
+    Email
+    <input id="authEmail" type="email" required>
+  </label>
+
+  <label>
+    Password
+    <input id="authPassword" type="password" minlength="6" required>
+  </label>
+
+  <button class="btn primary" id="authSubmit" type="submit">
+    Sign in
+  </button>
+
+  <p id="authMessage" aria-live="polite"></p>
+
+  <button type="button" class="linkbtn" id="switchAuth">
+    Need an account? Sign up
+  </button>
+</form>
+
+<p class="note">
+  Your account is managed by Firebase Authentication.
+</p>
+
+  </dialog>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <script src="firebase-config.js"></script>  <script src="site.js"></script>  <script>
+    (function () {
+      const container = document.getElementById("publishedArticles");
+      const searchInput = document.getElementById("articleSearch");
+      const categorySelect = document.getElementById("articleCategory");
+      const countLabel = document.getElementById("articleCount");
+
+      let allArticles = [];
+
+      function showMessage(message) {
+        container.replaceChildren();
+        const paragraph = document.createElement("p");
+        paragraph.className = "articles-message";
+        paragraph.textContent = message;
+        container.appendChild(paragraph);
+        countLabel.textContent = "";
+      }
+
+      function safeText(value) {
+        return typeof value === "string" ? value : "";
+      }
+
+      function renderArticles() {
+        const search = searchInput.value.trim().toLowerCase();
+        const category = categorySelect.value;
+
+        const filtered = allArticles.filter(function (article) {
+          const searchable = [
+            article.title,
+            article.summary,
+            article.category,
+            article.author
+          ].map(safeText).join(" ").toLowerCase();
+
+          return searchable.includes(search) &&
+            (!category || safeText(article.category) === category);
+        });
+
+        container.replaceChildren();
+        countLabel.textContent =
+          filtered.length + (filtered.length === 1 ? " article" : " articles");
+
+        if (!filtered.length) {
+          showMessage(allArticles.length
+            ? "No articles match your search. Try another search or category."
+            : "No articles have been published yet.");
+          return;
+        }
+
+        filtered.forEach(function (article) {
+          const card = document.createElement("article");
+          card.className = "article-card";
+
+          const thumbnail = safeText(article.thumbnail || article.image);
+
+          if (thumbnail) {
+            const image = document.createElement("img");
+            image.src = thumbnail;
+            image.alt = safeText(article.title) || "Article thumbnail";
+            image.loading = "lazy";
+            image.onerror = function () {
+              image.remove();
+            };
+            card.appendChild(image);
+          }
+
+          const content = document.createElement("div");
+          content.className = "article-card-content";
+
+          if (article.category) {
+            const categoryTag = document.createElement("span");
+            categoryTag.className = "article-category";
+            categoryTag.textContent = safeText(article.category);
+            content.appendChild(categoryTag);
+          }
+
+          const title = document.createElement("h2");
+          title.textContent = safeText(article.title) || "Untitled article";
+          content.appendChild(title);
+
+          const summary = document.createElement("p");
+          summary.className = "article-summary";
+          summary.textContent = safeText(article.summary) ||
+            "Open this article to explore the full content.";
+          content.appendChild(summary);
+
+          const meta = document.createElement("p");
+          meta.className = "article-meta";
+          meta.textContent = article.author
+            ? "By " + safeText(article.author)
+            : "MedStart";
+          content.appendChild(meta);
+
+          const link = document.createElement("a");
+          link.className = "article-read-more";
+          link.href = "article.html?id=" + encodeURIComponent(article.id);
+          link.textContent = "Read More";
+          content.appendChild(link);
+
+          card.appendChild(content);
+          container.appendChild(card);
+        });
+      }
+
+      searchInput.addEventListener("input", renderArticles);
+
+      categorySelect.addEventListener("change", renderArticles);
+
+      if (!window.firebase || !firebase.apps.length) {
+        showMessage(
+          "The article service is not configured yet. Please try again later."
+        );
+        return;
+      }
+
+      firebase.firestore()
+        .collection("articles")
+        .where("status", "==", "published")
+        .onSnapshot(function (snapshot) {
+          allArticles = snapshot.docs.map(function (doc) {
+            return Object.assign({ id: doc.id }, doc.data());
+          });
+
+          const categories = Array.from(new Set(
+            allArticles.map(function (article) {
+              return safeText(article.category).trim();
+            }).filter(Boolean)
+          )).sort();
+
+          categorySelect.replaceChildren();
+
+          const allOption = document.createElement("option");
+          allOption.value = "";
+          allOption.textContent = "All categories";
+          categorySelect.appendChild(allOption);
+
+          categories.forEach(function (category) {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+            categorySelect.appendChild(option);
+          });
+
+          renderArticles();
+        }, function (error) {
+          console.error("MedStart article loading failed:", error);
+          showMessage(
+            "We couldn't load articles. Please check the Firebase connection and Firestore permissions."
+          );
+        });
+    })();
+  </script></body>
+</html>
