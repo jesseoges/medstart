@@ -20,3 +20,6 @@
 - This build stores the latest quiz result and latest case result, not a full history of every case.
 - `firestore.rules` disables article writes for now because the article-admin publishing workflow is not yet implemented.
 - For local testing, serve the folder through a local web server rather than relying on `file://`.
+
+
+Design update: specialty discovery uses an original clean medical-education palette inspired by common editorial/medical learning layouts, not copied branding. Results show compatibility percentages and links to the specialty guide index. About credits Jesse Ogedengbe; Health Facts includes additional educational topics.

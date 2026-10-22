@@ -1,6 +1,6 @@
 // MedStart Firebase web configuration. Client-side config is public; secure data with Firestore rules.
 const firebaseConfig = {
-  apiKey: "AIzaSyAyAIbc-OynEKpvVY01b5ngG5SKzcGqFz4Yc",
+  apiKey: "AIzaSyAIbc-OynEKpvVYO1b5ngG5SKzcGqFz4Yc",
   authDomain: "medstart-aa55c.firebaseapp.com",
   projectId: "medstart-aa55c",
   storageBucket: "medstart-aa55c.firebasestorage.app",
