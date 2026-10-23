@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedStart | Read Article</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Links to your stylesheet -->
+</head>
+<body>
+
+    <!-- Paste your MedStart Nav Bar menu here so it looks like the rest of your site -->
+
+    <main style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif;">
+        <div id="loadingMessage">Loading article content...</div>
+        
+        <article id="articleContainer" style="display: none;">
+            <h1 id="articleTitle" style="font-size: 2.5rem; color: #003366; margin-bottom: 10px;"></h1>
+            <p style="color: #555;">By <span id="articleAuthor" style="font-weight: bold;"></span></p>
+            <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;">
+            
+            <img id="articleImage" src="" alt="Article Thumbnail" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px; display: none;">
+            
+            <div id="articleContent" style="line-height: 1.8; font-size: 1.1rem; color: #333;"></div>
+        </article>
+    </main>
+
+    <!-- Firebase SDKs to load the content -->
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+
+        if (!articleId) {
+            document.getElementById('loadingMessage').innerHTML = "<h2>No article specified.</h2>";
+        } else {
+            const db = firebase.firestore();
+            db.collection('articles').doc(articleId).get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('articleTitle').textContent = data.title;
+                    document.getElementById('articleAuthor').textContent = data.author;
+                    document.getElementById('articleContent').innerHTML = data.content;
+                    
+                    if (data.imageUrl || data.thumbnail) {
+                        const imgEl = document.getElementById('articleImage');
+                        imgEl.src = data.imageUrl || data.thumbnail;
+                        imgEl.style.display = 'block';
+                    }
+
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    document.getElementById('articleContainer').style.display = 'block';
+                } else {
+                    document.getElementById('loadingMessage').innerHTML = "<h2>Article not found.</h2>";
+                }
+            }).catch(err => {
+                console.error("Error: ", err);
+                document.getElementById('loadingMessage').textContent = "Error loading article details.";
+            });
+        }
+    </script>
+</body>
+</html>
