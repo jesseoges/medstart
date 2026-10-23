@@ -38,11 +38,8 @@
         } else {
             const db = firebase.firestore();
             db.collection('articles').doc(articleId).get().then((doc) => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('articleTitle').textContent = data.title;
-                    document.getElementById('articleAuthor').textContent = data.author;
-                    document.getElementById('articleContent').innerHTML = data.content;
+                // This  changes the browser tab and google search title dynamically!
+                document.title = '${data.title} | MedStart';
                     
                     if (data.imageUrl || data.thumbnail) {
                         const imgEl = document.getElementById('articleImage');
