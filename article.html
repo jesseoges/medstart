@@ -1,62 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedStart | Read Article</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Links to your stylesheet -->
-</head>
-<body>
-
-    <!-- Paste your MedStart Nav Bar menu here so it looks like the rest of your site -->
-
-    <main style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif;">
-        <div id="loadingMessage">Loading article content...</div>
-        
-        <article id="articleContainer" style="display: none;">
-            <h1 id="articleTitle" style="font-size: 2.5rem; color: #003366; margin-bottom: 10px;"></h1>
-            <p style="color: #555;">By <span id="articleAuthor" style="font-weight: bold;"></span></p>
-            <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;">
-            
-            <img id="articleImage" src="" alt="Article Thumbnail" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px; display: none;">
-            
-            <div id="articleContent" style="line-height: 1.8; font-size: 1.1rem; color: #333;"></div>
-        </article>
-    </main>
-
-    <!-- Firebase SDKs to load the content -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-    <script src="firebase-config.js"></script>
-
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const articleId = urlParams.get('id');
-
-        if (!articleId) {
-            document.getElementById('loadingMessage').innerHTML = "<h2>No article specified.</h2>";
-        } else {
-            const db = firebase.firestore();
-            db.collection('articles').doc(articleId).get().then((doc) => {
-                // This  changes the browser tab and google search title dynamically!
-                document.title = '${data.title} | MedStart';
-                    
-                    if (data.imageUrl || data.thumbnail) {
-                        const imgEl = document.getElementById('articleImage');
-                        imgEl.src = data.imageUrl || data.thumbnail;
-                        imgEl.style.display = 'block';
-                    }
-
-                    document.getElementById('loadingMessage').style.display = 'none';
-                    document.getElementById('articleContainer').style.display = 'block';
-                } else {
-                    document.getElementById('loadingMessage').innerHTML = "<h2>Article not found.</h2>";
-                }
-            }).catch(err => {
-                console.error("Error: ", err);
-                document.getElementById('loadingMessage').textContent = "Error loading article details.";
-            });
-        }
-    </script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Read a MedStart educational article."><title>Article | MedStart</title><link rel="stylesheet" href="styles.css"></head><body>
+<header class="header"><a class="brand" href="index.html"><img class="logo" src="medstart-logo.jpg" alt="MedStart logo"><span><b>MedStart</b><small>LEARN • INSPIRE • HEAL</small></span></a><button class="auth" id="authButton">Sign in / Sign up</button><div class="nav-wrap"><nav class="site-nav"><a href="index.html">Home</a><a href="specialties.html">Specialties</a><a href="quiz.html">Specialty Quiz</a><a href="cases.html">Medical Cases</a><a class="active" href="articles.html">Articles</a><a href="health-facts.html">Health Facts</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav></div></header>
+<main><section class="page-hero"><p class="eyebrow">MEDSTART ARTICLES</p><h1 id="articleTitle">Loading article content…</h1><p id="articleSummary"></p></section><section class="content article-reading"><a class="btn secondary" href="articles.html">← Back to all articles</a><div id="articleMeta" class="article-meta"></div><img id="articleImage" class="article-image hidden" alt=""><article id="articleContent" class="article-content"><p>Loading article content…</p></article><section id="articleReferences" class="references hidden"></section><p class="medical-disclaimer">Educational content only. This article is not a substitute for professional medical advice, diagnosis or treatment.</p><div id="articleError" class="message error" role="alert"></div></section></main>
+<footer class="footer section"><a class="brand" href="index.html"><b>MedStart</b><small>LEARN • INSPIRE • HEAL</small></a><p>Educational resource only. Not a substitute for professional medical care.</p><small>© 2026 MedStart</small></footer>
+<dialog id="authDialog" class="dialog"><form method="dialog" class="close"><button aria-label="Close">×</button></form><div class="heading"><h2 id="authTitle">Sign in</h2><p>Sign in securely with your MedStart account.</p></div><form id="authForm" class="contact"><label>Your name<input id="authName" required></label><label>Email<input id="authEmail" type="email" required></label><label>Password<input id="authPassword" type="password" minlength="6" required></label><button class="btn primary" id="authSubmit">Sign in</button><p id="authMessage"></p><button type="button" class="linkbtn" id="switchAuth">Need an account? Sign up</button></form></dialog>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script><script src="site.js"></script><script src="articles.js"></script></body></html>
