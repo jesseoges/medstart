@@ -41,3 +41,11 @@
 .header .site-nav{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start;width:100%;gap:4px;overflow:visible;white-space:normal;flex:1}
 .header .site-nav a{display:block!important;width:100%!important;box-sizing:border-box;padding:11px 14px;font-size:.95rem;white-space:normal;text-align:left}
 @media(max-width:760px){.header .nav-wrap{display:flex!important;flex:0 0 100%;width:100%}.header .site-nav{flex-direction:column!important;align-items:stretch!important}.header .site-nav a{width:100%!important;padding:12px 14px;font-size:1rem}}
+
+
+/* Corrected navigation: keep all menu links in one horizontal line on laptop and phone */
+.header .nav-wrap{display:flex!important;order:3;flex:0 0 100%;width:100%;min-width:0;overflow-x:auto;overflow-y:hidden}
+.header .site-nav{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-start;width:max-content;min-width:100%;gap:4px;overflow-x:visible;overflow-y:hidden;white-space:nowrap;flex:0 0 auto}
+.header .site-nav a{display:inline-flex!important;flex:0 0 auto;width:auto!important;align-items:center;padding:8px 10px;font-size:.86rem;white-space:nowrap;text-align:center}
+.header .menu-toggle{display:none!important}
+@media(max-width:760px){.header .nav-wrap{display:flex!important;flex:0 0 100%;width:100%;overflow-x:auto}.header .site-nav{flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;width:max-content;min-width:100%;gap:3px}.header .site-nav a{display:inline-flex!important;width:auto!important;flex:0 0 auto;padding:9px 10px;font-size:.88rem;white-space:nowrap}.article-grid{grid-template-columns:1fr}}
