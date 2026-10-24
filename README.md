@@ -23,3 +23,10 @@
 
 
 Design update: specialty discovery uses an original clean medical-education palette inspired by common editorial/medical learning layouts, not copied branding. Results show compatibility percentages and links to the specialty guide index. About credits Jesse Ogedengbe; Health Facts includes additional educational topics.
+
+
+## Article links fix
+- Article cards now open the included `article.html?id=...` page, which loads the selected published article from Firestore. This avoids broken links to generated `articles/<slug>.html` files. Upload `article.html` and the updated `articles.js` together with the rest of the site.
+
+
+Individual article page added: `ebola-outbreak-2026-nigeria-confirms-case-as-virus-spreads-across-africa.html`. The Articles listing sends the exact title `Ebola Outbreak 2026: Nigeria Confirms Case as Virus Spreads Across Africa` to this page. The page loads the article's existing published content from Firestore, so its article record must exist and be published. Other article titles still use the generic article page until their own HTML files are added.
